@@ -1,8 +1,11 @@
 package com.example.pointofsale
 
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -17,8 +20,14 @@ class login : AppCompatActivity() {
 
             startActivity(intent_reg)
         }
-        var user = intent.getParcelableExtra<User>(EXTRA_USER)
-        logFullName.setText(user?.Nama)
+
+        signinbutton.setOnClickListener {
+            val intent_reg = Intent(this,Profile::class.java)
+            var user = User(logFullName.text.toString(), logPass.text.toString())
+            intent_reg.putExtra(EXTRA_USER,user)
+
+            startActivity(intent_reg)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -18,6 +18,14 @@ class register : AppCompatActivity() {
             intent_login.putExtra(EXTRA_USER,user)
             startActivity(intent_login)
         }
+
+        signup.setOnClickListener {
+            val intent_signup = Intent(this,Profile::class.java)
+            var user = User(fullName.text.toString(), emailAddress.text.toString())
+            intent_signup.putExtra(EXTRA_USER,user)
+            startActivity(intent_signup)
+        }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
