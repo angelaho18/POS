@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.pointofsale
 
 import android.content.Intent
@@ -9,7 +11,7 @@ import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val timeout_splash = 3000L
+    private var timeout_splash = 3000L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
