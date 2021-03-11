@@ -17,7 +17,6 @@ class Profile : AppCompatActivity() {
 
         LogoutBut.setOnClickListener {
             val intent_logout = Intent(this,login::class.java)
-
             startActivity(intent_logout)
         }
     }
