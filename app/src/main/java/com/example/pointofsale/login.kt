@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_register.*
 
 class login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,5 +20,19 @@ class login : AppCompatActivity() {
 
             full_name.setText(user?.Nama)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_FULLNAME, logFullName.text.toString())
+        outState.putString(EXTRA_PASSWORD, logPass.text.toString())
+        outState.putBoolean(EXTRA_STATUS, stayLogged.isChecked)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        logFullName.setText(savedInstanceState?.getString(EXTRA_FULLNAME, "FULL_NAME"))
+        logPass.setText(savedInstanceState?.getString(EXTRA_PASSWORD, "PASSWORD"))
+        stayLogged.isChecked = savedInstanceState?.getBoolean(EXTRA_STATUS, false)
     }
 }

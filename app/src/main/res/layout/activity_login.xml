@@ -19,87 +19,91 @@
                 android:orientation="vertical"
                 >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Login"
-                    android:textSize="40sp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="33dp"
-                    android:textColor="@color/blue"
-                    android:textFontWeight="700"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Please Sign In to Continue"
-                    android:textSize="12.5sp"
-                    android:layout_marginTop="0.5dp"
-                    android:layout_marginLeft="33dp"
-                    android:textColor="@color/grey"
-                    />
-            </LinearLayout>
-            <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textSize="40sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="33dp"
+            android:textColor="@color/blue"
+            android:textFontWeight="700"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please Sign In to Continue"
+            android:textSize="12.5sp"
+            android:layout_marginTop="0.5dp"
+            android:layout_marginLeft="33dp"
+            android:textColor="@color/grey"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/full_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/logFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:errorEnabled="true"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/full_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="FullName"
-                        android:inputType="text"
-                        android:background="@drawable/login_regis_textview"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginLeft="33dp"
-                        android:layout_marginRight="33dp"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:errorEnabled="true"
-                    app:passwordToggleEnabled="true"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Password"
-                        android:inputType="textPassword"
-                        android:background="@drawable/login_regis_textview"
-                        android:layout_marginLeft="33dp"
-                        android:layout_marginRight="33dp"
-                        />
-                </com.google.android.material.textfield.TextInputLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="-18dp"
-                android:layout_marginBottom="30dp"
+                android:hint="FullName"
+                android:inputType="text"
+                android:background="@drawable/login_regis_textview"
+                android:layout_marginTop="12dp"
                 android:layout_marginLeft="33dp"
                 android:layout_marginRight="33dp"
-                >
-                <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Stay Logged In"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="forgot your password"
-                    android:layout_weight="1"/>
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/logPass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:background="@drawable/login_regis_textview"
+                android:layout_marginLeft="33dp"
+                android:layout_marginRight="33dp"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="-18dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginRight="33dp"
+        >
+        <CheckBox
+            android:id="@+id/stayLogged"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Stay Logged In"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="forgot your password"
+            android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
 
