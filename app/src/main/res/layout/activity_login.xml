@@ -45,6 +45,7 @@
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/logFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="FullName"
@@ -64,6 +65,7 @@
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/logPass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
@@ -85,15 +87,17 @@
         android:layout_marginRight="33dp"
         >
         <CheckBox
+            android:id="@+id/stayLogged"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Stay Logged In"
             android:layout_weight="1"/>
+
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="forgot your password"
-            android:layout_weight="1"/>
+            android:layout_gravity="center_vertical"/>
 
     </LinearLayout>
 

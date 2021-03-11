@@ -9,7 +9,7 @@ import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
-    private val timeout_splash = 3000L
+    private val timeout_splash = 2000L
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
             {
                 var homeIntent = Intent(this, login::class.java)
                 startActivity(homeIntent)
-                Toast.makeText(this, "Welcome to Busan", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Welcome to Kasirku", Toast.LENGTH_LONG).show()
                 finish()
             }, timeout_splash)
     }

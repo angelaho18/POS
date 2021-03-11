@@ -17,4 +17,18 @@ class register : AppCompatActivity() {
             startActivity(intent_login)
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(EXTRA_FULLNAME, fullName.text.toString())
+        outState.putString(EXTRA_EMAIL, emailAddress.text.toString())
+        outState.putString(EXTRA_PASSWORD, password.text.toString())
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        fullName.setText(savedInstanceState?.getString(EXTRA_FULLNAME))
+        emailAddress.setText(savedInstanceState?.getString(EXTRA_EMAIL))
+        password.setText(savedInstanceState?.getString(EXTRA_PASSWORD))
+    }
 }
