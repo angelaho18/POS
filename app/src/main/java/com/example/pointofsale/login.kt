@@ -15,19 +15,22 @@ class login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        var user = intent.getParcelableExtra<User>(EXTRA_USER)
+        logFullName.setText(user?.Nama)
+
         //intent eksplisit
         reg.setOnClickListener {
             val intent_reg = Intent(this, register::class.java)
-
+            var user = User(logFullName.text.toString())
+            intent_reg.putExtra(EXTRA_USER,user)
             startActivity(intent_reg)
         }
 
         signinbutton.setOnClickListener {
-            val intent_reg = Intent(this, Profile::class.java)
+            val intent_profile = Intent(this, Profile::class.java)
             var user = User(logFullName.text.toString())
-            intent_reg.putExtra(EXTRA_USER, user)
-
-            startActivity(intent_reg)
+            intent_profile.putExtra(EXTRA_USER, user)
+            startActivity(intent_profile)
         }
 
         forgotPass.setOnClickListener {

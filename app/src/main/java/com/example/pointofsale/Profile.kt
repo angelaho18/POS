@@ -30,7 +30,7 @@ class Profile : AppCompatActivity() {
     }
     fun openCamera(view: View){
         cameraPermission()
-        //ambil gambar
+        //Intent Implisit Kamera
         var gambar = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if(gambar.resolveActivity(packageManager)!=null){
             startActivityForResult(gambar,181)
@@ -45,6 +45,7 @@ class Profile : AppCompatActivity() {
             gambarProfile.setImageBitmap(thumbnail?.get("data")as Bitmap)
         }
     }
+
     private fun cameraPermission() {
         //cek permission
         var permission = arrayOf(Manifest.permission.CAMERA)

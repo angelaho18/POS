@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         Handler().postDelayed(
             {
+                //Intent Eksplisit
                 var homeIntent = Intent(this, login::class.java)
                 startActivity(homeIntent)
                 Toast.makeText(this, "Welcome to KASIR KU", Toast.LENGTH_LONG).show()

@@ -1,4 +1,4 @@
-package com.example.pointofsale
+    package com.example.pointofsale
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -11,19 +11,22 @@ class register : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
+        var user = intent.getParcelableExtra<User>(EXTRA_USER)
+        fullName.setText(user?.Nama)
+
         //intent eksplisit
         log.setOnClickListener {
             val intent_login = Intent(this,login::class.java)
-            var user = User(fullName.text.toString(), emailAddress.text.toString())
+            var user = User(fullName.text.toString())
             intent_login.putExtra(EXTRA_USER,user)
             startActivity(intent_login)
         }
 
         signup.setOnClickListener {
-            val intent_signup = Intent(this,Profile::class.java)
+            val intent_profile = Intent(this,Profile::class.java)
             var user = User(fullName.text.toString(), emailAddress.text.toString())
-            intent_signup.putExtra(EXTRA_USER,user)
-            startActivity(intent_signup)
+            intent_profile.putExtra(EXTRA_USER,user)
+            startActivity(intent_profile)
         }
 
     }
