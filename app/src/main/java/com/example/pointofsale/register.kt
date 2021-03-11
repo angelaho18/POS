@@ -14,6 +14,8 @@ class register : AppCompatActivity() {
         //intent eksplisit
         log.setOnClickListener {
             val intent_login = Intent(this,login::class.java)
+            var user = User("Ani","Ani@gmail.com")
+            intent_login.putExtra(EXTRA_USER,user)
             startActivity(intent_login)
         }
     }

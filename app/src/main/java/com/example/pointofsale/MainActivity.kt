@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
             {
                 var homeIntent = Intent(this, login::class.java)
                 startActivity(homeIntent)
-                Toast.makeText(this, "Welcome to Busan", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Welcome to KASIR KU", Toast.LENGTH_LONG).show()
                 finish()
             }, timeout_splash)
     }
