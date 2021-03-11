@@ -53,6 +53,7 @@
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp">
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/fullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="FullName"
@@ -70,6 +71,7 @@
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp">
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Email Address"
@@ -88,6 +90,7 @@
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp">
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Password"

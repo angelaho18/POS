@@ -14,12 +14,11 @@ class login : AppCompatActivity() {
         //intent eksplisit
         reg.setOnClickListener {
             val intent_reg = Intent(this,register::class.java)
+
             startActivity(intent_reg)
-
-            var user = intent.getParcelableExtra<User>(EXTRA_USER)
-
-            full_name.setText(user?.Nama)
         }
+        var user = intent.getParcelableExtra<User>(EXTRA_USER)
+        logFullName.setText(user?.Nama)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
