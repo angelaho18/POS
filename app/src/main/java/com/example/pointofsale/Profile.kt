@@ -28,7 +28,7 @@ class Profile : AppCompatActivity() {
             startActivity(intent_logout)
         }
     }
-    fun opencamera(view: View){
+    fun openCamera(view: View){
         cameraPermission()
         //ambil gambar
         var gambar = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

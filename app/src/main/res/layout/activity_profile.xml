@@ -22,12 +22,22 @@
                 android:layout_height="wrap_content"
                 android:gravity="center">
 
-                <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:background="@drawable/camera_profile"
-                    android:src="@drawable/ic_person"
-                    android:scaleType="centerInside"/>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="100dp"
+                    app:strokeColor="@color/blue"
+                    app:strokeWidth="2dp">
+
+                    <ImageView
+                        android:id="@+id/gambarProfile"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_person" />
+
+                </com.google.android.material.card.MaterialCardView>
+
 
                 <android.widget.Button
                     android:layout_width="50dp"
@@ -36,7 +46,8 @@
                     android:layout_marginTop="50dp"
                     android:background="@drawable/button_camera"
                     android:drawableRight="@drawable/ic_camera"
-                    android:paddingRight="12dp" />
+                    android:paddingRight="12dp"
+                    android:onClick="openCamera"/>
 
             </LinearLayout>
 
@@ -89,8 +100,8 @@
                 android:id="@+id/LogoutBut"
                 android:layout_width="200dp"
                 android:layout_height="39dp"
-                android:layout_marginTop="250dp"
                 android:layout_gravity="center|bottom"
+                android:layout_marginTop="250dp"
                 android:background="@drawable/button_profile"
                 android:text="Log Out"
                 android:textColor="@color/white"

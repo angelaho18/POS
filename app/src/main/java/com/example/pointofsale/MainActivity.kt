@@ -22,5 +22,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Welcome to KASIR KU", Toast.LENGTH_LONG).show()
                 finish()
             }, timeout_splash)
+        timeout_splash = 1000
     }
 }
