@@ -1,14 +1,12 @@
 package com.example.pointofsale
 
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
+import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_register.*
 
 class login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,12 +25,20 @@ class login : AppCompatActivity() {
         }
 
         signinbutton.setOnClickListener {
-            val intent_profile = Intent(this, Profile::class.java)
-            var user = User(logFullName.text.toString())
-            intent_profile.putExtra(EXTRA_USER, user)
-            startActivity(intent_profile)
-        }
+//            val intent_profile = Intent(this, Profile::class.java)
+//            var user = User(logFullName.text.toString())
+//            intent_profile.putExtra(EXTRA_USER, user)
+//            startActivity
+            val intentAF = Intent(this, activity_fragment::class.java)
+            startActivity(intentAF)
 
+//            val transaction = supportFragmentManager.beginTransaction()
+//            val fragmentP = fragment_profile()
+//            transaction.replace(R.id.fragmentContainer,fragmentP)
+//            transaction.addToBackStack(null)
+//            transaction.commit()
+        }
+        
         forgotPass.setOnClickListener {
             Snackbar.make(it, "Sorry Forgot Password doesn't available yet", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)

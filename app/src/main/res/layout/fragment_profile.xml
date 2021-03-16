@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Profile">
+    tools:context=".fragments.fragment_profile">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,6 +41,7 @@
 
 
                 <android.widget.Button
+                    android:id="@+id/buttonPic"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginLeft="-51dp"
@@ -47,8 +49,7 @@
                     android:background="@drawable/button_camera"
                     android:drawableRight="@drawable/ic_camera"
                     android:paddingRight="12dp"
-                    android:onClick="openCamera"/>
-
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -109,5 +110,6 @@
                 android:layout_marginBottom="100dp"/>
         </LinearLayout>
     </ScrollView>
-    <include layout ="@layout/navigation_button"/>
+<!--    <include layout ="@layout/navigation_button"/>-->
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -13,11 +13,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.navigation_button.*
 
 class Profile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+//        untuk tampilan nav
+        bottomNavigationView.background = null
+        bottomNavigationView.menu.getItem(2).isEnabled = false
 
         var user = intent.getParcelableExtra<User>(EXTRA_USER)
         full_name.setText(user?.Nama)
