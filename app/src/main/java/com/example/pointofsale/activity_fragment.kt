@@ -25,7 +25,7 @@ class activity_fragment : AppCompatActivity() {
         bottomNavigationView.menu.getItem(2).isEnabled = false
 
         val transaction = supportFragmentManager.beginTransaction()
-        val fragmentP = fragment_profile()
+        val fragmentP = fragment_home()
         transaction.replace(R.id.fragmentContainer,fragmentP)
         transaction.addToBackStack(null)
         transaction.commit()
