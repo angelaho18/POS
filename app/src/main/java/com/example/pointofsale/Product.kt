@@ -1,4 +1,8 @@
 package com.example.pointofsale
 
-data class Product(var ProductName: String, var TotalProduct: Int = 0) {
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Product(var ProductName: String, var Quantity: Int = 0, var Price: Int = 0): Parcelable {
 }

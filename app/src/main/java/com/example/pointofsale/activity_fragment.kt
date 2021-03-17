@@ -13,9 +13,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.pointofsale.fragments.*
 import kotlinx.android.synthetic.main.activity_profile.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
-class activity_fragment : AppCompatActivity() {
+class activity_fragment : AppCompatActivity(), InterfaceFragment {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
@@ -75,4 +76,16 @@ class activity_fragment : AppCompatActivity() {
 
     }
 
+    override fun search(searchTerm: String) {
+        val bundle = Bundle()
+        bundle.putString("query", searchTerm)
+//        bundle.putParcelableArray("arrayList", )
+
+        val transaksi = this.supportFragmentManager.beginTransaction()
+        val listFragment = fragment_list()
+        listFragment.arguments = bundle
+        transaksi.replace(R.id.fragmentContainer, listFragment).commit()
+    }
+
 }
+
