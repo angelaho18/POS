@@ -1,7 +1,5 @@
 package com.example.pointofsale.fragments
 
-import android.graphics.Color
-import android.graphics.Color.RED
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,9 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.Product
 import com.example.pointofsale.ProductAdapter
 import com.example.pointofsale.R
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_list.*
-import kotlinx.android.synthetic.main.item_product.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -69,24 +64,27 @@ class fragment_list : Fragment() {
         input.text = query
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
-        productAdapter = ProductAdapter(Stock)
+        productAdapter = ProductAdapter(Stock, query)
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
         val row = view.findViewById<LinearLayout>(R.id.linear)
-        for(item in Stock){
-            if(item.ProductName.contains(query.toString())){
-                Log.i("TAG", "$query")
-                Toast.makeText(view.context, "hey, you find me", Toast.LENGTH_LONG).show()
-//                row.setBackgroundColor(Color.RED)
-                productAdapter.changeColor()
 
-                return view
-            }else{
-                Toast.makeText(view.context, "Sorry, we can't find the item", Toast.LENGTH_LONG).show()
-            }
-        }
-//        Toast.makeText(view.context, "Sorry, we can't find the item", Toast.LENGTH_LONG)
+//        fun changeColor(item: Product){
+//            if(query !== null){
+//                for(item in Stock) {
+//                    if (item.ProductName.contains(query.toString())) {
+//                        Log.i("TAG", "$query")
+//                        Toast.makeText(view.context, "hey, you find me", Toast.LENGTH_LONG).show()
+////                row.setBackgroundColor(Color.RED)
+//                        return view
+//                    } else {
+//                        Toast.makeText(view.context, "Sorry, we can't find the item", Toast.LENGTH_LONG)
+//                            .show()
+//                    }
+//                }
+//            }
+////        Toast.makeText(view.context, "Sorry, we can't find the item", Toast.LENGTH_LONG)
         return view
     }
 
