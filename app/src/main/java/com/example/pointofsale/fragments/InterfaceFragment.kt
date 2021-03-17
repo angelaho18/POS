@@ -1,4 +1,5 @@
 package com.example.pointofsale.fragments
 
-interface InterfaceFragment{
+interface InterfaceFragment {
+    fun search(searchTerm: String)
 }
