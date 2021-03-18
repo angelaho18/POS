@@ -51,7 +51,7 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         val transaction = this.supportFragmentManager.beginTransaction()
         val listFragment = fragment_list()
         listFragment.arguments = bundle
-        transaction.replace(R.id.fragmentContainer, listFragment).commit()
+        transaction.replace(R.id.fragmentContainer, listFragment).addToBackStack(null).commit()
     }
 
     private fun newTransaction(fragment: Fragment) {
