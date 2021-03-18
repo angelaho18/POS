@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.pointofsale.fragments.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
 class activity_fragment : AppCompatActivity(), InterfaceFragment {
@@ -16,26 +15,14 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(2).isEnabled = false
 
-        val transaction = supportFragmentManager.beginTransaction()
-        val fragmentP = fragment_home()
-        transaction.replace(R.id.fragmentContainer, fragmentP)
-        transaction.addToBackStack(null)
-        transaction.commit()
+        newTransaction(fragment_home())
 
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.person1 -> {
-                    newTransaction(fragment_profile())
-                }
-                R.id.list1 -> {
-                    newTransaction(fragment_list())
-                }
-                R.id.income1 -> {
-                    newTransaction(fragment_income())
-                }
-                R.id.home1 -> {
-                    newTransaction(fragment_home())
-                }
+                R.id.home1 -> newTransaction(fragment_home())
+                R.id.income1 -> newTransaction(fragment_income())
+                R.id.list1 -> newTransaction(fragment_list())
+                R.id.person1 -> newTransaction(fragment_profile())
             }
             true
         }
@@ -56,8 +43,7 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
 
     private fun newTransaction(fragment: Fragment) {
         val transaction = this.supportFragmentManager.beginTransaction()
-        val fragments = fragment
-        transaction.replace(R.id.fragmentContainer, fragments)
+        transaction.replace(R.id.fragmentContainer, fragment)
             .addToBackStack(null)
             .commit()
     }
