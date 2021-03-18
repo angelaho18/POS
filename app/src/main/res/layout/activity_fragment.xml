@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity_fragment">
+
 <!--    menampung fragment   -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        />
+        app:layout_constraintBottom_toTopOf="parent" />
+
+
     <include layout ="@layout/navigation_button"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
