@@ -5,6 +5,8 @@
     <!-- untuk izin pada OS supaya apps dapat menggunakan camera -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- saat download apps yang menggunakan camera, maka akan dipastikan apakah device yang mau download memiliki camera atau tidak -->
     <uses-feature android:name="android.hardware.camera2" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
     <application
         android:allowBackup="true"

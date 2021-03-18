@@ -1,6 +1,8 @@
 package com.example.pointofsale
 
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.icu.text.NumberFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.item_product.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ProductAdapter(private val items: ArrayList<Product>, private val query: String?) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
@@ -23,7 +29,7 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
                 if (item.ProductName.contains(term.toString())) {
                     Log.i("TAG", "$term")
                     Toast.makeText(itemView.context, "hey, you find me", Toast.LENGTH_LONG).show()
-                    row.setBackgroundColor(Color.RED)
+                    row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
                     return
                 } else {
                     Toast.makeText(
@@ -45,15 +51,25 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+
         var item = items.get(position)
         holder.ProductName.text = item.ProductName
         holder.Quantity.text = item.Quantity.toString()
-        holder.Price.text = item.Price.toString()
+
         holder.changeColor(item, query)
+
+        holder.Price.text = rupiah(item.Price)
+
+        Picasso.get().load(item.ProductPic).into(holder.view.GambarProduk)
     }
 
     override fun getItemCount(): Int = items.size
 
+    fun rupiah(Price: Int): String{
+        val localeID =  Locale("in", "ID")
+        val numberFormat = NumberFormat.getCurrencyInstance(localeID)
+        return numberFormat.format(Price).toString()
+    }
 
 }
 

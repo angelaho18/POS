@@ -1,6 +1,8 @@
 package com.example.pointofsale.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,11 +12,14 @@ import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.Product
 import com.example.pointofsale.ProductAdapter
 import com.example.pointofsale.R
+import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.android.synthetic.main.fragment_list.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,14 +37,14 @@ class fragment_list : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var productAdapter: ProductAdapter
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var ShimmerView: ShimmerFrameLayout
     private var Stock: ArrayList<Product> = arrayListOf(
-        Product("Chitato"),
-        Product("Lays"),
-        Product("Paddle Pop"),
-        Product("Piattos"),
-        Product("Oreo"),
-        Product("Cheetos")
+        Product("Chitato","https://i.ibb.co/dBCHzXQ/paris.jpg", 3,5000),
+        Product("Lays","https://i.ibb.co/dBCHzXQ/paris.jpg",5,6500),
+        Product("Paddle Pop","https://i.ibb.co/dBCHzXQ/paris.jpg",7,5000),
+        Product("Piattos","https://i.ibb.co/dBCHzXQ/paris.jpg",9,1000),
+        Product("Oreo","https://i.ibb.co/dBCHzXQ/paris.jpg",10,2000),
+        Product("Cheetos","https://i.ibb.co/dBCHzXQ/paris.jpg",3,7000)
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,11 +62,19 @@ class fragment_list : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_list, container, false)
-
+        ShimmerView = view.findViewById(R.id.shimmerFrameLayout)
         val searchView = view.findViewById<SearchView>(R.id.search_view)
         query = arguments?.getString("query")
-        val input = view.findViewById<TextView>(R.id.input)
-        input.text = query
+        val input = view.findViewById<SearchView>(R.id.input)
+        input.setQuery(query, false)
+
+        input.clearFocus()
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            ShimmerView.stopShimmer()
+            ShimmerView.visibility = View.GONE
+        },3000)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
         productAdapter = ProductAdapter(Stock, query)
