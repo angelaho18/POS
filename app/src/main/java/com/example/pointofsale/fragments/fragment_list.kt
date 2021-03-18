@@ -70,21 +70,6 @@ class fragment_list : Fragment() {
 
         val row = view.findViewById<LinearLayout>(R.id.linear)
 
-//        fun changeColor(item: Product){
-//            if(query !== null){
-//                for(item in Stock) {
-//                    if (item.ProductName.contains(query.toString())) {
-//                        Log.i("TAG", "$query")
-//                        Toast.makeText(view.context, "hey, you find me", Toast.LENGTH_LONG).show()
-////                row.setBackgroundColor(Color.RED)
-//                        return view
-//                    } else {
-//                        Toast.makeText(view.context, "Sorry, we can't find the item", Toast.LENGTH_LONG)
-//                            .show()
-//                    }
-//                }
-//            }
-////        Toast.makeText(view.context, "Sorry, we can't find the item", Toast.LENGTH_LONG)
         return view
     }
 
