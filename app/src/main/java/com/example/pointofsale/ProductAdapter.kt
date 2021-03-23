@@ -13,12 +13,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_product.view.*
+import java.io.Console
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ProductAdapter(private val items: ArrayList<Product>, private val query: String?) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
     private var found = false
+    var arrayStock = ArrayList<String>()
 
     class ItemHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val ProductName = view.findViewById<TextView>(R.id.product_name)
@@ -33,15 +35,20 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
                 row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
                 return true
             } else {
-                Toast.makeText(
-                    itemView.context,
-                    "Sorry, we can't find the item",
-                    Toast.LENGTH_LONG
-                ).show()
+                Toast.makeText(itemView.context, "Sorry, we can't find the item", Toast.LENGTH_LONG).show()
             }
         }
         return false
     }
+
+    fun quantity(item: Product, arrayStock: ArrayList<String>): ArrayList<String>{
+         if(item.Quantity <= 3 ){
+             arrayStock.add(item.ProductName)
+             Toast.makeText(itemView.context, item.ProductName, Toast.LENGTH_LONG).show()
+         }
+        return arrayStock
+     }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -58,12 +65,32 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
         holder.Quantity.text = item.Quantity.toString()
         if (!found) found = holder.changeColor(item, query)
 
+        arrayStock = holder.quantity(item, arrayStock)
+
         holder.Price.text = rupiah(item.Price)
 
         Picasso.get().load(item.ProductPic).into(holder.view.GambarProduk)
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun AStock():String{
+        var hsl=""
+        if(arrayStock.size > 0){
+            for(i in arrayStock){
+                if(i == arrayStock.last()){
+                    hsl+=i
+                    hsl+=""
+                }else{
+                    hsl+=i
+                    hsl+=", "
+                }
+            }
+        }else{
+            hsl+=""
+        }
+        return hsl
+    }
 
     fun rupiah(Price: Int): String {
         val localeID = Locale("in", "ID")

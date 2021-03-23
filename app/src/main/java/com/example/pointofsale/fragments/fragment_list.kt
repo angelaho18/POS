@@ -1,5 +1,9 @@
 package com.example.pointofsale.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,16 +12,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pointofsale.Product
-import com.example.pointofsale.ProductAdapter
-import com.example.pointofsale.R
+import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -46,6 +45,9 @@ class fragment_list : Fragment() {
         Product("Oreo","https://i.ibb.co/dBCHzXQ/paris.jpg",10,2000),
         Product("Cheetos","https://i.ibb.co/dBCHzXQ/paris.jpg",3,7000)
     )
+    private lateinit var mp: MediaPlayer
+    private var time:Int = 0
+//    private lateinit var arrayStock: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +82,43 @@ class fragment_list : Fragment() {
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
+//        productAdapter.arrayStock
+//        val tester = view.findViewById<Button>(R.id.tester)
+//        tester.setOnClickListener {
+//            Toast.makeText(view.context,productAdapter.AStock(), Toast.LENGTH_LONG).show()
+//        }
+//        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(){
+//
+//        }
+
+
+        var service = Intent(view.context,ServiceStock::class.java)
+
+
+        var timeout_splash = 8000L
+        Handler().postDelayed(
+            {
+                Toast.makeText(view.context,productAdapter.AStock(), Toast.LENGTH_LONG).show()
+                if(productAdapter.AStock()!=null){
+                    requireActivity().startService(service)
+                    mp = MediaPlayer.create(view.context,R.raw.music)
+                    mp.isLooping = true
+                    mp.setVolume(0.5f,0.5f)
+                    time = mp.duration
+                    mp.start()
+                    val alertStock = AlertDialog.Builder(view.context)
+                    alertStock.setTitle("Out of Stock Reminder")
+                        .setMessage(productAdapter.AStock())
+                        .setCancelable(false)
+                        .setPositiveButton("Ok"){ _, _ ->
+                        requireActivity().stopService(service)
+                        mp.stop()
+                    }
+
+                    alertStock.show()
+                }
+            }, timeout_splash)
+        timeout_splash = 1000
         return view
     }
 
@@ -94,6 +133,7 @@ class fragment_list : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
+
         fun newInstance(param1: String, param2: String) =
             fragment_list().apply {
                 arguments = Bundle().apply {
