@@ -51,11 +51,9 @@ class fragment_home : Fragment() {
                 }
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
-
         })
 
         return view

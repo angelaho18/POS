@@ -62,14 +62,13 @@ class fragment_list : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_list, container, false)
+
         ShimmerView = view.findViewById(R.id.shimmerFrameLayout)
-        val searchView = view.findViewById<SearchView>(R.id.search_view)
+
         query = arguments?.getString("query")
         val input = view.findViewById<SearchView>(R.id.input)
         input.setQuery(query, false)
-
         input.clearFocus()
-
 
         Handler(Looper.getMainLooper()).postDelayed({
             ShimmerView.stopShimmer()
@@ -80,8 +79,6 @@ class fragment_list : Fragment() {
         productAdapter = ProductAdapter(Stock, query)
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-
-        val row = view.findViewById<LinearLayout>(R.id.linear)
 
         return view
     }

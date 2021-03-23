@@ -18,29 +18,30 @@ import kotlin.collections.ArrayList
 
 class ProductAdapter(private val items: ArrayList<Product>, private val query: String?) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
+    private var found = false
+
     class ItemHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val ProductName = view.findViewById<TextView>(R.id.product_name)
         val Quantity = view.findViewById<TextView>(R.id.quantity)
         val Price = view.findViewById<TextView>(R.id.price)
         val row = view.findViewById<LinearLayout>(R.id.row)
 
-        fun changeColor(item: Product, term: String?) {
-            if (term !== null) {
-                if (item.ProductName.contains(term.toString())) {
-                    Log.i("TAG", "$term")
-                    Toast.makeText(itemView.context, "hey, you find me", Toast.LENGTH_LONG).show()
-                    row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
-                    return
-                } else {
-                    Toast.makeText(
-                        itemView.context,
-                        "Sorry, we can't find the item",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                }
+    fun changeColor(item: Product, term: String?): Boolean {
+        if (term != null) {
+            if (item.ProductName.contains(term.toString())) {
+                Toast.makeText(itemView.context, "hey, you find me", Toast.LENGTH_LONG).show()
+                row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
+                return true
+            } else {
+                Toast.makeText(
+                    itemView.context,
+                    "Sorry, we can't find the item",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
+        return false
+    }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -55,8 +56,7 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
         var item = items.get(position)
         holder.ProductName.text = item.ProductName
         holder.Quantity.text = item.Quantity.toString()
-
-        holder.changeColor(item, query)
+        if (!found) found = holder.changeColor(item, query)
 
         holder.Price.text = rupiah(item.Price)
 
@@ -65,8 +65,8 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
 
     override fun getItemCount(): Int = items.size
 
-    fun rupiah(Price: Int): String{
-        val localeID =  Locale("in", "ID")
+    fun rupiah(Price: Int): String {
+        val localeID = Locale("in", "ID")
         val numberFormat = NumberFormat.getCurrencyInstance(localeID)
         return numberFormat.format(Price).toString()
     }
