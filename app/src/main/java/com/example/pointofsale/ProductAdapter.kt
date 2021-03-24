@@ -20,7 +20,7 @@ import kotlin.collections.ArrayList
 class ProductAdapter(private val items: ArrayList<Product>, private val query: String?) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
     private var found = false
-    var arrayStock = ArrayList<String>()
+//    var arrayStock = ArrayList<String>()
 
     class ItemHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val ProductName = view.findViewById<TextView>(R.id.product_name)
@@ -45,12 +45,12 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
             return false
         }
 
-        fun quantity(item: Product, arrayStock: ArrayList<String>): ArrayList<String> {
-            if (item.Quantity <= 3) {
-                arrayStock.add(item.ProductName)
-            }
-            return arrayStock
-        }
+//        fun quantity(item: Product, arrayStock: ArrayList<String>): ArrayList<String> {
+//            if (item.Quantity <= 3) {
+//                arrayStock.add(item.ProductName)
+//            }
+//            return arrayStock
+//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -67,7 +67,7 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
         holder.Quantity.text = item.Quantity.toString()
         if (!found) found = holder.changeColor(item, query)
 
-        arrayStock = holder.quantity(item, arrayStock)
+//        arrayStock = holder.quantity(item, arrayStock)
 
         holder.Price.text = rupiah(item.Price)
 

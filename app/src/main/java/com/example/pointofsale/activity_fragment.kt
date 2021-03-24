@@ -9,11 +9,11 @@ import com.example.pointofsale.fragments.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
 class activity_fragment : AppCompatActivity(), InterfaceFragment {
+    private var BatteryReceiver = MyBatteryReceiver()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
 
-        var BatteryReceiver = MyBatteryReceiver()
         var filterBattery = IntentFilter()
         filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
         registerReceiver(BatteryReceiver, filterBattery)
@@ -53,6 +53,11 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         transaction.replace(R.id.fragmentContainer, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(BatteryReceiver)
     }
 
 }

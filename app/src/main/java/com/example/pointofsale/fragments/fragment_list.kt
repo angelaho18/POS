@@ -122,8 +122,8 @@ class fragment_list : Fragment() {
                 dialog.setCancelable(false)
 
                 view.alertStockBut.setOnClickListener{
-                    dialog.dismiss()
                     requireActivity().stopService(service)
+                    dialog.dismiss()
                 }
             }
         }, 5000L)
