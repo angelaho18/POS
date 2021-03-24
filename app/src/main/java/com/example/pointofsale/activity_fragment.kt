@@ -1,5 +1,7 @@
 package com.example.pointofsale
 
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +12,11 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
+
+        var BatteryReceiver = MyBatteryReceiver()
+        var filterBattery = IntentFilter()
+        filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
+        registerReceiver(BatteryReceiver, filterBattery)
 
         //untuk tampilan bottom nav bar
         bottomNavigationView.background = null
