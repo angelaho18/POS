@@ -1,5 +1,6 @@
 package com.example.pointofsale.fragments
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -45,8 +46,6 @@ class fragment_list : Fragment() {
         Product("Oreo","https://i.ibb.co/dBCHzXQ/paris.jpg",10,2000),
         Product("Cheetos","https://i.ibb.co/dBCHzXQ/paris.jpg",3,7000)
     )
-    private lateinit var mp: MediaPlayer
-    private var time:Int = 0
 //    private lateinit var arrayStock: ArrayList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,35 +89,31 @@ class fragment_list : Fragment() {
 //        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(){
 //
 //        }
+        var res = ""
+        for (i in Stock){
+            if (i.Quantity <= 3)
+                res += i.ProductName + " "
+        }
+        Toast.makeText(context, res, Toast.LENGTH_SHORT).show()
+
+        var service = Intent(context, ServiceStock::class.java)
 
 
-        var service = Intent(view.context,ServiceStock::class.java)
-
-
-        var timeout_splash = 8000L
-        Handler().postDelayed(
-            {
-                Toast.makeText(view.context,productAdapter.AStock(), Toast.LENGTH_LONG).show()
-                if(productAdapter.AStock()!=null){
-                    requireActivity().startService(service)
-                    mp = MediaPlayer.create(view.context,R.raw.music)
-                    mp.isLooping = true
-                    mp.setVolume(0.5f,0.5f)
-                    time = mp.duration
-                    mp.start()
+        var timeout_splash = 5000L
+        Handler().postDelayed({
+                if(res != null){
                     val alertStock = AlertDialog.Builder(view.context)
                     alertStock.setTitle("Out of Stock Reminder")
-                        .setMessage(productAdapter.AStock())
+                        .setMessage(res)
                         .setCancelable(false)
                         .setPositiveButton("Ok"){ _, _ ->
-                        requireActivity().stopService(service)
-                        mp.stop()
-                    }
-
+                            requireActivity().stopService(service)
+                        }
                     alertStock.show()
+                    requireActivity().startService(service)
                 }
             }, timeout_splash)
-        timeout_splash = 1000
+
         return view
     }
 

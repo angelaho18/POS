@@ -28,27 +28,29 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
         val Price = view.findViewById<TextView>(R.id.price)
         val row = view.findViewById<LinearLayout>(R.id.row)
 
-    fun changeColor(item: Product, term: String?): Boolean {
-        if (term != null) {
-            if (item.ProductName.contains(term.toString())) {
-                Toast.makeText(itemView.context, "hey, you find me", Toast.LENGTH_LONG).show()
-                row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
-                return true
-            } else {
-                Toast.makeText(itemView.context, "Sorry, we can't find the item", Toast.LENGTH_LONG).show()
+        fun changeColor(item: Product, term: String?): Boolean {
+            if (term != null) {
+                if (item.ProductName.contains(term.toString())) {
+                    Toast.makeText(itemView.context, "hey, you find me", Toast.LENGTH_LONG).show()
+                    row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
+                    return true
+                } else {
+                    Toast.makeText(
+                        itemView.context,
+                        "Sorry, we can't find the item",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
+            return false
         }
-        return false
-    }
 
-    fun quantity(item: Product, arrayStock: ArrayList<String>): ArrayList<String>{
-         if(item.Quantity <= 3 ){
-             arrayStock.add(item.ProductName)
-             Toast.makeText(itemView.context, item.ProductName, Toast.LENGTH_LONG).show()
-         }
-        return arrayStock
-     }
-
+        fun quantity(item: Product, arrayStock: ArrayList<String>): ArrayList<String> {
+            if (item.Quantity <= 3) {
+                arrayStock.add(item.ProductName)
+            }
+            return arrayStock
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -73,24 +75,6 @@ class ProductAdapter(private val items: ArrayList<Product>, private val query: S
     }
 
     override fun getItemCount(): Int = items.size
-
-    fun AStock():String{
-        var hsl=""
-        if(arrayStock.size > 0){
-            for(i in arrayStock){
-                if(i == arrayStock.last()){
-                    hsl+=i
-                    hsl+=""
-                }else{
-                    hsl+=i
-                    hsl+=", "
-                }
-            }
-        }else{
-            hsl+=""
-        }
-        return hsl
-    }
 
     fun rupiah(Price: Int): String {
         val localeID = Locale("in", "ID")
