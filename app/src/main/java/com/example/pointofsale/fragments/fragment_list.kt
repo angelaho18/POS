@@ -8,18 +8,25 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Layout
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.res.ColorStateListInflaterCompat.inflate
+import androidx.core.content.res.ComplexColorCompat.inflate
+import androidx.core.graphics.drawable.DrawableCompat.inflate
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
+import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
 import kotlinx.android.synthetic.main.fragment_list.*
+import java.util.zip.Inflater
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -81,38 +88,45 @@ class fragment_list : Fragment() {
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-//        productAdapter.arrayStock
-//        val tester = view.findViewById<Button>(R.id.tester)
-//        tester.setOnClickListener {
-//            Toast.makeText(view.context,productAdapter.AStock(), Toast.LENGTH_LONG).show()
-//        }
-//        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(){
-//
-//        }
-        var res = ""
+        var arrayStock = ArrayList<String>()
         for (i in Stock){
             if (i.Quantity <= 3)
-                res += i.ProductName + " "
+                arrayStock.add(i.ProductName)
         }
-        Toast.makeText(context, res, Toast.LENGTH_SHORT).show()
+
+        var hsl=""
+        for(i in arrayStock){
+            if(i == arrayStock.last()){
+                hsl+=i
+                hsl+=""
+            }else{
+                hsl+=i
+                hsl+=", "
+            }
+        }
 
         var service = Intent(context, ServiceStock::class.java)
 
-
-        var timeout_splash = 5000L
         Handler().postDelayed({
-                if(res != null){
-                    val alertStock = AlertDialog.Builder(view.context)
-                    alertStock.setTitle("Out of Stock Reminder")
-                        .setMessage(res)
-                        .setCancelable(false)
-                        .setPositiveButton("Ok"){ _, _ ->
-                            requireActivity().stopService(service)
-                        }
-                    alertStock.show()
-                    requireActivity().startService(service)
+            if(hsl != null){
+                val view = View.inflate(context, R.layout.alert_dialog_stock, null)
+                val builder = AlertDialog.Builder(context)
+                builder.setView(view)
+
+                view.listBarang.setText(hsl)
+
+                val dialog = builder.create()
+                dialog.show()
+                requireActivity().startService(service)
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.setCancelable(false)
+
+                view.alertStockBut.setOnClickListener{
+                    dialog.dismiss()
+                    requireActivity().stopService(service)
                 }
-            }, timeout_splash)
+            }
+        }, 5000L)
 
         return view
     }
