@@ -1,22 +1,29 @@
 package com.example.pointofsale
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.BatteryManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.pointofsale.fragments.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
 class activity_fragment : AppCompatActivity(), InterfaceFragment {
-    private var BatteryReceiver = MyBatteryReceiver()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
 
-        var filterBattery = IntentFilter()
-        filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
-        registerReceiver(BatteryReceiver, filterBattery)
+//        Handler().postDelayed({
+//            unregisterReceiver(BatteryReceiver)
+//        }, 10000L)
 
         //untuk tampilan bottom nav bar
         bottomNavigationView.background = null
@@ -53,11 +60,6 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         transaction.replace(R.id.fragmentContainer, fragment)
             .addToBackStack(null)
             .commit()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(BatteryReceiver)
     }
 
 }

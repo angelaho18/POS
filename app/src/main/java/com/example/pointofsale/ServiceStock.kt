@@ -18,7 +18,6 @@ class ServiceStock : Service() {
         mp.setVolume(0.5f, 0.5f)
         mp.start()
 
-        Toast.makeText(this, "bla", Toast.LENGTH_SHORT).show()
         return START_STICKY
     }
 

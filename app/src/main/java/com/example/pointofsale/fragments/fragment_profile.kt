@@ -1,8 +1,12 @@
 package com.example.pointofsale.fragments
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.os.BatteryManager
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -11,9 +15,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.example.pointofsale.R
+import com.example.pointofsale.activity_fragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 import java.io.File
@@ -34,6 +40,39 @@ class fragment_profile : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private var BatteryReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
+            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0) ?: -1
+            val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
+                    || status == BatteryManager.BATTERY_STATUS_FULL
+            
+            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: -1
+            val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+            val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+
+            val batteryPct = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+
+            val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10
+
+            if (isCharging) Toast.makeText(context, "Battery is already Full", Toast.LENGTH_SHORT)
+
+            if (isCharging && acCharge) {
+                print("AC CHARGING", batteryPct, temperature)
+            } else if (isCharging && usbCharge) {
+                print("USB CHARGING", batteryPct, temperature)
+            } else {
+                print("NOT CHARGING", batteryPct, temperature)
+            }
+        }
+
+        private fun print(state: String, percentage: Int, temperature: Int) {
+            status.text = state
+            percent.text = "$percentage%"
+            temp.text = "$temperature \u00B0C"
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,40 +81,52 @@ class fragment_profile : Fragment() {
             param2 = it.getString(ARG_PARAM2)
 
         }
-
-
-
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val image = data?.extras?.get("data") as Bitmap
             gambarProfile.setImageBitmap(image)
-        }else{
+        } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
 
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
 
-//        return inflater.inflate(R.layout.fragment_profile, container, false)
-
-        val view = inflater.inflate(R.layout.fragment_profile, container,false)
+        val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         val btnPic = view.findViewById<Button>(R.id.buttonPic)
         btnPic.setOnClickListener {
             val takePicIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(takePicIntent,REQUEST_CODE)
+            startActivityForResult(takePicIntent, REQUEST_CODE)
         }
 
-         return view
+        val outBtn = view.findViewById<Button>(R.id.LogoutBut)
+        outBtn.setOnClickListener{
+            val intentIn = Intent(context, activity_fragment::class.java)
+            startActivity(intentIn)
+        }
+
+        return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        var filterBattery = IntentFilter()
+        filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
+        requireActivity().registerReceiver(BatteryReceiver, filterBattery)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().unregisterReceiver(BatteryReceiver)
+    }
 
     companion object {
         /**
@@ -96,11 +147,6 @@ class fragment_profile : Fragment() {
                 }
             }
     }
-
-
-
-
-
 
 
 }
