@@ -44,19 +44,16 @@ class fragment_profile : Fragment() {
 
         override fun onReceive(context: Context, intent: Intent) {
             // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0) ?: -1
+            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
             val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
                     || status == BatteryManager.BATTERY_STATUS_FULL
             
-            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: -1
+            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
             val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
             val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
 
             val batteryPct = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-
-            val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10
-
-            if (isCharging) Toast.makeText(context, "Battery is already Full", Toast.LENGTH_SHORT)
+            val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10
 
             if (isCharging && acCharge) {
                 print("AC CHARGING", batteryPct, temperature)

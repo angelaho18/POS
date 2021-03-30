@@ -94,14 +94,14 @@ class fragment_list : Fragment() {
                 arrayStock.add(i.ProductName)
         }
 
-        var hsl=""
+        var hsl = ""
         for(i in arrayStock){
             if(i == arrayStock.last()){
-                hsl+=i
-                hsl+=""
+                hsl += i
+                hsl += ""
             }else{
-                hsl+=i
-                hsl+=", "
+                hsl += i
+                hsl += ", "
             }
         }
 
@@ -126,7 +126,7 @@ class fragment_list : Fragment() {
                     dialog.dismiss()
                 }
             }
-        }, 5000L)
+        }, 4000L)
 
         return view
     }
