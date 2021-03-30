@@ -16,6 +16,8 @@ import android.view.View
 import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.res.ColorStateListInflaterCompat.inflate
 import androidx.core.content.res.ComplexColorCompat.inflate
 import androidx.core.graphics.drawable.DrawableCompat.inflate
@@ -54,6 +56,7 @@ class fragment_list : Fragment() {
         Product("Cheetos","https://i.ibb.co/dBCHzXQ/paris.jpg",3,7000)
     )
 //    private lateinit var arrayStock: ArrayList<String>
+    private lateinit var notificationManager: NotificationManagerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,10 +124,26 @@ class fragment_list : Fragment() {
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 dialog.setCancelable(false)
 
+                notificationManager = NotificationManagerCompat.from(view.context)
+                val title = "Stok Barang"
+                val message = hsl
+                val buildNotification = NotificationCompat.Builder(view.context, baseNotification.channel_1_ID)
+                    .setSmallIcon(R.drawable.ic_description)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+
+                val notification = buildNotification.build()
+                notificationManager.notify(1,notification)
+
                 view.alertStockBut.setOnClickListener{
                     requireActivity().stopService(service)
                     dialog.dismiss()
-                }
+                 }
+
+
+
             }
         }, 4000L)
 
