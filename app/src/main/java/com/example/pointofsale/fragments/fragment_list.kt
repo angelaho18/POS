@@ -125,7 +125,7 @@ class fragment_list : Fragment() {
                 dialog.setCancelable(false)
 
                 notificationManager = NotificationManagerCompat.from(view.context)
-                val title = "Stok Barang"
+                val title = "Stock Alert"
                 val message = hsl
                 val buildNotification = NotificationCompat.Builder(view.context, baseNotification.channel_1_ID)
                     .setSmallIcon(R.drawable.ic_description)
@@ -141,9 +141,6 @@ class fragment_list : Fragment() {
                     requireActivity().stopService(service)
                     dialog.dismiss()
                  }
-
-
-
             }
         }, 4000L)
 
