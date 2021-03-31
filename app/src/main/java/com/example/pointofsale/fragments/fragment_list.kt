@@ -1,34 +1,27 @@
 package com.example.pointofsale.fragments
 
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
+import android.app.Notification
 import android.content.Intent
-import android.media.MediaPlayer
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Layout
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.res.ColorStateListInflaterCompat.inflate
-import androidx.core.content.res.ComplexColorCompat.inflate
-import androidx.core.graphics.drawable.DrawableCompat.inflate
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
-import kotlinx.android.synthetic.main.fragment_list.*
-import java.util.zip.Inflater
+import java.io.InputStream
+import java.net.URL
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,14 +41,15 @@ class fragment_list : Fragment() {
     private lateinit var productAdapter: ProductAdapter
     private lateinit var ShimmerView: ShimmerFrameLayout
     private var Stock: ArrayList<Product> = arrayListOf(
-        Product("Chitato","https://i.ibb.co/dBCHzXQ/paris.jpg", 3,5000),
-        Product("Lays","https://i.ibb.co/dBCHzXQ/paris.jpg",5,6500),
-        Product("Paddle Pop","https://i.ibb.co/dBCHzXQ/paris.jpg",7,5000),
-        Product("Piattos","https://i.ibb.co/dBCHzXQ/paris.jpg",9,1000),
-        Product("Oreo","https://i.ibb.co/dBCHzXQ/paris.jpg",10,2000),
-        Product("Cheetos","https://i.ibb.co/dBCHzXQ/paris.jpg",3,7000)
+        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
+        Product("Lays", "https://i.ibb.co/dBCHzXQ/paris.jpg", 5, 6500),
+        Product("Paddle Pop", "https://i.ibb.co/dBCHzXQ/paris.jpg", 7, 5000),
+        Product("Piattos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 9, 1000),
+        Product("Oreo", "https://i.ibb.co/dBCHzXQ/paris.jpg", 10, 2000),
+        Product("Cheetos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 7000)
     )
-//    private lateinit var arrayStock: ArrayList<String>
+
+    //    private lateinit var arrayStock: ArrayList<String>
     private lateinit var notificationManager: NotificationManagerCompat
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +66,7 @@ class fragment_list : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(R.layout.fragment_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_list, container, false)
 
         ShimmerView = view.findViewById(R.id.shimmerFrameLayout)
 
@@ -84,7 +78,7 @@ class fragment_list : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             ShimmerView.stopShimmer()
             ShimmerView.visibility = View.GONE
-        },3000)
+        }, 3000)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
         productAdapter = ProductAdapter(Stock, query)
@@ -92,17 +86,20 @@ class fragment_list : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
         var arrayStock = ArrayList<String>()
-        for (i in Stock){
-            if (i.Quantity <= 3)
+        var stockDetail = ArrayList<Product>()
+        for (i in Stock) {
+            if (i.Quantity <= 3) {
                 arrayStock.add(i.ProductName)
+                stockDetail.add(i)
+            }
         }
 
         var hsl = ""
-        for(i in arrayStock){
-            if(i == arrayStock.last()){
+        for (i in arrayStock) {
+            if (i == arrayStock.last()) {
                 hsl += i
                 hsl += ""
-            }else{
+            } else {
                 hsl += i
                 hsl += ", "
             }
@@ -111,7 +108,7 @@ class fragment_list : Fragment() {
         var service = Intent(context, ServiceStock::class.java)
 
         Handler().postDelayed({
-            if(hsl != null){
+            if (hsl != null) {
                 val view = View.inflate(context, R.layout.alert_dialog_stock, null)
                 val builder = AlertDialog.Builder(context)
                 builder.setView(view)
@@ -125,22 +122,91 @@ class fragment_list : Fragment() {
                 dialog.setCancelable(false)
 
                 notificationManager = NotificationManagerCompat.from(view.context)
-                val title = "Stock Alert"
-                val message = hsl
-                val buildNotification = NotificationCompat.Builder(view.context, baseNotification.channel_1_ID)
-                    .setSmallIcon(R.drawable.ic_description)
-                    .setContentTitle(title)
-                    .setContentText(message)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                val title = "Stok Barang"
+                val message = "$hsl is almost out of stock"
 
-                val notification = buildNotification.build()
-                notificationManager.notify(1,notification)
+                val notificationLayout =
+                    RemoteViews(activity?.packageName, R.layout.custom_notification)
+                val notificationLayoutExpanded =
+                    RemoteViews(activity?.packageName, R.layout.custom_notification_expanded)
 
-                view.alertStockBut.setOnClickListener{
+                var notifs = ArrayList<Notification>()
+                var notif_id = 0
+                val group_key = "Stock's Group"
+                for (i in stockDetail) {
+                    var description = "${i.Quantity} more left"
+
+                    notificationLayout.setTextViewText(R.id.title, "${i.ProductName}")
+                    notificationLayout.setTextViewText(R.id.desc, description)
+
+                    notificationLayoutExpanded.setTextViewText(R.id.title, "${i.ProductName}")
+                    notificationLayoutExpanded.setTextViewText(R.id.desc, description)
+
+                    var inStream: InputStream
+                    try {
+                        var url: URL = URL("${i.ProductPic}")
+                        var conn = url.openConnection()
+                        conn.doInput = true
+                        conn.connect()
+                        inStream = conn.getInputStream()
+                        var bitmap = BitmapFactory.decodeStream(inStream)
+
+                        notificationLayout.setImageViewBitmap(R.id.pic, bitmap)
+                        notificationLayoutExpanded.setImageViewBitmap(R.id.bigPic, bitmap)
+                    } catch (e: Exception) {
+                        notificationLayout.setImageViewResource(R.id.pic, R.drawable.example)
+                        notificationLayoutExpanded.setImageViewResource(R.id.bigPic, R.drawable.example)
+                    }
+
+                    val newNotif =
+                        NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
+                            .setSmallIcon(R.drawable.ic_description)
+                            .setColor(Color.BLUE)
+                            .setContentTitle(title)
+                            .setContentText(message)
+                            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                            .setCustomContentView(notificationLayout)
+                            .setCustomBigContentView(notificationLayoutExpanded)
+                            .setGroup(group_key)
+                            .build()
+                    notifs.add(newNotif)
+
+                    notificationManager.notify(notif_id, newNotif)
+                    notif_id++
+                }
+
+                val buildNotification =
+                    NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
+                        .setSmallIcon(R.drawable.ic_description)
+//                        .setContentTitle(title)
+//                        .setContentText(message)
+                        .setStyle(
+                            NotificationCompat.InboxStyle()
+//                                .setBigContentTitle(title)
+                                .addLine("Expand to see the Details")
+                                .setSummaryText("${notifs.count()} new notifications")
+                        )
+                        .setColor(Color.BLUE)
+                        .setGroup(group_key)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
+                        .setGroupSummary(true)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                        .setCategory(NotificationCompat.CATEGORY_REMINDER)
+//                        .build()
+
+//                val notification = buildNotification.build()
+
+                notificationManager.apply {
+//                    for (notif in notifs){
+//                        notify(baseNotification.NOTIFICATION_ID, notif.build())
+//                    }
+                    notify(baseNotification.NOTIFICATION_ID, buildNotification.build())
+                }
+
+                view.alertStockBut.setOnClickListener {
                     requireActivity().stopService(service)
                     dialog.dismiss()
-                 }
+                }
             }
         }, 4000L)
 
@@ -166,5 +232,6 @@ class fragment_list : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
     }
 }
