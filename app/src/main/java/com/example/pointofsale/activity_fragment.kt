@@ -61,6 +61,5 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
             .addToBackStack(null)
             .commit()
     }
-
 }
 
