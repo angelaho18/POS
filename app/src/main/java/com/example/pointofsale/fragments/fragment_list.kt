@@ -177,7 +177,7 @@ class fragment_list : Fragment() {
 
                 val buildNotification =
                     NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
-                        .setSmallIcon(R.drawable.ic_description)
+                        .setSmallIcon(R.drawable.kasirku_logo_blue)
 //                        .setContentTitle(title)
 //                        .setContentText(message)
                         .setStyle(
@@ -191,6 +191,8 @@ class fragment_list : Fragment() {
                         .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                         .setGroupSummary(true)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                        .setNumber(notifs.count())
 //                        .setCategory(NotificationCompat.CATEGORY_REMINDER)
 //                        .build()
 
