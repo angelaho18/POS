@@ -12,8 +12,6 @@ class baseNotification :Application(){
     companion object{
         const val CHANNEL_1_ID = "Channel1"
         const val NOTIFICATION_ID = 101
-        const val SUMMARY_ID = 0
-        const val GROUP_KEY_WORK_EMAIL = "com.android.example.WORK_EMAIL"
     }
 
     override fun onCreate() {

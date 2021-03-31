@@ -11,20 +11,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Title"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
 
     <TextView
         android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is the description" />
+        android:text="This is the description"
+        android:textSize="16sp"
+        android:textAppearance="@style/TextAppearance.Compat.Notification.Info" />
 
     <ImageView
         android:id="@+id/bigPic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/ic_launcher"/>
-
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitXY"/>
 
 </LinearLayout>
