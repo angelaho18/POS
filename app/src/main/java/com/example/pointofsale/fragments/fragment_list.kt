@@ -1,9 +1,12 @@
+
+
 package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
 import android.app.Notification
 import android.content.Context
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.internal.NavigationMenu
+import kotlinx.android.synthetic.main.alert_dialog_stock.*
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
 import java.io.InputStream
 import java.net.URL
@@ -53,8 +57,13 @@ class fragment_list : Fragment() {
         Product("Cheetos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 7000)
     )
 
-    //    private lateinit var arrayStock: ArrayList<String>
     private lateinit var notificationManager: NotificationManagerCompat
+//    private var NotficationReceiver = object : BroadcastReceiver(){
+//        override fun onReceive(context: Context?, intent: Intent?) {
+//            passData("notif")
+//        }
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -116,11 +125,11 @@ class fragment_list : Fragment() {
 
         Handler().postDelayed({
             if (hsl != null) {
-                val view = View.inflate(context, R.layout.alert_dialog_stock, null)
+                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
                 val builder = AlertDialog.Builder(context)
-                builder.setView(view)
+                builder.setView(views)
 
-                view.listBarang.setText(hsl)
+                views.listBarang.setText(hsl)
 
                 dialog = builder.create()
                 dialog.show()
@@ -165,14 +174,13 @@ class fragment_list : Fragment() {
                         notificationLayoutExpanded.setImageViewResource(R.id.bigPic, R.drawable.example)
                     }
 
-                    val intent = Intent(context, activity_fragment::class.java).apply{
+                    val intent = Intent(context, NotificationReceiver::class.java).apply{
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        passData("notif")
                     }
-                    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+                    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
-                    val broadcastIntent = Intent(view.context,notificationReceiver::class.java)
-                    val actionIntent = PendingIntent.getBroadcast(view.context, 0,broadcastIntent,PendingIntent
+                    val broadcastIntent = Intent(view.context, notificationReceiver::class.java)
+                    val actionIntent = PendingIntent.getBroadcast(view.context, 0, broadcastIntent,PendingIntent
                         .FLAG_UPDATE_CURRENT)
 
                     val newNotif =
@@ -221,7 +229,7 @@ class fragment_list : Fragment() {
                     notify(baseNotification.NOTIFICATION_ID, buildNotification.build())
                 }
 
-                view.alertStockBut.setOnClickListener {
+                views.alertStockBut.setOnClickListener {
                     requireActivity().stopService(service)
                     dialog.dismiss()
                 }
@@ -231,18 +239,19 @@ class fragment_list : Fragment() {
         return view
     }
 
-    lateinit var dataPasser: InterfaceFragment
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         dataPasser = context as InterfaceFragment
     }
 
-    fun passData(data: String){
-        dataPasser.onDataPass(data)
-    }
-
     companion object {
+        lateinit var dataPasser: InterfaceFragment
+
+        fun passData(data: String){
+            dataPasser.onDataPass(data)
+        }
+
         fun dismiss(){
             fragment_list().apply {
                 alertStockBut.setOnClickListener {

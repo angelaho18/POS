@@ -47,10 +47,8 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
             newTransaction(fragment_add())
         }
 
-        var openNotif = intent.getStringExtra(EXTRA_NOTIF)
-        if (openNotif.equals("notif")){
-            newTransaction(fragment_list())
-        }
+        var openNotif = intent.getBooleanExtra(EXTRA_NOTIF, false)
+        if(openNotif) newTransaction(fragment_list())
     }
 
     override fun search(searchTerm: String) {
@@ -64,8 +62,11 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
 
     override fun onDataPass(data: String) {
         Log.d("TAG", "$data")
-        if(data.equals("notif"))
-            newTransaction(fragment_list())
+        if(data.equals("notif")) {
+            var intent = Intent(this, activity_fragment::class.java)
+            intent.putExtra(EXTRA_NOTIF, true)
+            startActivity(intent)
+        }
     }
 
 
