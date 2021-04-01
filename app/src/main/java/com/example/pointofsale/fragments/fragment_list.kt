@@ -2,8 +2,8 @@ package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
 import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -55,7 +55,6 @@ class fragment_list : Fragment() {
 
     //    private lateinit var arrayStock: ArrayList<String>
     private lateinit var notificationManager: NotificationManagerCompat
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -63,6 +62,10 @@ class fragment_list : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+
+
+    private lateinit var dialog: AlertDialog
+    private lateinit var service:Intent
 
     var query: String? = ""
     override fun onCreateView(
@@ -109,7 +112,7 @@ class fragment_list : Fragment() {
             }
         }
 
-        var service = Intent(context, ServiceStock::class.java)
+        service = Intent(context, ServiceStock::class.java)
 
         Handler().postDelayed({
             if (hsl != null) {
@@ -119,7 +122,7 @@ class fragment_list : Fragment() {
 
                 view.listBarang.setText(hsl)
 
-                val dialog = builder.create()
+                dialog = builder.create()
                 dialog.show()
                 requireActivity().startService(service)
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
@@ -168,6 +171,10 @@ class fragment_list : Fragment() {
                     }
                     val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
+                    val broadcastIntent = Intent(view.context,notificationReceiver::class.java)
+                    val actionIntent = PendingIntent.getBroadcast(view.context, 0,broadcastIntent,PendingIntent
+                        .FLAG_UPDATE_CURRENT)
+
                     val newNotif =
                         NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
                             .setSmallIcon(R.drawable.ic_description)
@@ -178,6 +185,8 @@ class fragment_list : Fragment() {
                             .setCustomContentView(notificationLayout)
                             .setCustomBigContentView(notificationLayoutExpanded)
                             .setGroup(group_key)
+                            .addAction(R.mipmap.ic_launcher,"Dismiss", actionIntent)
+                            .setOnlyAlertOnce(true)
                             .setContentIntent(pendingIntent)
                             .build()
                     notifs.add(newNotif)
@@ -234,6 +243,17 @@ class fragment_list : Fragment() {
     }
 
     companion object {
+        fun dismiss(){
+            fragment_list().apply {
+                alertStockBut.setOnClickListener {
+                    requireActivity().stopService(service)
+                    dialog.dismiss()
+                }
+            }
+
+        }
+
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -252,6 +272,5 @@ class fragment_list : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
-
     }
 }
