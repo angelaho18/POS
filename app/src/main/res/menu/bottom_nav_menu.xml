@@ -8,7 +8,7 @@
         android:icon="@drawable/icon_income"/>
 
     <item android:id="@+id/placeHolder"
-        android:title=""/>
+        android:title="" />
 
     <item android:id="@+id/list1"
         android:title="list"

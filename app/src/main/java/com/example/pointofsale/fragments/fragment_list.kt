@@ -2,6 +2,8 @@ package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
 import android.app.Notification
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -15,10 +17,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.internal.NavigationMenu
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
 import java.io.InputStream
 import java.net.URL
@@ -158,16 +162,23 @@ class fragment_list : Fragment() {
                         notificationLayoutExpanded.setImageViewResource(R.id.bigPic, R.drawable.example)
                     }
 
+                    val intent = Intent(context, activity_fragment::class.java).apply{
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        passData("notif")
+                    }
+                    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
                     val newNotif =
                         NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
                             .setSmallIcon(R.drawable.ic_description)
                             .setColor(Color.BLUE)
-                            .setContentTitle(title)
-                            .setContentText(message)
+                            .setContentTitle("${i.ProductName}")
+                            .setContentText("Almost out of Stock ")
                             .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                             .setCustomContentView(notificationLayout)
                             .setCustomBigContentView(notificationLayoutExpanded)
                             .setGroup(group_key)
+                            .setContentIntent(pendingIntent)
                             .build()
                     notifs.add(newNotif)
 
@@ -178,15 +189,11 @@ class fragment_list : Fragment() {
                 val buildNotification =
                     NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
                         .setSmallIcon(R.drawable.kasirku_logo_blue)
-//                        .setContentTitle(title)
-//                        .setContentText(message)
                         .setStyle(
                             NotificationCompat.InboxStyle()
-//                                .setBigContentTitle(title)
-                                .addLine("Expand to see the Details")
                                 .setSummaryText("${notifs.count()} new notifications")
                         )
-                        .setColor(Color.BLUE)
+                        .setColor(ContextCompat.getColor(context!!, R.color.blue))
                         .setGroup(group_key)
                         .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                         .setGroupSummary(true)
@@ -213,6 +220,17 @@ class fragment_list : Fragment() {
         }, 4000L)
 
         return view
+    }
+
+    lateinit var dataPasser: InterfaceFragment
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dataPasser = context as InterfaceFragment
+    }
+
+    fun passData(data: String){
+        dataPasser.onDataPass(data)
     }
 
     companion object {

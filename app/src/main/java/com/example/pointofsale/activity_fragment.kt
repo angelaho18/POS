@@ -8,6 +8,7 @@ import android.os.BatteryManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -45,6 +46,11 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         fab.setOnClickListener {
             newTransaction(fragment_add())
         }
+
+        var openNotif = intent.getStringExtra(EXTRA_NOTIF)
+        if (openNotif.equals("notif")){
+            newTransaction(fragment_list())
+        }
     }
 
     override fun search(searchTerm: String) {
@@ -55,6 +61,13 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         listFragment.arguments = bundle
         transaction.replace(R.id.fragmentContainer, listFragment).addToBackStack(null).commit()
     }
+
+    override fun onDataPass(data: String) {
+        Log.d("TAG", "$data")
+        if(data.equals("notif"))
+            newTransaction(fragment_list())
+    }
+
 
     private fun newTransaction(fragment: Fragment) {
         val transaction = this.supportFragmentManager.beginTransaction()
