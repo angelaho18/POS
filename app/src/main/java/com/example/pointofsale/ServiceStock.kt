@@ -31,5 +31,6 @@ class ServiceStock : Service() {
     override fun onDestroy() {
         super.onDestroy()
         mp.stop()
+        startService = false
     }
 }

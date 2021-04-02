@@ -23,10 +23,6 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fragment)
 
-//        Handler().postDelayed({
-//            unregisterReceiver(BatteryReceiver)
-//        }, 10000L)
-
         //untuk tampilan bottom nav bar
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(2).isEnabled = false

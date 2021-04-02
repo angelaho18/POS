@@ -13,6 +13,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -73,8 +74,8 @@ class fragment_list : Fragment() {
     }
 
 
-    private lateinit var dialog: AlertDialog
-    private lateinit var service:Intent
+    lateinit var dialog: AlertDialog
+    lateinit var service: Intent
 
     var query: String? = ""
     override fun onCreateView(
@@ -132,8 +133,10 @@ class fragment_list : Fragment() {
                 views.listBarang.setText(hsl)
 
                 dialog = builder.create()
-                dialog.show()
-                requireActivity().startService(service)
+                if(startService) {
+                    dialog.show()
+                    requireActivity().startService(service)
+                }
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 dialog.setCancelable(false)
 
@@ -180,6 +183,7 @@ class fragment_list : Fragment() {
                     val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
                     val broadcastIntent = Intent(view.context, notificationReceiver::class.java)
+                    broadcastIntent.putExtra(EXTRA_ID, notif_id)
                     val actionIntent = PendingIntent.getBroadcast(view.context, 0, broadcastIntent,PendingIntent
                         .FLAG_UPDATE_CURRENT)
 
@@ -193,7 +197,7 @@ class fragment_list : Fragment() {
                             .setCustomContentView(notificationLayout)
                             .setCustomBigContentView(notificationLayoutExpanded)
                             .setGroup(group_key)
-                            .addAction(R.mipmap.ic_launcher,"Dismiss", actionIntent)
+                            .addAction(R.mipmap.ic_launcher,"DISMISS", actionIntent)
                             .setOnlyAlertOnce(true)
                             .setContentIntent(pendingIntent)
                             .build()
@@ -217,24 +221,22 @@ class fragment_list : Fragment() {
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                         .setNumber(notifs.count())
-//                        .setCategory(NotificationCompat.CATEGORY_REMINDER)
-//                        .build()
-
-//                val notification = buildNotification.build()
+                        .setCategory(NotificationCompat.CATEGORY_REMINDER)
+                        .build()
 
                 notificationManager.apply {
-//                    for (notif in notifs){
-//                        notify(baseNotification.NOTIFICATION_ID, notif.build())
-//                    }
-                    notify(baseNotification.NOTIFICATION_ID, buildNotification.build())
+                    notify(baseNotification.NOTIFICATION_ID, buildNotification)
                 }
 
-                views.alertStockBut.setOnClickListener {
+                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
+
+                alertStockBut.setOnClickListener {
                     requireActivity().stopService(service)
                     dialog.dismiss()
+                    startService = false
                 }
             }
-        }, 4000L)
+        }, 3000L)
 
         return view
     }
@@ -251,17 +253,6 @@ class fragment_list : Fragment() {
         fun passData(data: String){
             dataPasser.onDataPass(data)
         }
-
-        fun dismiss(){
-            fragment_list().apply {
-                alertStockBut.setOnClickListener {
-                    requireActivity().stopService(service)
-                    dialog.dismiss()
-                }
-            }
-
-        }
-
 
         /**
          * Use this factory method to create a new instance of
