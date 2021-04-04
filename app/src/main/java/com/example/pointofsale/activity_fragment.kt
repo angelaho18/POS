@@ -1,19 +1,19 @@
 package com.example.pointofsale
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.BatteryManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.Menu
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.pointofsale.fragments.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
@@ -44,7 +44,10 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         }
 
         var openNotif = intent.getBooleanExtra(EXTRA_NOTIF, false)
-        if(openNotif) newTransaction(fragment_list())
+        if(openNotif) {
+            bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
+            newTransaction(fragment_list())
+        }
     }
 
     override fun search(searchTerm: String) {

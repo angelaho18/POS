@@ -1,5 +1,3 @@
-
-
 package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
@@ -8,8 +6,10 @@ import android.content.Context
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -27,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.internal.NavigationMenu
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.alert_dialog_stock.*
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
 import java.io.InputStream
@@ -133,7 +135,7 @@ class fragment_list : Fragment() {
                 views.listBarang.setText(hsl)
 
                 dialog = builder.create()
-                if(startService) {
+                if (startService) {
                     dialog.show()
                     requireActivity().startService(service)
                 }
@@ -161,31 +163,45 @@ class fragment_list : Fragment() {
                     notificationLayoutExpanded.setTextViewText(R.id.title, "${i.ProductName}")
                     notificationLayoutExpanded.setTextViewText(R.id.desc, description)
 
-                    var inStream: InputStream
-                    try {
-                        var url: URL = URL("${i.ProductPic}")
-                        var conn = url.openConnection()
-                        conn.doInput = true
-                        conn.connect()
-                        inStream = conn.getInputStream()
-                        var bitmap = BitmapFactory.decodeStream(inStream)
+                    var target = object : Target {
+                        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+                            notificationLayout.setImageViewBitmap(R.id.pic, bitmap)
+                            notificationLayoutExpanded.setImageViewBitmap(R.id.bigPic, bitmap)
+                        }
 
-                        notificationLayout.setImageViewBitmap(R.id.pic, bitmap)
-                        notificationLayoutExpanded.setImageViewBitmap(R.id.bigPic, bitmap)
-                    } catch (e: Exception) {
-                        notificationLayout.setImageViewResource(R.id.pic, R.drawable.example)
-                        notificationLayoutExpanded.setImageViewResource(R.id.bigPic, R.drawable.example)
+                        override fun onBitmapFailed(
+                            e: java.lang.Exception?,
+                            errorDrawable: Drawable?
+                        ) {
+                            notificationLayout.setImageViewResource(R.id.pic, R.drawable.example)
+                            notificationLayoutExpanded.setImageViewResource(
+                                R.id.bigPic,
+                                R.drawable.example
+                            )
+                        }
+
+                        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                        }
                     }
+                    Picasso.get().load("${i.ProductPic}").into(target)
 
-                    val intent = Intent(context, NotificationReceiver::class.java).apply{
+                    val intent = Intent(context, NotificationReceiver::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     }
                     val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
-                    val broadcastIntent = Intent(view.context, notificationReceiver::class.java)
-                    broadcastIntent.putExtra(EXTRA_ID, notif_id)
-                    val actionIntent = PendingIntent.getBroadcast(view.context, 0, broadcastIntent,PendingIntent
-                        .FLAG_UPDATE_CURRENT)
+                    val broadcastIntent =
+                        Intent(view.context, notificationReceiver::class.java).apply {
+                            action = Intent.ACTION_DELETE
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            putExtra(EXTRA_ID, notif_id)
+                        }
+                    val actionIntent = PendingIntent.getBroadcast(
+                        view.context,
+                        notif_id,
+                        broadcastIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
 
                     val newNotif =
                         NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
@@ -197,8 +213,9 @@ class fragment_list : Fragment() {
                             .setCustomContentView(notificationLayout)
                             .setCustomBigContentView(notificationLayoutExpanded)
                             .setGroup(group_key)
-                            .addAction(R.mipmap.ic_launcher,"DISMISS", actionIntent)
+                            .addAction(R.mipmap.ic_launcher, "DISMISS", actionIntent)
                             .setOnlyAlertOnce(true)
+                            .setAutoCancel(true)
                             .setContentIntent(pendingIntent)
                             .build()
                     notifs.add(newNotif)
@@ -206,6 +223,11 @@ class fragment_list : Fragment() {
                     notificationManager.notify(notif_id, newNotif)
                     notif_id++
                 }
+
+                val intent = Intent(context, NotificationReceiver::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
                 val buildNotification =
                     NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
@@ -221,6 +243,7 @@ class fragment_list : Fragment() {
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                         .setNumber(notifs.count())
+                        .setContentIntent(pendingIntent)
                         .setCategory(NotificationCompat.CATEGORY_REMINDER)
                         .build()
 
@@ -250,7 +273,7 @@ class fragment_list : Fragment() {
     companion object {
         lateinit var dataPasser: InterfaceFragment
 
-        fun passData(data: String){
+        fun passData(data: String) {
             dataPasser.onDataPass(data)
         }
 
