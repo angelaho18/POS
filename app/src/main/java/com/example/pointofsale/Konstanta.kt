@@ -10,6 +10,10 @@ const val EXTRA_ID = "ID"
 const val EXTRA_STOK ="EXTRA_STOK"
 const val EXTRA_DATA ="EXTRA_DATA"
 
+const val EXTRA_STOCK = "EXTRA_STOCK"
+const val EXTRA_DATA = "EXTRA_DATA"
 var startService = true
+var count = 0
+var showNotif = false
 
 

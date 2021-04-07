@@ -1,15 +1,11 @@
-
-
 package com.example.pointofsale.fragments
 
-import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.Notification
 import android.content.Context
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -68,6 +64,7 @@ class fragment_list : Fragment() {
     )
 
     private lateinit var notificationManager: NotificationManagerCompat
+    private val showNotifReceiver: ShowNotificationReceiver = ShowNotificationReceiver()
 //    private var NotficationReceiver = object : BroadcastReceiver(){
 //        override fun onReceive(context: Context?, intent: Intent?) {
 //            passData("notif")
@@ -149,6 +146,9 @@ class fragment_list : Fragment() {
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 dialog.setCancelable(false)
 
+                var notifIntent = Intent(view.context, ShowNotificationReceiver::class.java)
+                notifIntent.putExtra(EXTRA_STOCK, stockDetail)
+                requireActivity().sendBroadcast(notifIntent)
 //                notificationManager = NotificationManagerCompat.from(view.context)
 
 //                val notificationLayout =
@@ -274,6 +274,16 @@ class fragment_list : Fragment() {
         return view
     }
 
+//    override fun onResume() {
+//        super.onResume()
+//        var intentNotif = IntentFilter()
+//        requireActivity().registerReceiver(showNotifReceiver, intentNotif)
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        requireActivity().unregisterReceiver(showNotifReceiver)
+//    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
