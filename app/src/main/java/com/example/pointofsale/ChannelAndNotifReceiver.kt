@@ -1,8 +1,6 @@
 package com.example.pointofsale
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,8 +8,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.os.Bundle
+import android.os.Parcel
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -22,8 +19,10 @@ import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 
 class ChannelAndNotifReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) {
-        var notificationManager = NotificationManagerCompat.from(context)
+        // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
+        val notificationManager = NotificationManagerCompat.from(context)
 
         val notificationLayout =
             RemoteViews(context.packageName, R.layout.custom_notification)
@@ -31,15 +30,20 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
             RemoteViews(context.packageName, R.layout.custom_notification_expanded)
 
         var notifs = ArrayList<Notification>()
-        var notif_id = 0
         val group_key = "Stock's Group"
-        var stockDetail = intent.getParcelableArrayListExtra<Product>(EXTRA_STOK)
-//        var stockDATA = intent.getParcelableArrayListExtra<Product>(EXTRA_DATA)
-        val bundle = intent.extras
-        var stocks = bundle?.getParcelableArrayList<Product>("data1")
+        var stockDetail = ArrayList<Product>()
+        var stock = intent.getParcelableArrayListExtra<Product>(EXTRA_STOK)
+        val bytes = intent.getByteArrayExtra(EXTRA_DATA)
 
-        Log.d("DDT",stocks.toString())
-//        Log.d("DDA",stockDATA.toString())
+        if (stock  != null) stockDetail = stock
+        if (stock == null && bytes != null){
+            var parcel = ParcelableUtil.unmarshall(bytes)
+//            var unmarshall = Product.CREATOR.createFromParcel(parcel)
+            var unmarshall: Product = Product(parcel)
+            Log.d("NEW_XX", "Mrshall: $unmarshall")
+
+            stockDetail.add(unmarshall)
+        }
 
         if (stockDetail != null) {
             for (i in stockDetail) {
@@ -73,7 +77,6 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                 }
                 Picasso.get().load("${i.ProductPic}").into(target)
 
-                // go to fragment list
                 val intent = Intent(context, NotificationReceiver::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
@@ -91,15 +94,13 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                     broadcastIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
-
                 val IntentAlarmReceiver =
                     Intent(context, alarmReceiver::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         putExtra(EXTRA_ID, notif_id)
-//                        var data_i = ArrayList<Product>()
-//                        data_i.add(i)
+                        var data = ArrayList<Product>()
+                        data.add(i)
                         putExtra(EXTRA_DATA, i)
-//                        Log.d("iUU","${data_i}")
                     }
                 val alarmPendingIntent = PendingIntent.getBroadcast(
                     context,
@@ -118,24 +119,24 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                         .setCustomContentView(notificationLayout)
                         .setCustomBigContentView(notificationLayoutExpanded)
                         .setGroup(group_key)
+                        .addAction(R.mipmap.ic_launcher, "Remind me Later", alarmPendingIntent)
                         .addAction(R.mipmap.ic_launcher, "DISMISS", actionIntent)
-                        .addAction(R.mipmap.ic_launcher, "Remind later", alarmPendingIntent)
                         .setOnlyAlertOnce(true)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .build()
                 notifs.add(newNotif)
 
-                NotificationManagerCompat.from(context).notify(notif_id, newNotif)
+                notificationManager.notify(notif_id, newNotif)
                 notif_id++
+                count++
             }
         }
-
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
-
 
         val buildNotification =
             NotificationCompat.Builder(context, baseNotification.CHANNEL_1_ID)
@@ -158,7 +159,5 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
         notificationManager.apply {
             notify(baseNotification.NOTIFICATION_ID, buildNotification)
         }
-
-
     }
 }

@@ -19,7 +19,6 @@
         android:theme="@style/Theme.PointOfSale">
         <receiver
             android:name=".ChannelAndNotifReceiver"
-            android:name=".alarmReceiver"
             android:enabled="true"
             android:exported="true"></receiver>
         <receiver
