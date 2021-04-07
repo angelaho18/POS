@@ -25,8 +25,10 @@ class baseNotification :Application(){
             channel1.description = "Channel Stock"
 
             val manager = getSystemService(NotificationManager::class.java)
+            for (c in manager.notificationChannels){
+                manager.deleteNotificationChannel(c.id)
+            }
             manager?.createNotificationChannel(channel1)
         }
-
     }
 }
