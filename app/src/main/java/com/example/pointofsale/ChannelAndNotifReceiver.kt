@@ -34,9 +34,9 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
         var notif_id = 0
         val group_key = "Stock's Group"
         var stockDetail = intent.getParcelableArrayListExtra<Product>(EXTRA_STOK)
-        var stockDATA = intent.getParcelableArrayListExtra<Product>(EXTRA_DATA)
+//        var stockDATA = intent.getParcelableArrayListExtra<Product>(EXTRA_DATA)
         val bundle = intent.extras
-//        var stocks = bundle?.getParcelableArrayList<Product>("data1")
+        var stocks = bundle?.getParcelableArrayList<Product>("data1")
 
         Log.d("DDT",stocks.toString())
 //        Log.d("DDA",stockDATA.toString())
