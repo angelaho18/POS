@@ -37,19 +37,13 @@ class alarmReceiver : BroadcastReceiver() {
         var data = intent.getParcelableExtra<Parcelable>(EXTRA_DATA)
         var bytes = ParcelableUtil.marshall(data)
 
-        Log.d("GET_XX", "onReceive: $data")
-        Log.d("PARCEL_XX", "onReceive: $bytes")
-
-        var sendIntent = Intent(context, ShowNotificationReceiver::class.java).apply {
+        var sendIntent = Intent(context, ChannelAndNotifReceiver::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra(EXTRA_DATA, bytes)
         }
 
         mPendingIntent = PendingIntent.getBroadcast(context, 801, sendIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-//        mAlarmManager?.setInexactRepeating(AlarmManager.RTC,alarmTimer.timeInMillis, AlarmManager.INTERVAL_FIFTEEN_MINUTES,mPendingIntent)
         mAlarmManager?.set(AlarmManager.RTC, alarmTimer.timeInMillis, mPendingIntent)
-//        Toast.makeText(context,"alarm start",Toast.LENGTH_LONG).show()
-
     }
 }

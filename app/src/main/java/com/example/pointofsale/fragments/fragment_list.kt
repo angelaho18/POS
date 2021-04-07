@@ -123,7 +123,7 @@ class fragment_list : Fragment() {
                 dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 dialog.setCancelable(false)
 
-                var notifIntent = Intent(view.context, ShowNotificationReceiver::class.java)
+                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
                 notifIntent.putExtra(EXTRA_STOK, stockDetail)
                 requireActivity().sendBroadcast(notifIntent)
 

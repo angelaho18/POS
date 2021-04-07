@@ -40,7 +40,6 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
             var parcel = ParcelableUtil.unmarshall(bytes)
 //            var unmarshall = Product.CREATOR.createFromParcel(parcel)
             var unmarshall: Product = Product(parcel)
-            Log.d("NEW_XX", "Mrshall: $unmarshall")
 
             stockDetail.add(unmarshall)
         }
