@@ -18,9 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PointOfSale">
         <receiver
-            android:name=".NotificationReceiver"
+            android:name=".ChannelAndNotifReceiver"
             android:enabled="true"
             android:exported="true"></receiver>
+        <receiver
+            android:name=".alarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true"
+            android:exported="true" />
         <receiver
             android:name=".MyBatteryReceiver"
             android:enabled="true"
