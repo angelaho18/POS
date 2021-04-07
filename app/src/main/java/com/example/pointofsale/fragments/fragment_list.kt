@@ -1,39 +1,22 @@
 package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
-import android.app.Notification
 import android.content.Context
-import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.*
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.android.material.internal.NavigationMenu
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-import kotlinx.android.synthetic.main.alert_dialog_stock.*
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
-import java.io.InputStream
-import java.net.URL
-import java.util.*
 import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -64,12 +47,6 @@ class fragment_list : Fragment() {
     )
 
     private lateinit var notificationManager: NotificationManagerCompat
-    private val showNotifReceiver: ShowNotificationReceiver = ShowNotificationReceiver()
-//    private var NotficationReceiver = object : BroadcastReceiver(){
-//        override fun onReceive(context: Context?, intent: Intent?) {
-//            passData("notif")
-//        }
-//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,119 +124,8 @@ class fragment_list : Fragment() {
                 dialog.setCancelable(false)
 
                 var notifIntent = Intent(view.context, ShowNotificationReceiver::class.java)
-                notifIntent.putExtra(EXTRA_STOCK, stockDetail)
+                notifIntent.putExtra(EXTRA_STOK, stockDetail)
                 requireActivity().sendBroadcast(notifIntent)
-//                notificationManager = NotificationManagerCompat.from(view.context)
-
-//                val notificationLayout =
-//                    RemoteViews(activity?.packageName, R.layout.custom_notification)
-//                val notificationLayoutExpanded =
-//                    RemoteViews(activity?.packageName, R.layout.custom_notification_expanded)
-//
-//                var notifs = ArrayList<Notification>()
-//                var notif_id = 0
-//                val group_key = "Stock's Group"
-//                for (i in stockDetail) {
-//                    var description = "${i.Quantity} more left"
-//
-//                    notificationLayout.setTextViewText(R.id.title, "${i.ProductName}")
-//                    notificationLayout.setTextViewText(R.id.desc, description)
-//
-//                    notificationLayoutExpanded.setTextViewText(R.id.title, "${i.ProductName}")
-//                    notificationLayoutExpanded.setTextViewText(R.id.desc, description)
-//
-//                    var target = object : Target {
-//                        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-//                            notificationLayout.setImageViewBitmap(R.id.pic, bitmap)
-//                            notificationLayoutExpanded.setImageViewBitmap(R.id.bigPic, bitmap)
-//                        }
-//
-//                        override fun onBitmapFailed(
-//                            e: java.lang.Exception?,
-//                            errorDrawable: Drawable?
-//                        ) {
-//                            notificationLayout.setImageViewResource(R.id.pic, R.drawable.example)
-//                            notificationLayoutExpanded.setImageViewResource(
-//                                R.id.bigPic,
-//                                R.drawable.example
-//                            )
-//                        }
-//
-//                        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-//                        }
-//                    }
-//                    Picasso.get().load("${i.ProductPic}").into(target)
-//
-//                    // go to fragment list
-//                    val intent = Intent(context, NotificationReceiver::class.java).apply {
-//                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                    }
-//                    val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
-//
-//                    val broadcastIntent =
-//                        Intent(view.context, notificationReceiver::class.java).apply {
-//                            action = Intent.ACTION_DELETE
-//                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                            putExtra(EXTRA_ID, notif_id)
-//                        }
-//                    val actionIntent = PendingIntent.getBroadcast(
-//                        view.context,
-//                        notif_id,
-//                        broadcastIntent,
-//                        PendingIntent.FLAG_UPDATE_CURRENT
-//                    )
-//
-//                    val newNotif =
-//                        NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
-//                            .setSmallIcon(R.drawable.ic_description)
-//                            .setColor(Color.BLUE)
-//                            .setContentTitle("${i.ProductName}")
-//                            .setContentText("Almost out of Stock ")
-//                            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-//                            .setCustomContentView(notificationLayout)
-//                            .setCustomBigContentView(notificationLayoutExpanded)
-//                            .setGroup(group_key)
-//                            .addAction(R.mipmap.ic_launcher, "DISMISS", actionIntent)
-////                            .addAction(R.mipmap.ic_launcher,"Remind later",)
-//                            .setOnlyAlertOnce(true)
-//                            .setAutoCancel(true)
-//                            .setContentIntent(pendingIntent)
-//                            .build()
-//                    notifs.add(newNotif)
-
-//                    notificationManager.notify(notif_id, newNotif)
-//                    notif_id++
-//                }
-                val intentnotif = Intent(view.context,ChannelAndNotifReceiver::class.java)
-                intentnotif.putExtra(EXTRA_STOK, stockDetail)
-                requireActivity().sendBroadcast(intentnotif)
-
-//                val intent = Intent(context, NotificationReceiver::class.java).apply {
-//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//                }
-//                val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
-
-//                val buildNotification =
-//                    NotificationCompat.Builder(view.context, baseNotification.CHANNEL_1_ID)
-//                        .setSmallIcon(R.drawable.kasirku_logo_blue)
-//                        .setStyle(
-//                            NotificationCompat.InboxStyle()
-//                                .setSummaryText("${notifs.count()} new notifications")
-//                        )
-//                        .setColor(ContextCompat.getColor(context!!, R.color.blue))
-//                        .setGroup(group_key)
-//                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
-//                        .setGroupSummary(true)
-//                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-//                        .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-//                        .setNumber(notifs.count())
-//                        .setContentIntent(pendingIntent)
-//                        .setCategory(NotificationCompat.CATEGORY_REMINDER)
-//                        .build()
-//
-//                notificationManager.apply {
-//                    notify(baseNotification.NOTIFICATION_ID, buildNotification)
-//                }
 
                 var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
 
@@ -273,17 +139,6 @@ class fragment_list : Fragment() {
 
         return view
     }
-
-//    override fun onResume() {
-//        super.onResume()
-//        var intentNotif = IntentFilter()
-//        requireActivity().registerReceiver(showNotifReceiver, intentNotif)
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        requireActivity().unregisterReceiver(showNotifReceiver)
-//    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

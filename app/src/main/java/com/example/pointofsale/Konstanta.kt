@@ -13,5 +13,7 @@ const val EXTRA_DATA ="EXTRA_DATA"
 var startService = true
 var count = 0
 var showNotif = false
+var notif_id = 0
+
 
 
