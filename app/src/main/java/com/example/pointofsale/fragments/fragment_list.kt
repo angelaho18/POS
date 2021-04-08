@@ -73,6 +73,8 @@ class fragment_list : Fragment() {
     lateinit var dialog: AlertDialog
     lateinit var service: Intent
 
+    var JobSchedulerId = 5
+
     var query: String? = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,7 +95,7 @@ class fragment_list : Fragment() {
             ShimmerView.visibility = View.GONE
         }, 3000)
 
-        startJob()
+        startMyJob()
 
         AndroidNetworking.initialize(context)
         AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
@@ -169,22 +171,17 @@ class fragment_list : Fragment() {
         return view
     }
 
-    private fun startJob(){
-        val serviceComponent = ComponentName(requireActivity(), ShowProductList::class.java)
-        val jobInfo = JobInfo.Builder(JobId, serviceComponent)
+    private fun startMyJob() {
+        var serviceComponent = ComponentName(requireActivity(), ItemView::class.java)
+        var mJobInfo = JobInfo.Builder(JobSchedulerId, serviceComponent)
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-            .setRequiresCharging(false)
             .setRequiresDeviceIdle(false)
-            .setPeriodic(15 * 60 * 1000)
-        var JobList = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        JobList.schedule(jobInfo.build())
+            .setRequiresCharging(false)
+            .setPeriodic(3 * 60 * 1000)
+        var JobItem = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        JobItem.schedule(mJobInfo.build())
         Toast.makeText(context, "Job Start", Toast.LENGTH_SHORT).show()
-    }
 
-    private fun cancelJob(){
-        var JobList = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        JobList.cancel(JobId)
-        Toast.makeText(context, "Job Cancel", Toast.LENGTH_SHORT).show()
     }
 
     override fun onAttach(context: Context) {
