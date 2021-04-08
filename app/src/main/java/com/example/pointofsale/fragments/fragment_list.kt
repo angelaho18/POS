@@ -14,9 +14,15 @@ import android.widget.*
 import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.androidnetworking.AndroidNetworking
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.ParsedRequestListener
 import com.example.pointofsale.*
+import com.example.pointofsale.model.Reqres
+import com.example.pointofsale.model.ReqresItem
 import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
+import okhttp3.Response
 import kotlin.collections.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,14 +43,16 @@ class fragment_list : Fragment() {
     private lateinit var ShimmerView: ShimmerFrameLayout
 
 
-    private var Stock: ArrayList<Product> = arrayListOf(
-        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
-        Product("Lays", "https://i.ibb.co/dBCHzXQ/paris.jpg", 5, 6500),
-        Product("Paddle Pop", "https://i.ibb.co/dBCHzXQ/paris.jpg", 7, 5000),
-        Product("Piattos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 9, 1000),
-        Product("Oreo", "https://i.ibb.co/dBCHzXQ/paris.jpg", 10, 2000),
-        Product("Cheetos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 7000)
-    )
+//    private var Stock: ArrayList<Product> = arrayListOf(
+//        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
+//        Product("Lays", "https://i.ibb.co/dBCHzXQ/paris.jpg", 5, 6500),
+//        Product("Paddle Pop", "https://i.ibb.co/dBCHzXQ/paris.jpg", 7, 5000),
+//        Product("Piattos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 9, 1000),
+//        Product("Oreo", "https://i.ibb.co/dBCHzXQ/paris.jpg", 10, 2000),
+//        Product("Cheetos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 7000)
+//    )
+
+    private var Data: MutableList<ReqresItem> = mutableListOf()
 
     private lateinit var notificationManager: NotificationManagerCompat
 
@@ -80,62 +88,76 @@ class fragment_list : Fragment() {
             ShimmerView.visibility = View.GONE
         }, 3000)
 
+        AndroidNetworking.initialize(context)
+        AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
+            .build()
+            .getAsObject(Reqres::class.java, object : ParsedRequestListener<Reqres> {
+                override fun onResponse(response: Reqres) {
+                    Data.addAll(response)
+                }
+
+                override fun onError(anError: ANError?) {
+                    Toast.makeText(context, "Jaringan anda sedang tidak stabil", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
-        productAdapter = ProductAdapter(Stock, query)
+        productAdapter = ProductAdapter(Data, query)
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-        var arrayStock = ArrayList<String>()
-        var stockDetail = ArrayList<Product>()
-        for (i in Stock) {
-            if (i.Quantity <= 3) {
-                arrayStock.add(i.ProductName)
-                stockDetail.add(i)
-            }
-        }
-
-        var hsl = ""
-        for (i in arrayStock) {
-            if (i == arrayStock.last()) {
-                hsl += i
-                hsl += ""
-            } else {
-                hsl += i
-                hsl += ", "
-            }
-        }
+//        var arrayStock = ArrayList<String>()
+//        var stockDetail = ArrayList<ReqresItem>()
+//        for (i in Data) {
+//            if (i.storeID.toInt() <= 3) {
+//                arrayStock.add(i.title)
+//                stockDetail.add(i)
+//            }
+//        }
+//
+//        var hsl = ""
+//        for (i in arrayStock) {
+//            if (i == arrayStock.last()) {
+//                hsl += i
+//                hsl += ""
+//            } else {
+//                hsl += i
+//                hsl += ", "
+//            }
+//        }
 
         service = Intent(context, ServiceStock::class.java)
 
-        Handler().postDelayed({
-            if (hsl != null) {
-                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
-                val builder = AlertDialog.Builder(context)
-                builder.setView(views)
-
-                views.listBarang.setText(hsl)
-
-                dialog = builder.create()
-                if (startService) {
-                    dialog.show()
-                    requireActivity().startService(service)
-                }
-                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-                dialog.setCancelable(false)
-
-                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
-                notifIntent.putExtra(EXTRA_STOK, stockDetail)
-                requireActivity().sendBroadcast(notifIntent)
-
-                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
-
-                alertStockBut.setOnClickListener {
-                    requireActivity().stopService(service)
-                    dialog.dismiss()
-                    startService = false
-                }
-            }
-        }, 3000L)
+//        Handler().postDelayed({
+//            if (hsl != null) {
+//                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
+//                val builder = AlertDialog.Builder(context)
+//                builder.setView(views)
+//
+//                views.listBarang.setText(hsl)
+//
+//                dialog = builder.create()
+//                if (startService) {
+//                    dialog.show()
+//                    requireActivity().startService(service)
+//                }
+//                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+//                dialog.setCancelable(false)
+//
+//                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
+//                notifIntent.putExtra(EXTRA_STOK, stockDetail)
+//                requireActivity().sendBroadcast(notifIntent)
+//
+//                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
+//
+//                alertStockBut.setOnClickListener {
+//                    requireActivity().stopService(service)
+//                    dialog.dismiss()
+//                    startService = false
+//                }
+//            }
+//        }, 3000L)
 
         return view
     }
