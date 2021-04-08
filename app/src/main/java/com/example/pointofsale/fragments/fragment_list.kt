@@ -1,6 +1,9 @@
 package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidnetworking.AndroidNetworking
@@ -24,6 +28,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
 import okhttp3.Response
 import kotlin.collections.ArrayList
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,6 +73,8 @@ class fragment_list : Fragment() {
     lateinit var dialog: AlertDialog
     lateinit var service: Intent
 
+    var JobSchedulerId = 5
+
     var query: String? = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,6 +94,8 @@ class fragment_list : Fragment() {
             ShimmerView.stopShimmer()
             ShimmerView.visibility = View.GONE
         }, 3000)
+
+        startMyJob()
 
         AndroidNetworking.initialize(context)
         AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
@@ -160,6 +169,17 @@ class fragment_list : Fragment() {
 //        }, 3000L)
 
         return view
+    }
+
+    private fun startMyJob() {
+        var serviceComponent = ComponentName(requireActivity(), ItemView::class.java)
+        var mJobInfo = JobInfo.Builder(JobSchedulerId, serviceComponent)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            .setRequiresDeviceIdle(false)
+            .setRequiresCharging(false)
+            .setPeriodic(3*60*1000)
+        var JobItem = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        JobItem.schedule(mJobInfo.build())
     }
 
     override fun onAttach(context: Context) {
