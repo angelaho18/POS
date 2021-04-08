@@ -1,6 +1,9 @@
 package com.example.pointofsale.fragments
 
 import android.app.AlertDialog
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidnetworking.AndroidNetworking
@@ -41,6 +45,7 @@ class fragment_list : Fragment() {
     private var param2: String? = null
     private lateinit var productAdapter: ProductAdapter
     private lateinit var ShimmerView: ShimmerFrameLayout
+    private val JobId = 119
 
 
 //    private var Stock: ArrayList<Product> = arrayListOf(
@@ -87,6 +92,8 @@ class fragment_list : Fragment() {
             ShimmerView.stopShimmer()
             ShimmerView.visibility = View.GONE
         }, 3000)
+
+        startJob()
 
         AndroidNetworking.initialize(context)
         AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
@@ -160,6 +167,24 @@ class fragment_list : Fragment() {
 //        }, 3000L)
 
         return view
+    }
+
+    private fun startJob(){
+        val serviceComponent = ComponentName(requireActivity(), ShowProductList::class.java)
+        val jobInfo = JobInfo.Builder(JobId, serviceComponent)
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+            .setRequiresCharging(false)
+            .setRequiresDeviceIdle(false)
+            .setPeriodic(15 * 60 * 1000)
+        var JobList = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        JobList.schedule(jobInfo.build())
+        Toast.makeText(context, "Job Start", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun cancelJob(){
+        var JobList = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        JobList.cancel(JobId)
+        Toast.makeText(context, "Job Cancel", Toast.LENGTH_SHORT).show()
     }
 
     override fun onAttach(context: Context) {

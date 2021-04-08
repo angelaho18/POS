@@ -19,7 +19,7 @@ import java.util.*
 
 class alarmReceiver : BroadcastReceiver() {
     private var mAlarmManager: AlarmManager? = null
-    private var mPendingIntent:PendingIntent? = null
+    private var mPendingIntent: PendingIntent? = null
 
     override fun onReceive(context: Context, intent: Intent) {
 
