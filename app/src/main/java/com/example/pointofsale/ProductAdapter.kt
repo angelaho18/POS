@@ -98,7 +98,7 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
     fun rupiah(Price: Int): String {
         val localeID = Locale("in", "ID")
         val numberFormat = NumberFormat.getCurrencyInstance(localeID)
-        return numberFormat.format(Price).toString().dropLast(3)
+        return numberFormat.format(Price).toString()
     }
 
 }

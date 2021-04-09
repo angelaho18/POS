@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,8 +46,6 @@ class fragment_list : Fragment() {
     private var param2: String? = null
     private lateinit var productAdapter: ProductAdapter
     private lateinit var ShimmerView: ShimmerFrameLayout
-    private val JobId = 119
-
 
 //    private var Stock: ArrayList<Product> = arrayListOf(
 //        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
@@ -68,7 +67,6 @@ class fragment_list : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-
 
     lateinit var dialog: AlertDialog
     lateinit var service: Intent
@@ -97,19 +95,24 @@ class fragment_list : Fragment() {
 
         startMyJob()
 
-        AndroidNetworking.initialize(context)
-        AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
-            .build()
-            .getAsObject(Reqres::class.java, object : ParsedRequestListener<Reqres> {
-                override fun onResponse(response: Reqres) {
-                    Data.addAll(response)
-                }
+        Data = ItemView.Data
+        Log.d("HASIL", "onCreateView: $Data")
 
-                override fun onError(anError: ANError?) {
-                    Toast.makeText(context, "Jaringan anda sedang tidak stabil", Toast.LENGTH_SHORT).show()
-                }
-
-            })
+        //        AndroidNetworking.initialize(context)
+//        AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
+//            .build()
+//            .getAsObject(Reqres::class.java, object : ParsedRequestListener<Reqres> {
+//                override fun onResponse(response: Reqres) {
+//                    Data.addAll(response)
+//                    Log.d( "HASIL", "onResponse: $response")
+//                }
+//
+//                override fun onError(anError: ANError?) {
+//                    Toast.makeText(context, "Jaringan anda sedang tidak stabil", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+//
+//            })
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
         productAdapter = ProductAdapter(Data, query)
@@ -177,11 +180,10 @@ class fragment_list : Fragment() {
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             .setRequiresDeviceIdle(false)
             .setRequiresCharging(false)
-            .setPeriodic(3 * 60 * 1000)
+            .setPeriodic(1 * 60 * 1000)
         var JobItem = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         JobItem.schedule(mJobInfo.build())
         Toast.makeText(context, "Job Start", Toast.LENGTH_SHORT).show()
-
     }
 
     override fun onAttach(context: Context) {
