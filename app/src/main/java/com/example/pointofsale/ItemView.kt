@@ -5,6 +5,7 @@ import android.app.job.JobService
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import com.androidnetworking.AndroidNetworking
@@ -19,6 +20,7 @@ import cz.msebera.android.httpclient.Header
 
 class ItemView: JobService() {
     val TAG = "JOB SCHEDULER"
+    var handler: Handler = Handler()
     lateinit var runnable: Runnable
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d(TAG, "onStartJob: START JOB")
@@ -32,6 +34,7 @@ class ItemView: JobService() {
 
     override fun onStopJob(params: JobParameters?): Boolean {
         Log.d(TAG, "onStopJob: STOP JOB")
+        handler.removeCallbacks(runnable)
         return true
     }
 
@@ -45,11 +48,11 @@ class ItemView: JobService() {
                 headers: Array<out Header>?,
                 responseBody: ByteArray?
             ) {
-                Log.d(TAG, "onSuccess: $headers")
+//                Log.d(TAG, "onSuccess: $headers")
 //                var result = responseBody?.toString(charset) ?: "Kosong"
 //                Log.d(TAG, "onSuccess: $result")
                 AndroidNetworking.initialize(applicationContext)
-                AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
+                AndroidNetworking.get(url)
                     .build()
                     .getAsObject(Reqres::class.java, object : ParsedRequestListener<Reqres> {
                         override fun onResponse(response: Reqres) {
@@ -64,7 +67,7 @@ class ItemView: JobService() {
                         }
 
                         override fun onError(anError: ANError?) {
-                            Log.d(TAG, "onError: ERROR BEB")
+                            Log.d(TAG, "onError: ERROR")
                             Toast.makeText(
                                 applicationContext,
                                 "Jaringan anda sedang tidak stabil",
