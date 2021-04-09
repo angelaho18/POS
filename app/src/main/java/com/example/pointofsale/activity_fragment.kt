@@ -48,6 +48,13 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
             bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
             newTransaction(fragment_list())
         }
+
+        var reload = intent.getBooleanExtra(EXTRA_RELOAD, false)
+        Log.d("HASIL", "onCreate: $reload")
+        if(reload){
+            bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
+            newTransaction(fragment_list())
+        }
     }
 
     override fun search(searchTerm: String) {

@@ -44,7 +44,6 @@ class fragment_list : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var productAdapter: ProductAdapter
     private lateinit var ShimmerView: ShimmerFrameLayout
 
 //    private var Stock: ArrayList<Product> = arrayListOf(
@@ -93,7 +92,10 @@ class fragment_list : Fragment() {
             ShimmerView.visibility = View.GONE
         }, 3000)
 
-        startMyJob()
+        if (schedule) {
+            startMyJob()
+            schedule = false
+        }
 
         Data = ItemView.Data
         Log.d("HASIL", "onCreateView: $Data")
@@ -114,8 +116,9 @@ class fragment_list : Fragment() {
 //
 //            })
 
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
-        productAdapter = ProductAdapter(Data, query)
+        productAdapter = ProductAdapter(ItemView.Data, query)
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
@@ -186,7 +189,7 @@ class fragment_list : Fragment() {
 
         var JobItem = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         JobItem.schedule(mJobInfo.build())
-        Toast.makeText(context, "Job Start", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Job Scheduler Start", Toast.LENGTH_SHORT).show()
     }
 
     override fun onAttach(context: Context) {
@@ -196,6 +199,7 @@ class fragment_list : Fragment() {
 
     companion object {
         lateinit var dataPasser: InterfaceFragment
+        lateinit var productAdapter: ProductAdapter
 
         fun passData(data: String) {
             dataPasser.onDataPass(data)
