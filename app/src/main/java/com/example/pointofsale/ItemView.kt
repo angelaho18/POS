@@ -15,9 +15,14 @@ import cz.msebera.android.httpclient.Header
 
 class ItemView: JobService() {
     val TAG = "HASIL"
+    lateinit var runnable: Runnable
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d(TAG, "onStartJob: START JOB")
-        getItemList(params)
+        runnable = Runnable() {
+            getItemList(params)
+            jobFinished(params, true)
+        }
+        runnable.run()
         return true
     }
 
@@ -58,7 +63,7 @@ class ItemView: JobService() {
                                 .show()
                         }
                     })
-                jobFinished(jobParameters, true)
+                jobFinished(jobParameters, false)
             }
 
             override fun onFailure(

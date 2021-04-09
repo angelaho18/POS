@@ -180,7 +180,10 @@ class fragment_list : Fragment() {
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             .setRequiresDeviceIdle(false)
             .setRequiresCharging(false)
-            .setPeriodic(1 * 60 * 1000)
+            .setMinimumLatency(1)
+            .setOverrideDeadline(1)
+        //            .setPeriodic(15 * 60 * 1000, 5 * 60 * 1000)
+
         var JobItem = context?.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         JobItem.schedule(mJobInfo.build())
         Toast.makeText(context, "Job Start", Toast.LENGTH_SHORT).show()
