@@ -145,7 +145,7 @@ class fragment_list : Fragment() {
                     hsl += ""
                 } else {
                     hsl += i
-                    hsl += ", "
+                    hsl += "\n"
                 }
             }
             if (hsl != null) {
