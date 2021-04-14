@@ -76,7 +76,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".fragments.ActionDismissReceiver" />
+        <receiver android:name=".ActionDismissReceiver" />
     </application>
 
 </manifest>

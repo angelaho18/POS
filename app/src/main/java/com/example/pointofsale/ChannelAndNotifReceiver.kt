@@ -13,7 +13,6 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.example.pointofsale.fragments.ActionDismissReceiver
 import com.example.pointofsale.model.Reqres
 import com.example.pointofsale.model.ReqresItem
 import com.google.gson.Gson
