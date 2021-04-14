@@ -8,7 +8,7 @@ import android.os.Build
 import android.view.View
 import androidx.core.app.NotificationManagerCompat
 
-class baseNotification :Application(){
+class BaseNotification :Application(){
     companion object{
         const val CHANNEL_1_ID = "Channel1"
         const val NOTIFICATION_ID = 101

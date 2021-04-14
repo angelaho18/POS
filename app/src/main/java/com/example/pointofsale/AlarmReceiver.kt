@@ -5,26 +5,18 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.fragment.app.FragmentManager
-import com.example.pointofsale.fragments.fragment_list
 import java.util.*
 
-class alarmReceiver : BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
     private var mAlarmManager: AlarmManager? = null
     private var mPendingIntent: PendingIntent? = null
 
     override fun onReceive(context: Context, intent: Intent) {
 
         intent?.apply{
-            val id = getIntExtra(EXTRA_ID, baseNotification.NOTIFICATION_ID)
+            val id = getIntExtra(EXTRA_ID, BaseNotification.NOTIFICATION_ID)
             NotificationManagerCompat.from(context!!).cancel(id!!)
         }
 

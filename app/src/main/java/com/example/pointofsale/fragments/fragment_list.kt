@@ -26,6 +26,7 @@ import com.example.pointofsale.*
 import com.example.pointofsale.model.Reqres
 import com.example.pointofsale.model.ReqresItem
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
 import okhttp3.Response
 import kotlin.collections.ArrayList
@@ -122,57 +123,62 @@ class fragment_list : Fragment() {
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-//        var arrayStock = ArrayList<String>()
-//        var stockDetail = ArrayList<ReqresItem>()
-//        for (i in Data) {
-//            if (i.storeID.toInt() <= 3) {
-//                arrayStock.add(i.title)
-//                stockDetail.add(i)
-//            }
-//        }
-//
-//        var hsl = ""
-//        for (i in arrayStock) {
-//            if (i == arrayStock.last()) {
-//                hsl += i
-//                hsl += ""
-//            } else {
-//                hsl += i
-//                hsl += ", "
-//            }
-//        }
+
 
         service = Intent(context, ServiceStock::class.java)
 
-//        Handler().postDelayed({
-//            if (hsl != null) {
-//                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
-//                val builder = AlertDialog.Builder(context)
-//                builder.setView(views)
-//
-//                views.listBarang.setText(hsl)
-//
-//                dialog = builder.create()
-//                if (startService) {
-//                    dialog.show()
-//                    requireActivity().startService(service)
-//                }
-//                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-//                dialog.setCancelable(false)
-//
-//                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
-//                notifIntent.putExtra(EXTRA_STOK, stockDetail)
-//                requireActivity().sendBroadcast(notifIntent)
-//
-//                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
-//
-//                alertStockBut.setOnClickListener {
-//                    requireActivity().stopService(service)
-//                    dialog.dismiss()
-//                    startService = false
-//                }
-//            }
-//        }, 3000L)
+        Handler().postDelayed({
+            var arrayStock = ArrayList<String>()
+            var stockDetail = ArrayList<ReqresItem>()
+            for (i in Data) {
+                if (i.storeID.toInt() <= 3) {
+                    arrayStock.add(i.title)
+                    stockDetail.add(i)
+                }
+                Log.d("STORE-ID", "${i.storeID.toInt()}")
+            }
+
+            var hsl = ""
+            for (i in arrayStock) {
+                if (i == arrayStock.last()) {
+                    hsl += i
+                    hsl += ""
+                } else {
+                    hsl += i
+                    hsl += ", "
+                }
+            }
+            if (hsl != null) {
+                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
+                val builder = AlertDialog.Builder(context)
+                builder.setView(views)
+
+                views.listBarang.setText(hsl)
+
+                dialog = builder.create()
+                if (startService) {
+                    dialog.show()
+                    requireActivity().startService(service)
+                }
+                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog.setCancelable(false)
+
+                var gson = Gson()
+
+                Log.d("ALERT", "Stock Detail: $stockDetail")
+                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
+                notifIntent.putExtra(EXTRA_STOK, gson.toJson(stockDetail))
+                requireActivity().sendBroadcast(notifIntent)
+
+                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
+
+                alertStockBut.setOnClickListener {
+                    requireActivity().stopService(service)
+                    dialog.dismiss()
+                    startService = false
+                }
+            }
+        }, 5000L)
 
         return view
     }

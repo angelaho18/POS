@@ -8,15 +8,18 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Parcel
 import android.util.Log
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.pointofsale.fragments.notificationReceiver
+import com.example.pointofsale.model.Reqres
+import com.example.pointofsale.model.ReqresItem
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import java.lang.Exception
 
 class ChannelAndNotifReceiver : BroadcastReceiver() {
 
@@ -31,27 +34,32 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
 
         var notifs = ArrayList<Notification>()
         val group_key = "Stock's Group"
-        var stockDetail = ArrayList<Product>()
-        var stock = intent.getParcelableArrayListExtra<Product>(EXTRA_STOK)
-        val bytes = intent.getByteArrayExtra(EXTRA_DATA)
+        val gson = Gson()
+        var stock = intent.getStringExtra(EXTRA_STOK)
+        var getStock = gson.fromJson(stock, Reqres::class.java)
+        var stockDetail = ArrayList<ReqresItem>()
+        stockDetail.addAll(getStock)
+        Log.d("ALERT-ONE", "Stock Detail: $stockDetail")
+//        var stock = intent.getParcelableArrayListExtra<Product>(EXTRA_STOK)
+//        val bytes = intent.getByteArrayExtra(EXTRA_DATA)
 
-        if (stock  != null) stockDetail = stock
-        if (stock == null && bytes != null){
-            var parcel = ParcelableUtil.unmarshall(bytes)
-//            var unmarshall = Product.CREATOR.createFromParcel(parcel)
-            var unmarshall: Product = Product(parcel)
-
-            stockDetail.add(unmarshall)
-        }
+//        if (stock  != null) stockDetail = stock
+//        if (stock == null && bytes != null){
+//            var parcel = ParcelableUtil.unmarshall(bytes)
+////            var unmarshall = Product.CREATOR.createFromParcel(parcel)
+//            var unmarshall: Product = Product(parcel)
+//
+//            stockDetail.add(unmarshall)
+//        }
 
         if (stockDetail != null) {
             for (i in stockDetail) {
-                var description = "${i.Quantity} more left"
+                var description = "${i.storeID} more left"
 
-                notificationLayout.setTextViewText(R.id.title, "${i.ProductName}")
+                notificationLayout.setTextViewText(R.id.title, "${i.title}")
                 notificationLayout.setTextViewText(R.id.desc, description)
 
-                notificationLayoutExpanded.setTextViewText(R.id.title, "${i.ProductName}")
+                notificationLayoutExpanded.setTextViewText(R.id.title, "${i.title}")
                 notificationLayoutExpanded.setTextViewText(R.id.desc, description)
 
                 var target = object : Target {
@@ -61,7 +69,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                     }
 
                     override fun onBitmapFailed(
-                        e: java.lang.Exception?,
+                        e: Exception?,
                         errorDrawable: Drawable?
                     ) {
                         notificationLayout.setImageViewResource(R.id.pic, R.drawable.example)
@@ -74,7 +82,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                     override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
                     }
                 }
-                Picasso.get().load("${i.ProductPic}").into(target)
+                Picasso.get().load("${i.thumb}").into(target)
 
                 val intent = Intent(context, NotificationReceiver::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -94,12 +102,12 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
                 val IntentAlarmReceiver =
-                    Intent(context, alarmReceiver::class.java).apply {
+                    Intent(context, AlarmReceiver::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         putExtra(EXTRA_ID, notif_id)
-                        var data = ArrayList<Product>()
-                        data.add(i)
-                        putExtra(EXTRA_DATA, i)
+                        var data = ArrayList<ReqresItem>()
+//                        data.add(i)
+//                        putExtra(EXTRA_DATA, i)
                     }
                 val alarmPendingIntent = PendingIntent.getBroadcast(
                     context,
@@ -109,10 +117,10 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                 )
 
                 val newNotif =
-                    NotificationCompat.Builder(context, baseNotification.CHANNEL_1_ID)
+                    NotificationCompat.Builder(context, BaseNotification.CHANNEL_1_ID)
                         .setSmallIcon(R.drawable.ic_description)
                         .setColor(Color.BLUE)
-                        .setContentTitle("${i.ProductName}")
+                        .setContentTitle("${i.title}")
                         .setContentText("Almost out of Stock ")
                         .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                         .setCustomContentView(notificationLayout)
@@ -138,7 +146,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
         val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
 
         val buildNotification =
-            NotificationCompat.Builder(context, baseNotification.CHANNEL_1_ID)
+            NotificationCompat.Builder(context, BaseNotification.CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.kasirku_logo_blue)
                 .setStyle(
                     NotificationCompat.InboxStyle()
@@ -156,7 +164,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                 .build()
 
         notificationManager.apply {
-            notify(baseNotification.NOTIFICATION_ID, buildNotification)
+            notify(BaseNotification.NOTIFICATION_ID, buildNotification)
         }
     }
 }

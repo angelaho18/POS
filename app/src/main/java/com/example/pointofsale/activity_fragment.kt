@@ -46,7 +46,9 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         var openNotif = intent.getBooleanExtra(EXTRA_NOTIF, false)
         if(openNotif) {
             bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
-            newTransaction(fragment_list())
+            val transaction = this.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragmentContainer, fragment_list())
+                .commit()
         }
 
         var reload = intent.getBooleanExtra(EXTRA_RELOAD, false)
