@@ -8,7 +8,7 @@ import com.example.pointofsale.EXTRA_ID
 import com.example.pointofsale.BaseNotification
 import com.example.pointofsale.count
 
-class notificationReceiver : BroadcastReceiver(){
+class ActionDismissReceiver : BroadcastReceiver(){
     override fun onReceive(p0: Context?, p1: Intent?) {
         p1?.apply{
             val id = getIntExtra(EXTRA_ID, BaseNotification.NOTIFICATION_ID)

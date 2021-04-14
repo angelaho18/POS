@@ -64,8 +64,8 @@
             android:taskAffinity=""
             android:excludeFromRecents="true" />
         <activity android:name=".Profile" />
-        <activity android:name=".login" />
-        <activity android:name=".register" />
+        <activity android:name=".Login" />
+        <activity android:name=".Register" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
@@ -76,7 +76,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".fragments.notificationReceiver" />
+        <receiver android:name=".fragments.ActionDismissReceiver" />
     </application>
 
 </manifest>

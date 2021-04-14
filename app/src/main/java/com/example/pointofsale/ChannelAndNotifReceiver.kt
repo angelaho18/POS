@@ -13,7 +13,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.example.pointofsale.fragments.notificationReceiver
+import com.example.pointofsale.fragments.ActionDismissReceiver
 import com.example.pointofsale.model.Reqres
 import com.example.pointofsale.model.ReqresItem
 import com.google.gson.Gson
@@ -87,10 +87,10 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                 val intent = Intent(context, NotificationReceiver::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
-                val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0)
+                val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
                 val broadcastIntent =
-                    Intent(context, notificationReceiver::class.java).apply {
+                    Intent(context, ActionDismissReceiver::class.java).apply {
                         action = Intent.ACTION_DELETE
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         putExtra(EXTRA_ID, notif_id)

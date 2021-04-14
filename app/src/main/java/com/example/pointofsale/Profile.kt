@@ -11,7 +11,6 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
@@ -28,7 +27,7 @@ class Profile : AppCompatActivity() {
         emailAddress.setText(user?.Email)
 
         LogoutBut.setOnClickListener {
-            val intent_logout = Intent(this,login::class.java)
+            val intent_logout = Intent(this,Login::class.java)
             startActivity(intent_logout)
         }
     }

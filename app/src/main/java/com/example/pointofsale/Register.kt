@@ -3,10 +3,9 @@
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 
-class register : AppCompatActivity() {
+class Register : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -16,7 +15,7 @@ class register : AppCompatActivity() {
 
         //intent eksplisit
         log.setOnClickListener {
-            val intent_login = Intent(this,login::class.java)
+            val intent_login = Intent(this,Login::class.java)
             var user = User(fullName.text.toString())
             intent_login.putExtra(EXTRA_USER,user)
             startActivity(intent_login)

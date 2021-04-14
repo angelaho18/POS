@@ -47,7 +47,7 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
         if(openNotif) {
             bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
             val transaction = this.supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentContainer, fragment_list())
+            transaction.add(R.id.fragmentContainer, fragment_list())
                 .commit()
         }
 

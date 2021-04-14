@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.widget.Toast
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         Handler().postDelayed(
             {
                 //Intent Eksplisit
-                var homeIntent = Intent(this, login::class.java)
+                var homeIntent = Intent(this, Login::class.java)
                 startActivity(homeIntent)
                 Toast.makeText(this, "Welcome to KASIR KU", Toast.LENGTH_LONG).show()
                 finish()
