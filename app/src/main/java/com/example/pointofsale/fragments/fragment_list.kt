@@ -104,23 +104,25 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //            schedule = false
 //        }
 //
-//        Data = ItemView.Data
+//        Data = LoadData.Data
 //        Log.d("HASIL", "onCreateView: $Data")
 
         LoaderManager.getInstance(this).initLoader(1, null, this).forceLoad()
+        Data = LoadData.Data
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
-        productAdapter = ProductAdapter(ItemView.Data, query)
-        recyclerView.adapter = productAdapter
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
+//        val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
+//        productAdapter = ProductAdapter(LoadData.Data, query)
+//        recyclerView.adapter = productAdapter
+//        recyclerView.layoutManager = LinearLayoutManager(view.context)
 
         service = Intent(context, ServiceStock::class.java)
 
         Handler().postDelayed({
+
             var arrayStock = ArrayList<String>()
             var stockDetail = ArrayList<ReqresItem>()
             for (i in Data) {
-                if (i.storeID.toInt() <= 3) {
+                if (i.storeID.toInt() < 2) {
                     arrayStock.add(i.title)
                     stockDetail.add(i)
                 }
@@ -243,7 +245,8 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
     }
 
     override fun onLoaderReset(loader: Loader<MutableList<ReqresItem>>) {
-        productRecyclerView.adapter?.notifyDataSetChanged()
+        var recyclerView = view?.findViewById<RecyclerView>(R.id.productRecyclerView)
+        recyclerView?.adapter?.notifyDataSetChanged()
     }
 }
 

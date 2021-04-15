@@ -27,6 +27,7 @@ class ItemView: JobService() {
         runnable = Runnable() {
             getItemList(params)
             fragment_list.productAdapter.notifyDataSetChanged()
+//            jobFinished(params, true)
         }
         runnable.run()
         return true

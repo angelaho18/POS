@@ -10,9 +10,7 @@ data class Product(var ProductName: String, var ProductPic: String, var Quantity
         parcel.readString().toString(),
         parcel.readInt(),
         parcel.readInt()
-    ) {
-    }
-
+    )
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(ProductName)
         parcel.writeString(ProductPic)
