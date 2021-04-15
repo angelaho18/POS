@@ -104,15 +104,15 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //            schedule = false
 //        }
 //
-//        Data = ItemView.Data
-//        Log.d("HASIL", "onCreateView: $Data")
-
         LoaderManager.getInstance(this).initLoader(1, null, this).forceLoad()
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
-        productAdapter = ProductAdapter(ItemView.Data, query)
-        recyclerView.adapter = productAdapter
-        recyclerView.layoutManager = LinearLayoutManager(view.context)
+        Data = LoadData.Data
+//        Log.d("HASIL", "onCreateView: $Data")
+
+//        val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
+//        productAdapter = ProductAdapter(LoadData.Data, query)
+//        recyclerView.adapter = productAdapter
+//        recyclerView.layoutManager = LinearLayoutManager(view.context)
 
         service = Intent(context, ServiceStock::class.java)
 
@@ -120,7 +120,7 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
             var arrayStock = ArrayList<String>()
             var stockDetail = ArrayList<ReqresItem>()
             for (i in Data) {
-                if (i.storeID.toInt() <= 3) {
+                if (i.storeID.toInt() < 2) {
                     arrayStock.add(i.title)
                     stockDetail.add(i)
                 }
@@ -157,7 +157,11 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
                 Log.d("ALERT", "Stock Detail: $stockDetail")
                 var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
                 notifIntent.putExtra(EXTRA_STOK, gson.toJson(stockDetail))
-                requireActivity().sendBroadcast(notifIntent)
+
+                if (showNotif){
+                    requireActivity().sendBroadcast(notifIntent)
+                    showNotif = false
+                }
 
                 var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
 
@@ -231,19 +235,20 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
         loader: Loader<MutableList<ReqresItem>>,
         data: MutableList<ReqresItem>?
     ) {
-        Data.clear()
+//        Data.clear()
         Log.d("RESPONSE", "onLoadFinished: YEEAAHHH")
         if (data != null) {
-            Log.d(TAG, "onLoadFinished: $data")
-            Data.addAll(data)
-            productAdapter = ProductAdapter(LoadData.Data, query)
+//            Log.d("HEI", "onLoadFinished: $data")
+//            Data.addAll(data)
+            productAdapter = ProductAdapter(data, query)
             productRecyclerView.adapter = fragment_list.productAdapter
             productRecyclerView.layoutManager = LinearLayoutManager(context)
         }
     }
 
     override fun onLoaderReset(loader: Loader<MutableList<ReqresItem>>) {
-        productRecyclerView.adapter?.notifyDataSetChanged()
+        var recyclerView = view?.findViewById<RecyclerView>(R.id.productRecyclerView)
+        recyclerView?.adapter?.notifyDataSetChanged()
     }
 }
 

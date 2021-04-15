@@ -130,7 +130,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                         .setOnlyAlertOnce(true)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setPriority(NotificationCompat.PRIORITY_LOW)
                         .build()
                 notifs.add(newNotif)
 
