@@ -24,7 +24,7 @@ class AlarmReceiver : BroadcastReceiver() {
         mAlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         var alarmTimer = Calendar.getInstance()
-        alarmTimer.add(Calendar.SECOND,5)
+        alarmTimer.add(Calendar.MINUTE,15)
 
         var data = intent.getParcelableExtra<Parcelable>(EXTRA_DATA)
         var bytes = ParcelableUtil.marshall(data)
