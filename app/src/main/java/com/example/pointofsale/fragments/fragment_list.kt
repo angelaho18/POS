@@ -4,8 +4,10 @@ import android.app.AlertDialog
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,6 +19,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.androidnetworking.AndroidNetworking
@@ -27,7 +31,9 @@ import com.example.pointofsale.model.Reqres
 import com.example.pointofsale.model.ReqresItem
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import okhttp3.Response
 import kotlin.collections.ArrayList
 
@@ -41,7 +47,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [fragment_list.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_list : Fragment() {
+class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<ReqresItem>> {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -93,37 +99,20 @@ class fragment_list : Fragment() {
             ShimmerView.visibility = View.GONE
         }, 3000)
 
-        if (schedule) {
-            startMyJob()
-            schedule = false
-        }
-
-        Data = ItemView.Data
-        Log.d("HASIL", "onCreateView: $Data")
-
-        //        AndroidNetworking.initialize(context)
-//        AndroidNetworking.get("https://www.cheapshark.com/api/1.0/deals")
-//            .build()
-//            .getAsObject(Reqres::class.java, object : ParsedRequestListener<Reqres> {
-//                override fun onResponse(response: Reqres) {
-//                    Data.addAll(response)
-//                    Log.d( "HASIL", "onResponse: $response")
-//                }
+//        if (schedule) {
+//            startMyJob()
+//            schedule = false
+//        }
 //
-//                override fun onError(anError: ANError?) {
-//                    Toast.makeText(context, "Jaringan anda sedang tidak stabil", Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-//
-//            })
+//        Data = ItemView.Data
+//        Log.d("HASIL", "onCreateView: $Data")
 
+        LoaderManager.getInstance(this).initLoader(1, null, this).forceLoad()
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
         productAdapter = ProductAdapter(ItemView.Data, query)
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(view.context)
-
-
 
         service = Intent(context, ServiceStock::class.java)
 
@@ -230,4 +219,31 @@ class fragment_list : Fragment() {
                 }
             }
     }
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<MutableList<ReqresItem>> {
+        Log.d("RESPONSE", "HAIIIII")
+        if(context == null) Log.d("RESPONSE", "SEDIHHH")
+        else Log.d("RESPONSE", "BISAAA")
+        return LoadData(context)
+    }
+
+    override fun onLoadFinished(
+        loader: Loader<MutableList<ReqresItem>>,
+        data: MutableList<ReqresItem>?
+    ) {
+        Data.clear()
+        Log.d("RESPONSE", "onLoadFinished: YEEAAHHH")
+        if (data != null) {
+            Log.d(TAG, "onLoadFinished: $data")
+            Data.addAll(data)
+            productAdapter = ProductAdapter(LoadData.Data, query)
+            productRecyclerView.adapter = fragment_list.productAdapter
+            productRecyclerView.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    override fun onLoaderReset(loader: Loader<MutableList<ReqresItem>>) {
+        productRecyclerView.adapter?.notifyDataSetChanged()
+    }
 }
+
