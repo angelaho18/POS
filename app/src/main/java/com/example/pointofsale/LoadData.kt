@@ -36,7 +36,6 @@ class LoadData(context: Context?) : AsyncTaskLoader<MutableList<ReqresItem>>(con
                     ).show()
                 }
             })
-
         return Data
     }
 

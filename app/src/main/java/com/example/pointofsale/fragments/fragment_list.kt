@@ -225,9 +225,7 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<MutableList<ReqresItem>> {
-        Log.d("RESPONSE", "HAIIIII")
-        if(context == null) Log.d("RESPONSE", "SEDIHHH")
-        else Log.d("RESPONSE", "BISAAA")
+        Log.d("LOADER", "CREATE LOADER")
         return LoadData(context)
     }
 
@@ -236,7 +234,7 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
         data: MutableList<ReqresItem>?
     ) {
 //        Data.clear()
-        Log.d("RESPONSE", "onLoadFinished: YEEAAHHH")
+        Log.d("LOADER", "onLoadFinished: YEEAAHHH")
         if (data != null) {
 //            Log.d("HEI", "onLoadFinished: $data")
 //            Data.addAll(data)
