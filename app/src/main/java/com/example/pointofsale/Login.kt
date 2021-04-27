@@ -3,6 +3,7 @@ package com.example.pointofsale
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -27,9 +28,12 @@ class Login : AppCompatActivity() {
 //            var user = User(logFullName.text.toString())
 //            intent_profile.putExtra(EXTRA_USER, user)
 //            startActivity
-            val intentAF = Intent(this, activity_fragment::class.java)
-            startActivity(intentAF)
-
+                if(logFullName.length() == 0){
+                    Toast.makeText(this, "Please input your FullName", Toast.LENGTH_SHORT).show()
+                }else{
+                    val intentAF = Intent(this, activity_fragment::class.java)
+                    startActivity(intentAF)
+                }
 //            val transaction = supportFragmentManager.beginTransaction()
 //            val fragmentP = fragment_profile()
 //            transaction.replace(R.id.fragmentContainer,fragmentP)
