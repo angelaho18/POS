@@ -21,7 +21,7 @@ class BaseNotification :Application(){
 
     private fun createNotificationChannel() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            val channel1 = NotificationChannel(CHANNEL_1_ID,"Stock Alert", NotificationManager.IMPORTANCE_HIGH)
+            val channel1 = NotificationChannel(CHANNEL_1_ID,"Stock Alert", NotificationManager.IMPORTANCE_LOW)
             channel1.description = "Channel Stock"
 
             val manager = getSystemService(NotificationManager::class.java)

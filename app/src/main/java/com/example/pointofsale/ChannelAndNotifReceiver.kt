@@ -86,7 +86,10 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                 val intent = Intent(context, NotificationReceiver::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 }
-                val pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                val pendingIntent = PendingIntent.getBroadcast(context,
+                    0,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 
                 val broadcastIntent =
                     Intent(context, ActionDismissReceiver::class.java).apply {
@@ -130,7 +133,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                         .setOnlyAlertOnce(true)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setPriority(NotificationCompat.PRIORITY_LOW)
                         .build()
                 notifs.add(newNotif)
 

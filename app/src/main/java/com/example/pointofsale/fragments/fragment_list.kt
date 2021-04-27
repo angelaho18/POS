@@ -104,11 +104,10 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //            schedule = false
 //        }
 //
-//        Data = LoadData.Data
-//        Log.d("HASIL", "onCreateView: $Data")
-
         LoaderManager.getInstance(this).initLoader(1, null, this).forceLoad()
+
         Data = LoadData.Data
+//        Log.d("HASIL", "onCreateView: $Data")
 
 //        val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
 //        productAdapter = ProductAdapter(LoadData.Data, query)
@@ -118,7 +117,6 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
         service = Intent(context, ServiceStock::class.java)
 
         Handler().postDelayed({
-
             var arrayStock = ArrayList<String>()
             var stockDetail = ArrayList<ReqresItem>()
             for (i in Data) {
@@ -159,7 +157,11 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
                 Log.d("ALERT", "Stock Detail: $stockDetail")
                 var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
                 notifIntent.putExtra(EXTRA_STOK, gson.toJson(stockDetail))
-                requireActivity().sendBroadcast(notifIntent)
+
+                if (showNotif){
+                    requireActivity().sendBroadcast(notifIntent)
+                    showNotif = false
+                }
 
                 var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
 
@@ -223,9 +225,7 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
     }
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<MutableList<ReqresItem>> {
-        Log.d("RESPONSE", "HAIIIII")
-        if(context == null) Log.d("RESPONSE", "SEDIHHH")
-        else Log.d("RESPONSE", "BISAAA")
+        Log.d("LOADER", "CREATE LOADER")
         return LoadData(context)
     }
 
@@ -233,12 +233,12 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
         loader: Loader<MutableList<ReqresItem>>,
         data: MutableList<ReqresItem>?
     ) {
-        Data.clear()
-        Log.d("RESPONSE", "onLoadFinished: YEEAAHHH")
+//        Data.clear()
+        Log.d("LOADER", "onLoadFinished: YEEAAHHH")
         if (data != null) {
-            Log.d(TAG, "onLoadFinished: $data")
-            Data.addAll(data)
-            productAdapter = ProductAdapter(LoadData.Data, query)
+//            Log.d("HEI", "onLoadFinished: $data")
+//            Data.addAll(data)
+            productAdapter = ProductAdapter(data, query)
             productRecyclerView.adapter = fragment_list.productAdapter
             productRecyclerView.layoutManager = LinearLayoutManager(context)
         }

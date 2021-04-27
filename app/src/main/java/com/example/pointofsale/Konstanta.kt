@@ -13,7 +13,7 @@ const val EXTRA_RELOAD = "RELOAD"
 
 var startService = true
 var count = 0
-var showNotif = false
+var showNotif = true
 var notif_id = 0
 var schedule = true
 
