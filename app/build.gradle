@@ -56,4 +56,7 @@ dependencies {
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
     //asynchronus
     implementation 'com.loopj.android:android-async-http:1.4.11'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.0'
 }
