@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 
-class activity_fragment : AppCompatActivity(), InterfaceFragment {
+class ActivityFragment : AppCompatActivity(), InterfaceFragment {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +71,7 @@ class activity_fragment : AppCompatActivity(), InterfaceFragment {
     override fun onDataPass(data: String) {
         Log.d("TAG", "$data")
         if(data.equals("notif")) {
-            var intent = Intent(this, activity_fragment::class.java)
+            var intent = Intent(this, ActivityFragment::class.java)
             intent.putExtra(EXTRA_NOTIF, true)
             startActivity(intent)
         }

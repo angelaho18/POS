@@ -3,6 +3,7 @@
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_register.*
 
 class Register : AppCompatActivity() {
@@ -22,10 +23,18 @@ class Register : AppCompatActivity() {
         }
 
         signup.setOnClickListener {
-            val intent_profile = Intent(this,Profile::class.java)
-            var user = User(fullName.text.toString(), emailAddress.text.toString())
-            intent_profile.putExtra(EXTRA_USER,user)
-            startActivity(intent_profile)
+            if(fullName.length() == 0){
+                Toast.makeText(this, "Please input your FullName", Toast.LENGTH_SHORT).show()
+            } else if(emailAddress.length() == 0){
+                Toast.makeText(this, "Please input your Email Address", Toast.LENGTH_SHORT).show()
+            } else if(password.length() == 0){
+                Toast.makeText(this, "Please input your Password", Toast.LENGTH_SHORT).show()
+            } else{
+                val intent_profile = Intent(this, Profile::class.java)
+                var user = User(fullName.text.toString(), emailAddress.text.toString())
+                intent_profile.putExtra(EXTRA_USER,user)
+                startActivity(intent_profile)
+            }
         }
 
     }
