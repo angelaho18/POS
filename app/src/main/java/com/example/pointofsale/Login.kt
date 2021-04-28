@@ -28,14 +28,14 @@ class Login : AppCompatActivity() {
 //            var user = User(logMail.text.toString())
 //            intent_profile.putExtra(EXTRA_USER, user)
 //            startActivity
-                if(logMail.length() == 0){
-                    Toast.makeText(this, "Please input your Email Address", Toast.LENGTH_SHORT).show()
-                } else if(logPass.length() == 0){
-                    Toast.makeText(this, "Please input your Password", Toast.LENGTH_SHORT).show()
-                } else{
-                    val intentAF = Intent(this, activity_fragment::class.java)
-                    startActivity(intentAF)
-                }
+//                if(logMail.length() == 0){
+//                    Toast.makeText(this, "Please input your Email Address", Toast.LENGTH_SHORT).show()
+//                } else if(logPass.length() == 0){
+//                    Toast.makeText(this, "Please input your Password", Toast.LENGTH_SHORT).show()
+//                } else{
+//                    val intentAF = Intent(this, activity_fragment::class.java)
+//                    startActivity(intentAF)
+//                }
 //            val transaction = supportFragmentManager.beginTransaction()
 //            val fragmentP = fragment_profile()
 //            transaction.replace(R.id.fragmentContainer,fragmentP)
