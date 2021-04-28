@@ -50,14 +50,14 @@
                 app:errorEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/logFullName"
+                    android:id="@+id/logMail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="33dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginRight="33dp"
                     android:background="@drawable/login_regis_textview"
-                    android:hint="FullName"
+                    android:hint="Email Address"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
