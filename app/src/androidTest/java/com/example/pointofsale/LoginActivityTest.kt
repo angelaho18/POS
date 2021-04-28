@@ -17,6 +17,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.regex.Pattern
 
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest{
@@ -36,4 +37,11 @@ class LoginActivityTest{
         onView(withId(R.id.signinbutton)).perform(click())
         onView(withText("Please input your Password")).inRoot(withDecorView(not(`is`(activityTestRule.activity.window.decorView)))).check(matches(isDisplayed()))
     }
+
+//    @Test
+//    fun isEmailValid(){
+//        var expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
+//        var pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
+//        var matcher = pattern.matcher()
+//    }
 }

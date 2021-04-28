@@ -30,13 +30,16 @@ class Register : AppCompatActivity() {
             } else if(password.length() == 0){
                 Toast.makeText(this, "Please input your Password", Toast.LENGTH_SHORT).show()
             } else{
-                val intent_profile = Intent(this, Profile::class.java)
-                var user = User(fullName.text.toString(), emailAddress.text.toString())
-                intent_profile.putExtra(EXTRA_USER,user)
-                startActivity(intent_profile)
+                if(emailAddress.text.isEmailValid()){
+                    val intent_profile = Intent(this, Profile::class.java)
+                    var user = User(fullName.text.toString(), emailAddress.text.toString())
+                    intent_profile.putExtra(EXTRA_USER,user)
+                    startActivity(intent_profile)
+                }else{
+                    emailAddress.error = "email is not valid"
+                }
             }
         }
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -19,7 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.example.pointofsale.R
-import com.example.pointofsale.activity_fragment
+import com.example.pointofsale.ActivityFragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 import java.io.File
@@ -106,7 +106,7 @@ class fragment_profile : Fragment() {
 
         val outBtn = view.findViewById<Button>(R.id.LogoutBut)
         outBtn.setOnClickListener{
-            val intentIn = Intent(context, activity_fragment::class.java)
+            val intentIn = Intent(context, ActivityFragment::class.java)
             startActivity(intentIn)
         }
 

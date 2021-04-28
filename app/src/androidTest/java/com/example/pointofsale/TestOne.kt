@@ -17,7 +17,7 @@ class testOne{
 
     @Test
     fun signin() {
-        onView(withId(R.id.logFullName)).perform(ViewActions
+        onView(withId(R.id.logMail)).perform(ViewActions
             .typeText("hello world"))
         onView(withId(R.id.logPass)).perform(ViewActions
             .typeText("hello"))

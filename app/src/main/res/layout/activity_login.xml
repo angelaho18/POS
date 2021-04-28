@@ -58,7 +58,7 @@
                     android:layout_marginRight="33dp"
                     android:background="@drawable/login_regis_textview"
                     android:hint="Email Address"
-                    android:inputType="text" />
+                    android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
