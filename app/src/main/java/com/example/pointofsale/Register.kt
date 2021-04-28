@@ -3,12 +3,22 @@
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.example.pointofsale.presenter.regisPresenter
+import com.example.pointofsale.presenter.regispresenterInterface
+import com.example.pointofsale.view.regisviewInterface
 import kotlinx.android.synthetic.main.activity_register.*
 
-class Register : AppCompatActivity() {
+class Register : AppCompatActivity(),regisviewInterface {
+
+    internal lateinit var regispresenter:regispresenterInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        //init
+        regispresenter = regisPresenter(this)
 
         var user = intent.getParcelableExtra<User>(EXTRA_USER)
         fullName.setText(user?.Nama)
@@ -21,13 +31,16 @@ class Register : AppCompatActivity() {
             startActivity(intent_login)
         }
 
-        signup.setOnClickListener {
-            val intent_profile = Intent(this,Profile::class.java)
-            var user = User(fullName.text.toString(), emailAddress.text.toString())
-            intent_profile.putExtra(EXTRA_USER,user)
-            startActivity(intent_profile)
-        }
+//        signup.setOnClickListener {
+//            val intent_profile = Intent(this,Profile::class.java)
+//            var user = User(fullName.text.toString(), emailAddress.text.toString())
+//            intent_profile.putExtra(EXTRA_USER,user)
+//            startActivity(intent_profile)
+//        }
 
+        signup.setOnClickListener {
+            regispresenter.regis(fullName.text.toString(),emailAddress.text.toString(),password.text.toString())
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -43,4 +56,17 @@ class Register : AppCompatActivity() {
         emailAddress.setText(savedInstanceState?.getString(EXTRA_EMAIL))
         password.setText(savedInstanceState?.getString(EXTRA_PASSWORD))
     }
+
+    override fun regissuccess(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+    }
+
+    override fun regiserror(message: String) {
+        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+    }
+
+//    override fun regisResult(message: String) {
+//        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+//    }
+
 }
