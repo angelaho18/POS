@@ -1,4 +1,4 @@
-    package com.example.pointofsale
+package com.example.pointofsale
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

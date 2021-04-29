@@ -28,9 +28,6 @@ class Login : AppCompatActivity() {
             startActivity(intent_reg)
         }
 
-        if(!logMail.text.isEmailValid()) {
-            logMail.error = "email is not valid"
-        }
         signinbutton.setOnClickListener {
 //            val intent_profile = Intent(this, Profile::class.java)
 //            var user = User(logMail.text.toString())
@@ -40,7 +37,7 @@ class Login : AppCompatActivity() {
                 if(logMail.length() == 0){
                     Toast.makeText(this, "Please input your Email Address", Toast.LENGTH_SHORT).show()
                 } else if(logPass.length() == 0){
-                    Toast.makeText(this, "Please input your Password", Toast.LENGTH_SHORT).show()
+                    logPass.error = "Password must Not be Empty"
                 } else{
                     if(logMail.text.isEmailValid()){
                         val intentAF = Intent(this, ActivityFragment::class.java)
@@ -59,14 +56,13 @@ class Login : AppCompatActivity() {
         logMail.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
-
             override fun afterTextChanged(s: Editable?) {
                 logMail.error = "email is not valid"
+                if(logMail.text.isEmailValid())
+                    logMail.setError(null)
             }
-
         })
         
         forgotPass.setOnClickListener {
