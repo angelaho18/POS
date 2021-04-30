@@ -45,7 +45,7 @@ class Profile : AppCompatActivity() {
         //data kembali
         if(requestCode == 181 && resultCode==Activity.RESULT_OK && data !=null){
             var thumbnail = data.extras
-            gambarProfile.setImageBitmap(thumbnail?.get("data")as Bitmap)
+            profilePic.setImageBitmap(thumbnail?.get("data")as Bitmap)
         }
     }
 

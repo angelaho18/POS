@@ -12,11 +12,10 @@ class regisPresenter (internal var regisviewInterface: regisviewInterface):regis
         else if(regiscode == 0)
             regisviewInterface.regiserror("Email Empty")
         else if(regiscode == 1)
-            regisviewInterface.regiserror("email pattern not match")
+            regisviewInterface.regiserror("Email pattern not match")
         else if(regiscode == 2)
-            regisviewInterface.regiserror("password must upto 0 character")
+            regisviewInterface.regiserror("password min. 1 character")
         else
-            regisviewInterface.regissuccess("login success")
+            regisviewInterface.regissuccess("Register success")
     }
-
 }

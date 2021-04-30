@@ -35,7 +35,7 @@ class Login : AppCompatActivity() {
 //            startActivity
 
                 if(logMail.length() == 0){
-                    Toast.makeText(this, "Please input your Email Address", Toast.LENGTH_SHORT).show()
+                    logMail.error = "Email must Not be Empty"
                 } else if(logPass.length() == 0){
                     logPass.error = "Password must Not be Empty"
                 } else{
@@ -59,9 +59,9 @@ class Login : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
             override fun afterTextChanged(s: Editable?) {
-                logMail.error = "email is not valid"
+                logMail.error = "Please Enter Valid Email Address"
                 if(logMail.text.isEmailValid())
-                    logMail.setError(null)
+                    logMail.error = null
             }
         })
         

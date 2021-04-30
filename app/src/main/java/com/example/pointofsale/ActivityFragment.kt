@@ -45,7 +45,7 @@ class ActivityFragment : AppCompatActivity(), InterfaceFragment {
 
         var openNotif = intent.getBooleanExtra(EXTRA_NOTIF, false)
         if(openNotif) {
-            bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
+            bottomNavigationView.menu.findItem(R.id.list1).isChecked = true
             val transaction = this.supportFragmentManager.beginTransaction()
             transaction.add(R.id.fragmentContainer, fragment_list())
                 .commit()
@@ -54,7 +54,7 @@ class ActivityFragment : AppCompatActivity(), InterfaceFragment {
         var reload = intent.getBooleanExtra(EXTRA_RELOAD, false)
         Log.d("HASIL", "onCreate: $reload")
         if(reload){
-            bottomNavigationView.menu.findItem(R.id.list1).setChecked(true)
+            bottomNavigationView.menu.findItem(R.id.list1).isChecked = true
             newTransaction(fragment_list())
         }
     }
@@ -76,7 +76,6 @@ class ActivityFragment : AppCompatActivity(), InterfaceFragment {
             startActivity(intent)
         }
     }
-
 
     private fun newTransaction(fragment: Fragment) {
         val transaction = this.supportFragmentManager.beginTransaction()

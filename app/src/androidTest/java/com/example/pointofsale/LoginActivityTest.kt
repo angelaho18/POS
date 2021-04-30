@@ -1,8 +1,7 @@
 package com.example.pointofsale
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -22,20 +21,33 @@ class LoginActivityTest{
     var activityTestRule = ActivityTestRule(Login::class.java)
 
     @Test
-    fun showToastEmailEmpty(){
+    fun showErrorEmailEmpty(){
         onView(withId(R.id.logPass)).perform(typeText("Hellomida"))
         onView(withId(R.id.signinbutton)).perform(click())
-        onView(withText("Please input your Email Address")).inRoot(withDecorView(not(`is`(
-            activityTestRule.activity.window.decorView)))).check(matches(isDisplayed()))
+        onView(withId(R.id.logMail)).check(matches(hasErrorText("Email must Not be Empty")))
+//        onView(withText("Please input your Email Address")).inRoot(withDecorView(not(`is`(
+//            activityTestRule.activity.window.decorView)))).check(matches(isDisplayed()))
     }
 
     @Test
-    fun showToastPassEmpty(){
+    fun showErrorPassEmpty(){
         onView(withId(R.id.logMail)).perform(typeText("Hellomida@gmail.com"))
         onView(withId(R.id.signinbutton)).perform(click())
         onView(withId(R.id.logPass)).check(matches(hasErrorText("Password must Not be Empty")))
     }
 
+    @Test
+    fun checkValidEmail(){
+        onView(withId(R.id.logMail)).perform(typeText("Hellomida"))
+        onView(withId(R.id.logMail)).check(matches(hasErrorText("Please Enter Valid Email Address")))
+        onView(withId(R.id.logMail)).perform(clearText(), typeText("Hellomida@gmail.com"))
+        onView(withId(R.id.logMail)).check(matches(not(hasErrorText("Please Enter Valid Email Address"))))
+    }
 
-
+    @Test
+    fun showSnackBar(){
+        onView(withId(R.id.forgotPass)).perform(click())
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+            .check(matches(withText("Sorry Forgot Password doesn't available yet")))
+    }
 }
