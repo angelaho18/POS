@@ -24,7 +24,7 @@ class Profile : AppCompatActivity() {
 
         var user = intent.getParcelableExtra<User>(EXTRA_USER)
         full_name.setText(user?.Nama)
-        emailAddress.setText(user?.Email)
+        email_address.setText(user?.Email)
 
         LogoutBut.setOnClickListener {
             val intent_logout = Intent(this,Login::class.java)

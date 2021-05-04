@@ -25,4 +25,10 @@ class LoginIntentTest {
         Espresso.onView(ViewMatchers.withId(R.id.signinbutton)).perform(ViewActions.click())
         Intents.intended(IntentMatchers.hasComponent(ActivityFragment::class.java.name))
     }
+
+    @Test
+    fun goRegister(){
+        Espresso.onView(ViewMatchers.withId(R.id.reg)).perform(ViewActions.click())
+        Intents.intended(IntentMatchers.hasComponent(Register::class.java.name))
+    }
 }
