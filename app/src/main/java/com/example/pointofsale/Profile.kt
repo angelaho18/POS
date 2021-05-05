@@ -61,6 +61,7 @@ class Profile : AppCompatActivity() {
         if(!checkNeed.isEmpty()){
             ActivityCompat.requestPermissions(this,checkNeed.toArray(arrayOfNulls(checkNeed.size)),18)
         }
+
     }
 
 }

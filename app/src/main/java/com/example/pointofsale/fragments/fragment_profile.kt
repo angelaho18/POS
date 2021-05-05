@@ -9,17 +9,16 @@ import android.graphics.Bitmap
 import android.os.BatteryManager
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.FileProvider
 import com.example.pointofsale.R
 import com.example.pointofsale.ActivityFragment
+import com.example.pointofsale.SharePrefHelper
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 import java.io.File
@@ -36,10 +35,11 @@ private const val REQUEST_CODE = 18
  * Use the [fragment_profile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_profile : Fragment() {
+class fragment_profile : Fragment(),View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val prefFileName = "MyFilepref1"
     private var BatteryReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -110,6 +110,16 @@ class fragment_profile : Fragment() {
             startActivity(intentIn)
         }
 
+        val save = view.findViewById<Button>(R.id.bt_save)
+        val reset = view.findViewById<Button>(R.id.bt_reset)
+        val edit = view.findViewById<Button>(R.id.bt_edit)
+        save.setOnClickListener(this)
+        reset.setOnClickListener(this)
+        edit.setOnClickListener(this)
+        Log.i("kiii",save.toString())
+        Log.i("kii",edit.toString())
+        Log.i("ki",reset.toString())
+
         return view
     }
 
@@ -143,6 +153,58 @@ class fragment_profile : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onClick(p0: View?) {
+        var mySharePrefHelper = SharePrefHelper(view!!.context,prefFileName)
+        Log.i("kiiiiiii", mySharePrefHelper.toString())
+
+        val fullname = p0?.findViewById<EditText>(R.id.full_name)
+        val mail = p0?.findViewById<EditText>(R.id.email)
+        Log.i("kiiiiiiim", fullname.toString())
+        Log.i("kiiiiiiimm", mail.toString())
+
+        when(p0?.id){
+            R.id.bt_save ->{
+                mySharePrefHelper.nama=fullname?.text.toString()
+                mySharePrefHelper.email=mail?.text.toString()
+                Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
+                Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
+                Toast.makeText(context,"Data tersimpan",Toast.LENGTH_LONG).show()
+                fullname?.text?.clear()
+                mail?.text?.clear()
+            }
+            R.id.bt_reset->{
+                mySharePrefHelper.clearValue()
+                Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
+                Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
+                Toast.makeText(context,"Data reset",Toast.LENGTH_LONG).show()
+            }
+            R.id.bt_edit->{
+                fullname?.setText(mySharePrefHelper.nama)
+                mail?.setText(mySharePrefHelper.email)
+                Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
+                Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
+                Toast.makeText(context,"Data read",Toast.LENGTH_LONG).show()
+            }
+        }
+
+//        save.setOnClickListener {
+//            mySharePrefHelper.nama = fullname.text.toString()
+//            mySharePrefHelper.nama = mail.text.toString()
+//            Toast.makeText(view.context,"Data tersimpan",Toast.LENGTH_LONG).show()
+//            fullname.text.clear()
+//            mail.text.clear()
+//        }
+//        val reset = view.findViewById<Button>(R.id.bt_reset)
+//        reset.setOnClickListener {
+//            mySharePrefHelper.clearValue()
+//        }
+//        val edit = view.findViewById<Button>(R.id.bt_edit)
+//        edit.setOnClickListener {
+//            fullname.setText(mySharePrefHelper.nama)
+//            mail.setText(mySharePrefHelper.email)
+//        }
     }
 
 
