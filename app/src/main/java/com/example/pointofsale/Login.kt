@@ -1,6 +1,9 @@
 package com.example.pointofsale
 
 import android.content.Intent
+import android.media.AudioManager
+import android.media.SoundPool
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +15,8 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 
+private var sp : SoundPool? = null
+private var soundID = 0
 class Login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +50,10 @@ class Login : AppCompatActivity() {
                     }else{
                         logMail.error = "email is not valid"
                     }
+                }
+
+                if(soundID != 0){
+                    sp?.play(soundID, 0.99f, .99f, 1, 0, .99f)
                 }
 //            val transaction = supportFragmentManager.beginTransaction()
 //            val fragmentP = fragment_profile()
@@ -84,5 +93,40 @@ class Login : AppCompatActivity() {
         logMail.setText(savedInstanceState?.getString(EXTRA_FULLNAME, "FULL_NAME"))
         logPass.setText(savedInstanceState?.getString(EXTRA_PASSWORD, "PASSWORD"))
         stayLogged.isChecked = savedInstanceState?.getBoolean(EXTRA_STATUS, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            createNewSoundPool()
+        }
+        else{
+            createOldSoundPool()
+        }
+        sp?.setOnLoadCompleteListener { soundPool, id, status ->
+            if(status != 0){
+                Toast.makeText(this,"Gagal Load",Toast.LENGTH_LONG).show()
+            }
+            else{
+                Toast.makeText(this, "Load Berhasil", Toast.LENGTH_SHORT).show()
+            }
+        }
+        soundID = sp?.load(this, R.raw.music,1) ?: 0
+    }
+
+    private fun createOldSoundPool() {
+        sp = SoundPool(15, AudioManager.STREAM_MUSIC, 0)
+    }
+
+    private fun createNewSoundPool() {
+        sp = SoundPool.Builder()
+            .setMaxStreams(15)
+            .build()
+    }
+
+    override fun onStop(){
+        super.onStop()
+        sp?.release()
+        sp = null
     }
 }

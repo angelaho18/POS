@@ -159,32 +159,26 @@ class fragment_profile : Fragment(),View.OnClickListener {
         var mySharePrefHelper = SharePrefHelper(view!!.context,prefFileName)
         Log.i("kiiiiiii", mySharePrefHelper.toString())
 
-        val fullname = p0?.findViewById<EditText>(R.id.full_name)
-        val mail = p0?.findViewById<EditText>(R.id.email)
+        val fullname = view?.findViewById<EditText>(R.id.full_name)
+        val mail = view?.findViewById<EditText>(R.id.emailAddress)
         Log.i("kiiiiiiim", fullname.toString())
         Log.i("kiiiiiiimm", mail.toString())
 
         when(p0?.id){
-            R.id.bt_save ->{
+            R.id.bt_save->{
                 mySharePrefHelper.nama=fullname?.text.toString()
                 mySharePrefHelper.email=mail?.text.toString()
-                Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
-                Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
                 Toast.makeText(context,"Data tersimpan",Toast.LENGTH_LONG).show()
                 fullname?.text?.clear()
                 mail?.text?.clear()
             }
             R.id.bt_reset->{
                 mySharePrefHelper.clearValue()
-                Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
-                Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
                 Toast.makeText(context,"Data reset",Toast.LENGTH_LONG).show()
             }
             R.id.bt_edit->{
                 fullname?.setText(mySharePrefHelper.nama)
                 mail?.setText(mySharePrefHelper.email)
-                Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
-                Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
                 Toast.makeText(context,"Data read",Toast.LENGTH_LONG).show()
             }
         }
