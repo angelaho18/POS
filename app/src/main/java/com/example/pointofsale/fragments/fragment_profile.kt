@@ -19,6 +19,9 @@ import androidx.core.content.FileProvider
 import com.example.pointofsale.R
 import com.example.pointofsale.ActivityFragment
 import com.example.pointofsale.SharePrefHelper
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 import java.io.File
@@ -35,7 +38,7 @@ private const val REQUEST_CODE = 18
  * Use the [fragment_profile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_profile : Fragment(),View.OnClickListener {
+class fragment_profile : Fragment(), View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -159,15 +162,16 @@ class fragment_profile : Fragment(),View.OnClickListener {
         var mySharePrefHelper = SharePrefHelper(view!!.context,prefFileName)
         Log.i("kiiiiiii", mySharePrefHelper.toString())
 
-        val fullname = p0?.findViewById<EditText>(R.id.full_name)
-        val mail = p0?.findViewById<EditText>(R.id.email)
+        val fullname = view!!.findViewById<TextInputEditText>(R.id.full_name)
+        val mail = view!!.findViewById<TextInputEditText>(R.id.emailAddress)
+        Log.d("TAG", "onClick: $p0")
         Log.i("kiiiiiiim", fullname.toString())
         Log.i("kiiiiiiimm", mail.toString())
 
         when(p0?.id){
             R.id.bt_save ->{
-                mySharePrefHelper.nama=fullname?.text.toString()
-                mySharePrefHelper.email=mail?.text.toString()
+                mySharePrefHelper.nama = fullname?.text.toString()
+                mySharePrefHelper.email = mail?.text.toString()
                 Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
                 Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
                 Toast.makeText(context,"Data tersimpan",Toast.LENGTH_LONG).show()
@@ -176,6 +180,7 @@ class fragment_profile : Fragment(),View.OnClickListener {
             }
             R.id.bt_reset->{
                 mySharePrefHelper.clearValue()
+                fullname?.text?.clear()
                 Log.i("kiiiiiiifullname", mySharePrefHelper.nama.toString())
                 Log.i("kiiiiiiimail", mySharePrefHelper.email.toString())
                 Toast.makeText(context,"Data reset",Toast.LENGTH_LONG).show()
