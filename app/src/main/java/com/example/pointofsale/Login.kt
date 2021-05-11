@@ -111,7 +111,7 @@ class Login : AppCompatActivity() {
                 Toast.makeText(this, "Load Berhasil", Toast.LENGTH_SHORT).show()
             }
         }
-        soundID = sp?.load(this, R.raw.music,1) ?: 0
+        soundID = sp?.load(this, R.raw.intro,1) ?: 0
     }
 
     private fun createOldSoundPool() {
