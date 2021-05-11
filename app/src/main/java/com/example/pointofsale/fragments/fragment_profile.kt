@@ -24,6 +24,8 @@ import com.example.pointofsale.SharePrefHelper
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +39,7 @@ private const val REQUEST_CODE = 18
  * Use the [fragment_profile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_profile : Fragment(),View.OnClickListener {
+class fragment_profile : Fragment(){
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -112,17 +114,74 @@ class fragment_profile : Fragment(),View.OnClickListener {
             startActivity(intentIn)
         }
 
+//        val save = view.findViewById<Button>(R.id.bt_save)
+//        val reset = view.findViewById<Button>(R.id.bt_reset)
+//        val edit = view.findViewById<Button>(R.id.bt_edit)
+//        save.setOnClickListener(this)
+//        reset.setOnClickListener(this)
+//        edit.setOnClickListener(this)
+//        Log.i("kiii",save.toString())
+//        Log.i("kii",edit.toString())
+//        Log.i("ki",reset.toString())
+
         val save = view.findViewById<Button>(R.id.bt_save)
-        val reset = view.findViewById<Button>(R.id.bt_reset)
         val edit = view.findViewById<Button>(R.id.bt_edit)
-        save.setOnClickListener(this)
-        reset.setOnClickListener(this)
-        edit.setOnClickListener(this)
-        Log.i("kiii",save.toString())
-        Log.i("kii",edit.toString())
-        Log.i("ki",reset.toString())
+        save.setOnClickListener{
+            writeFileInternal()
+        }
+        edit.setOnClickListener {
+            readFileInternal()
+        }
 
         return view
+    }
+   private fun writeFileInternal(){
+        val fullname = view?.findViewById<EditText>(R.id.full_name)
+        val mail = view?.findViewById<EditText>(R.id.emailAddress)
+        var output = context?.openFileOutput("dataUser.txt", Context.MODE_PRIVATE)?.apply {
+            write("${fullname?.text}+${mail?.text}".toByteArray())
+            close()
+        }
+        var myFile  = File(context?.filesDir,"dataUser.txt")
+        Log.w("OK",myFile.absolutePath)
+//        edit_text1.text.clear()
+        Toast.makeText(context,"File Save",Toast.LENGTH_SHORT).show()
+    }
+    private fun readFileInternal(){
+        val fullname = view?.findViewById<EditText>(R.id.full_name)
+        val mail = view?.findViewById<EditText>(R.id.emailAddress)
+        fullname?.text?.clear()
+        mail?.text?.clear()
+        try{
+            var input = context?.openFileInput("dataUser.txt")?.apply {
+                bufferedReader().useLines {
+                    for(text in it.toList()){
+                        var fname =""
+                        var em =""
+                        var x = 0
+                        for( i in text){
+                            if(i =='+'){
+                                x=1
+                            }
+                            if(x == 0){
+                               fname+=i
+                            }else if(x==1 && i!='+'){
+                                em+=i
+                            }
+
+                        }
+                        fullname?.setText("${fname}")
+                        mail?.setText("${em}")
+                    }
+                }
+            }
+        }catch (e : FileNotFoundException){
+            fullname?.setText("File Not Found")
+            mail?.setText("File Not Found")
+        }catch (e : IOException){
+            fullname?.setText("File Can't be Read")
+            mail?.setText("File Not Found")
+        }
     }
 
 //    override fun onResume() {
@@ -157,57 +216,57 @@ class fragment_profile : Fragment(),View.OnClickListener {
             }
     }
 
-    override fun onClick(p0: View?) {
-        var mySharePrefHelper = SharePrefHelper(view!!.context,prefFileName)
-        Log.i("kiiiiiii", mySharePrefHelper.toString())
-
-        val fullname = view?.findViewById<EditText>(R.id.full_name)
-        val mail = view?.findViewById<EditText>(R.id.emailAddress)
-        Log.i("kiiiiiiim", fullname.toString())
-        Log.i("kiiiiiiimm", mail.toString())
-
-        when(p0?.id){
-            R.id.bt_save->{
-                mySharePrefHelper.nama=fullname?.text.toString()
-                mySharePrefHelper.email=mail?.text.toString()
-                Toast.makeText(context,"Data tersimpan",Toast.LENGTH_LONG).show()
-                fullname?.isEnabled = false
-                fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
-                mail?.isEnabled = false
-                mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
-                bt_edit.text = "Edit"
-                i = 0
-            }
-            R.id.bt_reset->{
-                mySharePrefHelper.clearValue()
-                fullname?.text?.clear()
-                mail?.text?.clear()
-                Toast.makeText(context,"Data reset",Toast.LENGTH_LONG).show()
-            }
-            R.id.bt_edit->{
-                fullname?.setText(mySharePrefHelper.nama)
-                mail?.setText(mySharePrefHelper.email)
-                if(fullname?.text.toString() == "NULL" && mail?.text.toString() == "NULL"){
-                    mail?.text = null
-                    fullname?.text = null
-                }
-                i++
-                if (i % 2 == 1){
-                    Toast.makeText(context,"Data read",Toast.LENGTH_LONG).show()
-                    fullname?.isEnabled = true
-                    fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.profile_border))
-                    mail?.isEnabled = true
-                    mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.profile_border))
-                    bt_edit.text = "Cancel Edit"
-                }else{
-                    fullname?.isEnabled = false
-                    fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
-                    mail?.isEnabled = false
-                    mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
-                    bt_edit.text = "Edit"
-                }
-            }
-        }
+//    override fun onClick(p0: View?) {
+//        var mySharePrefHelper = SharePrefHelper(view!!.context,prefFileName)
+//        Log.i("kiiiiiii", mySharePrefHelper.toString())
+//
+//        val fullname = view?.findViewById<EditText>(R.id.full_name)
+//        val mail = view?.findViewById<EditText>(R.id.emailAddress)
+//        Log.i("kiiiiiiim", fullname.toString())
+//        Log.i("kiiiiiiimm", mail.toString())
+//
+//        when(p0?.id){
+//            R.id.bt_save->{
+//                mySharePrefHelper.nama=fullname?.text.toString()
+//                mySharePrefHelper.email=mail?.text.toString()
+//                Toast.makeText(context,"Data tersimpan",Toast.LENGTH_LONG).show()
+//                fullname?.isEnabled = false
+//                fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+//                mail?.isEnabled = false
+//                mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+//                bt_edit.text = "Edit"
+//                i = 0
+//            }
+//            R.id.bt_reset->{
+//                mySharePrefHelper.clearValue()
+//                fullname?.text?.clear()
+//                mail?.text?.clear()
+//                Toast.makeText(context,"Data reset",Toast.LENGTH_LONG).show()
+//            }
+//            R.id.bt_edit->{
+//                fullname?.setText(mySharePrefHelper.nama)
+//                mail?.setText(mySharePrefHelper.email)
+//                if(fullname?.text.toString() == "NULL" && mail?.text.toString() == "NULL"){
+//                    mail?.text = null
+//                    fullname?.text = null
+//                }
+//                i++
+//                if (i % 2 == 1){
+//                    Toast.makeText(context,"Data read",Toast.LENGTH_LONG).show()
+//                    fullname?.isEnabled = true
+//                    fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.profile_border))
+//                    mail?.isEnabled = true
+//                    mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.profile_border))
+//                    bt_edit.text = "Cancel Edit"
+//                }else{
+//                    fullname?.isEnabled = false
+//                    fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+//                    mail?.isEnabled = false
+//                    mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+//                    bt_edit.text = "Edit"
+//                }
+//            }
+//        }
 
 //        save.setOnClickListener {
 //            mySharePrefHelper.nama = fullname.text.toString()
@@ -225,7 +284,6 @@ class fragment_profile : Fragment(),View.OnClickListener {
 //            fullname.setText(mySharePrefHelper.nama)
 //            mail.setText(mySharePrefHelper.email)
 //        }
-    }
-
+//    }
 
 }
