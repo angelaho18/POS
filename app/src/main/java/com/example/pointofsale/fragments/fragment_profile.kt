@@ -156,19 +156,13 @@ class fragment_profile : Fragment(){
             var input = context?.openFileInput("dataUser.txt")?.apply {
                 bufferedReader().useLines {
                     for(text in it.toList()){
-                        var fname =""
-                        var em =""
+                        var fname = ""
+                        var em = ""
                         var x = 0
                         for( i in text){
-                            if(i =='+'){
-                                x=1
-                            }
-                            if(x == 0){
-                               fname+=i
-                            }else if(x==1 && i!='+'){
-                                em+=i
-                            }
-
+                            if(i == '+') x = 1
+                            if(x == 0) fname+=i
+                            else if(x == 1 && i != '+') em += i
                         }
                         fullname?.setText("${fname}")
                         mail?.setText("${em}")
