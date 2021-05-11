@@ -1,4 +1,4 @@
-package com.example.pointofsale
+    package com.example.pointofsale
 
 import android.content.Intent
 import android.media.AudioManager
@@ -46,15 +46,16 @@ class Login : AppCompatActivity() {
                 } else{
                     if(logMail.text.isEmailValid()){
                         val intentAF = Intent(this, ActivityFragment::class.java)
+                        if(soundID != 0){
+                            sp?.play(soundID, 0.99f, .99f, 1, 0, .99f)
+                        }
                         startActivity(intentAF)
                     }else{
                         logMail.error = "email is not valid"
                     }
                 }
 
-                if(soundID != 0){
-                    sp?.play(soundID, 0.99f, .99f, 1, 0, .99f)
-                }
+
 //            val transaction = supportFragmentManager.beginTransaction()
 //            val fragmentP = fragment_profile()
 //            transaction.replace(R.id.fragmentContainer,fragmentP)

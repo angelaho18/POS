@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.Color.*
 import android.os.BatteryManager
 import android.os.Bundle
 import android.provider.MediaStore
@@ -40,36 +42,37 @@ class fragment_profile : Fragment(),View.OnClickListener {
     private var param1: String? = null
     private var param2: String? = null
     private val prefFileName = "MyFilepref1"
-    private var BatteryReceiver = object : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-            // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-            val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
-                    || status == BatteryManager.BATTERY_STATUS_FULL
-            
-            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
-            val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
-            val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
-
-            val batteryPct = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10
-
-            if (isCharging && acCharge) {
-                print("AC CHARGING", batteryPct, temperature)
-            } else if (isCharging && usbCharge) {
-                print("USB CHARGING", batteryPct, temperature)
-            } else {
-                print("NOT CHARGING", batteryPct, temperature)
-            }
-        }
-
-        private fun print(state: String, percentage: Int, temperature: Int) {
-            status.text = state
-            percent.text = "$percentage%"
-            temp.text = "$temperature \u00B0C"
-        }
-    }
+    private var i = 0
+//    private var BatteryReceiver = object : BroadcastReceiver() {
+//
+//        override fun onReceive(context: Context, intent: Intent) {
+//            // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
+//            val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+//            val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
+//                    || status == BatteryManager.BATTERY_STATUS_FULL
+//
+//            val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+//            val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
+//            val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
+//
+//            val batteryPct = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+//            val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10
+//
+//            if (isCharging && acCharge) {
+//                print("AC CHARGING", batteryPct, temperature)
+//            } else if (isCharging && usbCharge) {
+//                print("USB CHARGING", batteryPct, temperature)
+//            } else {
+//                print("NOT CHARGING", batteryPct, temperature)
+//            }
+//        }
+//
+//        private fun print(state: String, percentage: Int, temperature: Int) {
+//            status.text = state
+//            percent.text = "$percentage%"
+//            temp.text = "$temperature \u00B0C"
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,7 +90,6 @@ class fragment_profile : Fragment(),View.OnClickListener {
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
-
     }
 
     override fun onCreateView(
@@ -123,17 +125,17 @@ class fragment_profile : Fragment(),View.OnClickListener {
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-        var filterBattery = IntentFilter()
-        filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
-        requireActivity().registerReceiver(BatteryReceiver, filterBattery)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        requireActivity().unregisterReceiver(BatteryReceiver)
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        var filterBattery = IntentFilter()
+//        filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
+//        requireActivity().registerReceiver(BatteryReceiver, filterBattery)
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        requireActivity().unregisterReceiver(BatteryReceiver)
+//    }
 
     companion object {
         /**
@@ -169,17 +171,41 @@ class fragment_profile : Fragment(),View.OnClickListener {
                 mySharePrefHelper.nama=fullname?.text.toString()
                 mySharePrefHelper.email=mail?.text.toString()
                 Toast.makeText(context,"Data tersimpan",Toast.LENGTH_LONG).show()
-                fullname?.text?.clear()
-                mail?.text?.clear()
+                fullname?.isEnabled = false
+                fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+                mail?.isEnabled = false
+                mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+                bt_edit.text = "Edit"
+                i = 0
             }
             R.id.bt_reset->{
                 mySharePrefHelper.clearValue()
+                fullname?.text?.clear()
+                mail?.text?.clear()
                 Toast.makeText(context,"Data reset",Toast.LENGTH_LONG).show()
             }
             R.id.bt_edit->{
                 fullname?.setText(mySharePrefHelper.nama)
                 mail?.setText(mySharePrefHelper.email)
-                Toast.makeText(context,"Data read",Toast.LENGTH_LONG).show()
+                if(fullname?.text.toString() == "NULL" && mail?.text.toString() == "NULL"){
+                    mail?.text = null
+                    fullname?.text = null
+                }
+                i++
+                if (i % 2 == 1){
+                    Toast.makeText(context,"Data read",Toast.LENGTH_LONG).show()
+                    fullname?.isEnabled = true
+                    fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.profile_border))
+                    mail?.isEnabled = true
+                    mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.profile_border))
+                    bt_edit.text = "Cancel Edit"
+                }else{
+                    fullname?.isEnabled = false
+                    fullname?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+                    mail?.isEnabled = false
+                    mail?.setBackgroundDrawable(resources.getDrawable(R.drawable.edittext_disable))
+                    bt_edit.text = "Edit"
+                }
             }
         }
 

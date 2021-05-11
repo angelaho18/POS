@@ -19,6 +19,7 @@ class SharePrefHelper (context: Context,FileName:String) {
         val editMe = edit()
         operation(editMe)
         editMe.apply()
+
     }
     var nama:String?
         get() = myPreferences.getString(USER_NAME,"NULL")
