@@ -55,16 +55,11 @@ class Register : AppCompatActivity(), regisviewInterface {
                 password.error = "Please input your Password"
             } else {
                 if (emailAddress.text.isEmailValid()) {
-                    val intent_profile = Intent(this, Profile::class.java)
+//                    val intent_profile = Intent(this, Profile::class.java)
 //                    var user = User(fullName.text.toString(), emailAddress.text.toString())
 //                    intent_profile.putExtra(EXTRA_USER, user)
                     if (isExternalStorageReadable()) {
                         writeFileExternal()
-                        if (granted) startActivity(intent_profile)
-                        else
-                            Toast.makeText(this,
-                                "Registrasi Gagal, Silahkan coba lagi...",
-                                Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     emailAddress.error = "Please Enter Valid Email Address"
@@ -116,20 +111,25 @@ class Register : AppCompatActivity(), regisviewInterface {
     ) {
         when (requestCode) {
             123 -> {
-                granted =
-                    grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    val intent_profile = Intent(this, Profile::class.java)
+                    Toast.makeText(this,
+                        "Registrasi Berhasil, Hoorayy!!!",
+                        Toast.LENGTH_SHORT).show()
+                    startActivity(intent_profile)
+                }else
+                    Toast.makeText(this,
+                        "Registrasi Gagal, Silahkan coba lagi...",
+                        Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun isExternalStorageReadable(): Boolean{
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                123)
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ){
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 123)
         }
         var state = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state)
