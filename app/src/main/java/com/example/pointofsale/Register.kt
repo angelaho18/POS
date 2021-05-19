@@ -1,27 +1,25 @@
 package com.example.pointofsale
 
 import android.Manifest
-import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
-import android.os.StatFs
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.pointofsale.presenter.regisPresenter
 import com.example.pointofsale.presenter.regispresenterInterface
 import com.example.pointofsale.view.regisviewInterface
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.activity_register.emailAddress
 import java.io.File
+
 
 class Register : AppCompatActivity(), regisviewInterface {
 
@@ -111,13 +109,13 @@ class Register : AppCompatActivity(), regisviewInterface {
     ) {
         when (requestCode) {
             123 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     val intent_profile = Intent(this, Profile::class.java)
                     Toast.makeText(this,
                         "Registrasi Berhasil, Hoorayy!!!",
                         Toast.LENGTH_SHORT).show()
                     startActivity(intent_profile)
-                }else
+                } else
                     Toast.makeText(this,
                         "Registrasi Gagal, Silahkan coba lagi...",
                         Toast.LENGTH_SHORT).show()
@@ -126,7 +124,7 @@ class Register : AppCompatActivity(), regisviewInterface {
     }
 
     private fun isExternalStorageReadable(): Boolean{
-        if (ActivityCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ){
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 123)
