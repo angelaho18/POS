@@ -26,7 +26,7 @@ class Profile : AppCompatActivity() {
         bottomNavigationView.background = null
         bottomNavigationView.menu.getItem(2).isEnabled = false
 
-//        if (isExternalStorageReadable(this))
+        if (isExternalStorageReadable())
             readFileExternal()
 
 //        var user = intent.getParcelableExtra<User>(EXTRA_USER)
@@ -84,6 +84,19 @@ class Profile : AppCompatActivity() {
                     Toast.makeText(this, "Gagal membaca data", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun isExternalStorageReadable(): Boolean{
+        if (ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 123)
+        }
+        var state = Environment.getExternalStorageState()
+        if (Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state)
+            return true
+
+        return false
     }
 
     private fun readFileExternal() {

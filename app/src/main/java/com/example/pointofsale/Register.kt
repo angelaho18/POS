@@ -23,9 +23,10 @@ import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_register.emailAddress
 import java.io.File
 
-class Register : AppCompatActivity(),regisviewInterface {
+class Register : AppCompatActivity(), regisviewInterface {
 
-    private lateinit var regispresenter:regispresenterInterface
+    private lateinit var regispresenter: regispresenterInterface
+    var granted = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -38,43 +39,49 @@ class Register : AppCompatActivity(),regisviewInterface {
 
         //intent eksplisit
         log.setOnClickListener {
-            val intent_login = Intent(this,Login::class.java)
+            val intent_login = Intent(this, Login::class.java)
             var user = User(fullName.text.toString())
-            intent_login.putExtra(EXTRA_USER,user)
+            intent_login.putExtra(EXTRA_USER, user)
             startActivity(intent_login)
         }
 
         signup.setOnClickListener {
 //            regispresenter.regis(fullName.text.toString(),emailAddress.text.toString(),password.text.toString())
-            if(fullName.length() == 0){
+            if (fullName.length() == 0) {
                 fullName.error = "Please input your FullName"
-            } else if(emailAddress.length() == 0){
+            } else if (emailAddress.length() == 0) {
                 emailAddress.error = "Please input your Email Address"
-            } else if(password.length() == 0){
+            } else if (password.length() == 0) {
                 password.error = "Please input your Password"
-            } else{
-                if(emailAddress.text.isEmailValid()){
+            } else {
+                if (emailAddress.text.isEmailValid()) {
                     val intent_profile = Intent(this, Profile::class.java)
 //                    var user = User(fullName.text.toString(), emailAddress.text.toString())
 //                    intent_profile.putExtra(EXTRA_USER, user)
                     if (isExternalStorageReadable()) {
                         writeFileExternal()
-                        startActivity(intent_profile)
+                        if (granted) startActivity(intent_profile)
+                        else
+                            Toast.makeText(this,
+                                "Registrasi Gagal, Silahkan coba lagi...",
+                                Toast.LENGTH_SHORT).show()
                     }
-                }else{
+                } else {
                     emailAddress.error = "Please Enter Valid Email Address"
                 }
             }
         }
 
-        emailAddress.addTextChangedListener(object: TextWatcher {
+        emailAddress.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
+
             override fun afterTextChanged(s: Editable?) {
                 emailAddress.error = "Please Enter Valid Email Address"
-                if(emailAddress.text.isEmailValid())
+                if (emailAddress.text.isEmailValid())
                     emailAddress.error = null
             }
         })
@@ -95,29 +102,34 @@ class Register : AppCompatActivity(),regisviewInterface {
     }
 
     override fun regissuccess(message: String) {
-        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     override fun regiserror(message: String) {
-        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode){
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
             123 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    Toast.makeText(this, "Register Berhasil", Toast.LENGTH_SHORT).show()
-                else
-                    Toast.makeText(this, "Register Gagal", Toast.LENGTH_SHORT).show()
+                granted =
+                    grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
             }
         }
     }
 
     private fun isExternalStorageReadable(): Boolean{
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        ){
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 123)
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                123)
         }
         var state = Environment.getExternalStorageState()
         if (Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state)
