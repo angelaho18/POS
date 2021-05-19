@@ -126,7 +126,7 @@ class Register : AppCompatActivity(), regisviewInterface {
     }
 
     private fun isExternalStorageReadable(): Boolean{
-        if (ActivityCompat.checkSelfPermission(
+        if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ){
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 123)
