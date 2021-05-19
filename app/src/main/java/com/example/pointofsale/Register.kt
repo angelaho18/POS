@@ -1,11 +1,19 @@
 package com.example.pointofsale
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.StatFs
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.pointofsale.presenter.regisPresenter
 import com.example.pointofsale.presenter.regispresenterInterface
 import com.example.pointofsale.view.regisviewInterface
@@ -13,11 +21,11 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.activity_register.emailAddress
+import java.io.File
 
 class Register : AppCompatActivity(),regisviewInterface {
 
-    internal lateinit var regispresenter:regispresenterInterface
-
+    private lateinit var regispresenter:regispresenterInterface
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -47,9 +55,12 @@ class Register : AppCompatActivity(),regisviewInterface {
             } else{
                 if(emailAddress.text.isEmailValid()){
                     val intent_profile = Intent(this, Profile::class.java)
-                    var user = User(fullName.text.toString(), emailAddress.text.toString())
-                    intent_profile.putExtra(EXTRA_USER,user)
-                    startActivity(intent_profile)
+//                    var user = User(fullName.text.toString(), emailAddress.text.toString())
+//                    intent_profile.putExtra(EXTRA_USER, user)
+                    if (isExternalStorageReadable()) {
+                        writeFileExternal()
+                        startActivity(intent_profile)
+                    }
                 }else{
                     emailAddress.error = "Please Enter Valid Email Address"
                 }
@@ -91,8 +102,39 @@ class Register : AppCompatActivity(),regisviewInterface {
         Toast.makeText(this,message,Toast.LENGTH_LONG).show()
     }
 
-//    override fun regisResult(message: String) {
-//        Toast.makeText(this,message,Toast.LENGTH_LONG).show()
-//    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            123 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    Toast.makeText(this, "Register Berhasil", Toast.LENGTH_SHORT).show()
+                else
+                    Toast.makeText(this, "Register Gagal", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
+    private fun isExternalStorageReadable(): Boolean{
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ){
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 123)
+        }
+        var state = Environment.getExternalStorageState()
+        if (Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state)
+            return true
+
+        return false
+    }
+
+    private fun writeFileExternal() {
+        var myDir = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)?.toURI())
+        var data = "${fullName.text}\n${emailAddress.text} "
+
+        if (!myDir.exists()) {
+            myDir.mkdir()
+        }
+        File(myDir, "regisData.txt").apply {
+            writeText(data)
+        }
+    }
 }

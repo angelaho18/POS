@@ -98,13 +98,13 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
                     <android.widget.Button
                         android:id="@+id/bt_save"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Save"
-                        android:layout_marginLeft="40dp"/>
+                        android:text="Save"/>
                     <android.widget.Button
                         android:id="@+id/bt_reset"
                         android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                         android:text="Reset"
                         android:layout_marginLeft="30dp"/>
                     <android.widget.Button
-                        android:id="@+id/bt_edit"
+                        android:id="@+id/bt_read"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Edit"

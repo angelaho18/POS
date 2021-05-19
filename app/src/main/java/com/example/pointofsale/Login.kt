@@ -1,4 +1,4 @@
-    package com.example.pointofsale
+package com.example.pointofsale
 
 import android.content.Intent
 import android.media.AudioManager
@@ -15,9 +15,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 
-private var sp : SoundPool? = null
-private var soundID = 0
 class Login : AppCompatActivity() {
+    private var sp : SoundPool? = null
+    private var soundID = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
