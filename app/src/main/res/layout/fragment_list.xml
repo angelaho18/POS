@@ -23,6 +23,15 @@
             android:textColor="@color/white"
             android:textSize="30sp"
             android:textStyle="bold" />
+        <android.widget.Button
+            android:id="@+id/bt_addStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/icon_add"
+            android:text="Add"
+            android:background="@color/blue"
+            />
+
     </LinearLayout>
 
     <SearchView

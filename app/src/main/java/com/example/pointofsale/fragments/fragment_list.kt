@@ -114,64 +114,96 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //        recyclerView.adapter = productAdapter
 //        recyclerView.layoutManager = LinearLayoutManager(view.context)
 
-        service = Intent(context, ServiceStock::class.java)
+//        service = Intent(context, ServiceStock::class.java)
+//
+//        Handler().postDelayed({
+//            var arrayStock = ArrayList<String>()
+//            var stockDetail = ArrayList<ReqresItem>()
+//            for (i in Data) {
+//                if (i.storeID.toInt() < 2) {
+//                    arrayStock.add(i.title)
+//                    stockDetail.add(i)
+//                }
+//                Log.d("STORE-ID", "${i.storeID.toInt()}")
+//            }
+//
+//            var hsl = ""
+//            for (i in arrayStock) {
+//                if (i == arrayStock.last()) {
+//                    hsl += i
+//                    hsl += ""
+//                } else {
+//                    hsl += i
+//                    hsl += "\n"
+//                }
+//            }
+//            if (hsl != null) {
+//                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
+//                val builder = AlertDialog.Builder(context)
+//                builder.setView(views)
+//
+//                views.listBarang.setText(hsl)
+//
+//                dialog = builder.create()
+//                if (startService) {
+//                    dialog.show()
+//                    requireActivity().startService(service)
+//                }
+//                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+//                dialog.setCancelable(false)
+//
+//                var gson = Gson()
+//
+//                Log.d("ALERT", "Stock Detail: $stockDetail")
+//                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
+//                notifIntent.putExtra(EXTRA_STOK, gson.toJson(stockDetail))
+//
+//                if (showNotif){
+//                    requireActivity().sendBroadcast(notifIntent)
+//                    showNotif = false
+//                }
+//
+//                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
+//
+//                alertStockBut.setOnClickListener {
+//                    requireActivity().stopService(service)
+//                    dialog.dismiss()
+//                    startService = false
+//                }
+//            }
+//        }, 5000L)
 
-        Handler().postDelayed({
-            var arrayStock = ArrayList<String>()
-            var stockDetail = ArrayList<ReqresItem>()
-            for (i in Data) {
-                if (i.storeID.toInt() < 2) {
-                    arrayStock.add(i.title)
-                    stockDetail.add(i)
-                }
-                Log.d("STORE-ID", "${i.storeID.toInt()}")
+        val addbutton = view.findViewById<Button>(R.id.bt_addStock)
+
+        Log.i("kiiiiadd", addbutton.toString())
+
+        addbutton.setOnClickListener {
+
+//
+//            val window = PopupWindow(view)
+//            val vWind = layoutInflater.inflate(R.layout.layout_pop_up,null)
+//            window.contentView = vWind
+//            Toast.makeText(context,"success", Toast.LENGTH_LONG).show()
+//
+
+            val views1 = View.inflate(context, R.layout.layout_pop_up, null)
+            val builder = AlertDialog.Builder(context)
+            builder.setView(views1)
+            dialog = builder.create()
+            val butconfirm = views1.findViewById<Button>(R.id.bt_add_to_conf)
+            val butcancel = views1.findViewById<Button>(R.id.bt_cancel)
+            dialog.show()
+            butconfirm.setOnClickListener {
+                dialog.dismiss()
+            }
+            butcancel.setOnClickListener {
+                dialog.dismiss()
             }
 
-            var hsl = ""
-            for (i in arrayStock) {
-                if (i == arrayStock.last()) {
-                    hsl += i
-                    hsl += ""
-                } else {
-                    hsl += i
-                    hsl += "\n"
-                }
-            }
-            if (hsl != null) {
-                val views = View.inflate(context, R.layout.alert_dialog_stock, null)
-                val builder = AlertDialog.Builder(context)
-                builder.setView(views)
+        }
 
-                views.listBarang.setText(hsl)
 
-                dialog = builder.create()
-                if (startService) {
-                    dialog.show()
-                    requireActivity().startService(service)
-                }
-                dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-                dialog.setCancelable(false)
 
-                var gson = Gson()
-
-                Log.d("ALERT", "Stock Detail: $stockDetail")
-                var notifIntent = Intent(view.context, ChannelAndNotifReceiver::class.java)
-                notifIntent.putExtra(EXTRA_STOK, gson.toJson(stockDetail))
-
-                if (showNotif){
-                    requireActivity().sendBroadcast(notifIntent)
-                    showNotif = false
-                }
-
-                var alertStockBut = views.findViewById<Button>(R.id.alertStockBut)
-
-                alertStockBut.setOnClickListener {
-                    requireActivity().stopService(service)
-                    dialog.dismiss()
-                    startService = false
-                }
-            }
-        }, 5000L)
 
         return view
     }
