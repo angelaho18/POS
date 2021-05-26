@@ -6,6 +6,7 @@ import android.icu.text.NumberFormat
 import android.icu.text.Transliterator
 import android.provider.ContactsContract
 import android.util.Log
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,7 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
     private var found = false
 //    var arrayStock = ArrayList<String>()
 
-    class ItemHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class ItemHolder(val view: View) : RecyclerView.ViewHolder(view){
         val ProductName = view.findViewById<TextView>(R.id.product_name)
         val Quantity = view.findViewById<TextView>(R.id.quantity)
         val Price = view.findViewById<TextView>(R.id.price)
