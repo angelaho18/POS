@@ -1,5 +1,6 @@
 package com.example.pointofsale
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.icu.text.NumberFormat
@@ -10,9 +11,7 @@ import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.model.ReqresItem
 import com.squareup.picasso.Picasso
@@ -32,6 +31,37 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
         val Quantity = view.findViewById<TextView>(R.id.quantity)
         val Price = view.findViewById<TextView>(R.id.price)
         val row = view.findViewById<LinearLayout>(R.id.row)
+        val mMenu = view.findViewById<ImageView>(R.id.mMenus)
+
+        init {
+            mMenu.setOnClickListener{
+                popupMenus(it)
+            }
+        }
+
+        private fun popupMenus(view:View) {
+            val popupMenus = PopupMenu(itemView.context,view)
+            popupMenus.inflate(R.menu.floating_context_menu_list)
+            popupMenus.setOnMenuItemClickListener {
+                when(it.itemId){
+                    R.id.editData-> {
+                        Toast.makeText(itemView.context, "Edit Button", Toast.LENGTH_LONG).show()
+                        true
+                    }
+                    R.id.deleteData->{
+                        Toast.makeText(itemView.context, "Delete Button", Toast.LENGTH_LONG).show()
+                        true
+                    }
+                    else-> true
+                }
+            }
+            popupMenus.show()
+            val popup = PopupMenu::class.java.getDeclaredField("mPopup")
+            popup.isAccessible = true
+            val menu = popup.get(popupMenus)
+            menu.javaClass.getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                .invoke(menu,true)
+        }
 
         fun changeColor(item: ReqresItem, term: String?): Boolean {
             if (term != null) {

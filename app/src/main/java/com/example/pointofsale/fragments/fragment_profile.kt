@@ -125,7 +125,7 @@ class fragment_profile : Fragment(){
 //        Log.i("ki",reset.toString())
 
         val save = view.findViewById<Button>(R.id.bt_save)
-        val read = view.findViewById<Button>(R.id.bt_read)
+        val read = view.findViewById<Button>(R.id.bt_edit)
         val reset = view.findViewById<Button>(R.id.bt_reset)
         val name = view.findViewById<EditText>(R.id.full_name)
         val email = view.findViewById<EditText>(R.id.emailAddress)
