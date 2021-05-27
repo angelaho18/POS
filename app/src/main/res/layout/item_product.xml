@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="18dp"
                 android:layout_marginLeft="10dp">
 
                 <TextView
@@ -80,8 +80,26 @@
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </LinearLayout>
-
-
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="115dp">
+                <ImageButton
+                    android:id="@+id/rec_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_edit_note_24"
+                    android:background="@color/transparent"
+                    android:layout_marginRight="15dp"/>
+                <ImageButton
+                    android:id="@+id/rec_del"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_del"
+                    android:background="@color/transparent"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
