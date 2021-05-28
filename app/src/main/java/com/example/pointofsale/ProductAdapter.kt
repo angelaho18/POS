@@ -16,6 +16,9 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pointofsale.fragments.fragment_list
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.*
 
 class ProductAdapter(private val items: MutableList<Product>, private val query: String?, private val db: ProductDBHelper) :
@@ -47,8 +50,14 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
                         true
                     }
                     R.id.deleteData->{
-                        db.productDao().deleteData(item)
-                        Toast.makeText(itemView.context, "Delete Button", Toast.LENGTH_LONG).show()
+                        doAsync{
+//                            db.productDao().deleteData(item)
+                            db.productDao().deleteByName(item.ProductName)
+                            uiThread {
+                                fragment_list.refreshData(db)
+                            }
+                        }
+//                        Toast.makeText(itemView.context, "Delete Button", Toast.LENGTH_LONG).show()
                         true
                     }
                     else-> true
@@ -96,7 +105,13 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
         holder.Price.text = rupiah(item.Price)
         holder.mMenu.setOnClickListener {
             holder.popupMenus(it, item, db)
-            notifyDataSetChanged()
+//            notifyDataSetChanged()
+//            doAsync {
+//                db.productDao().getAllData()
+//                uiThread {
+//                    setData(items)
+//                }
+//            }
         }
 
 //        var bitmapData = item.ProductPic

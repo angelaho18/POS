@@ -184,14 +184,7 @@ class fragment_list : Fragment() {
         productRecyclerView.adapter = productAdapter
         productRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        doAsync {
-            var data = db.productDao().getAllData()
-            Log.d(TAG, "onCreateView: $data")
-            uiThread {
-                productAdapter.setData(data)
-            }
-        }
-
+        refreshData(db)
 
         val addbutton = view.findViewById<Button>(R.id.bt_addStock)
 
@@ -364,6 +357,16 @@ class fragment_list : Fragment() {
 
         fun passData(data: String) {
             dataPasser.onDataPass(data)
+        }
+
+        fun refreshData(db: ProductDBHelper){
+            doAsync {
+                var data = db.productDao().getAllData()
+                Log.d(TAG, "onCreateView: $data")
+                uiThread {
+                    productAdapter.setData(data)
+                }
+            }
         }
 
         /**
