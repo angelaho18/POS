@@ -1,9 +1,6 @@
 package com.example.pointofsale
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface ProductDAO {
@@ -13,9 +10,14 @@ interface ProductDAO {
     @Insert
     fun insertAll(vararg product: Product)
 
-    @Query("Update Product set PRODUCT_QTY=:qty, PRODUCT_PRICE=:price, PRODUCT_IMG=:pic where PRODUCT_NAME=:name")
-    fun updateData(name: String, pic: String, qty: Int, price: Int)
+//    @Query("Update Product set PRODUCT_QTY=:qty, PRODUCT_PRICE=:price, PRODUCT_IMG=:pic where PRODUCT_NAME=:name")
+//    fun updateData(name: String, pic: String, qty: Int, price: Int)
+    @Update
+    fun updateData(product: Product)
 
-    @Query("Delete from Product where PRODUCT_NAME=:name")
-    fun deleteData(name: String)
+    @Delete
+    fun deleteData(product: Product)
+
+//    @Query("Delete from Product where PRODUCT_NAME=:name")
+//    fun deleteData(name: String)
 }

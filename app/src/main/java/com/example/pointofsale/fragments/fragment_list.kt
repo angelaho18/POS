@@ -180,7 +180,7 @@ class fragment_list : Fragment() {
 
         val productRecyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
 
-        productAdapter = ProductAdapter(Data, query)
+        productAdapter = ProductAdapter(Data, query, db)
         productRecyclerView.adapter = productAdapter
         productRecyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -281,6 +281,7 @@ class fragment_list : Fragment() {
                     imageSource = ImageBitmapString.BitMapToString(bitmap).toString()
                 }
             }
+
         }
     }
 

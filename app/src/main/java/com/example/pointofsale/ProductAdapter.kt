@@ -1,5 +1,6 @@
 package com.example.pointofsale
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
@@ -7,6 +8,7 @@ import android.graphics.Color
 import android.icu.text.NumberFormat
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -16,7 +18,7 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
-class ProductAdapter(private val items: MutableList<Product>, private val query: String?) :
+class ProductAdapter(private val items: MutableList<Product>, private val query: String?, private val db: ProductDBHelper) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
     private var found = false
 //    var arrayStock = ArrayList<String>()
@@ -29,22 +31,23 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
         val ProductImg = view.findViewById<ImageView>(R.id.GambarProduk)
         val mMenu = view.findViewById<ImageView>(R.id.mMenus)
 
-        init {
-            mMenu.setOnClickListener{
-                popupMenus(it)
-            }
-        }
-
-        private fun popupMenus(view:View) {
+//        init {
+//            mMenu.setOnClickListener{
+//                popupMenus(it)
+//            }
+//        }
+        fun popupMenus(view: View, item: Product, db: ProductDBHelper) {
             val popupMenus = PopupMenu(itemView.context,view)
             popupMenus.inflate(R.menu.floating_context_menu_list)
             popupMenus.setOnMenuItemClickListener {
                 when(it.itemId){
                     R.id.editData-> {
+                        AlertUtils.updataDialog(view, item, db)
                         Toast.makeText(itemView.context, "Edit Button", Toast.LENGTH_LONG).show()
                         true
                     }
                     R.id.deleteData->{
+                        db.productDao().deleteData(item)
                         Toast.makeText(itemView.context, "Delete Button", Toast.LENGTH_LONG).show()
                         true
                     }
@@ -91,6 +94,10 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
         if (!found) found = holder.changeColor(item, query)
 
         holder.Price.text = rupiah(item.Price)
+        holder.mMenu.setOnClickListener {
+            holder.popupMenus(it, item, db)
+            notifyDataSetChanged()
+        }
 
 //        var bitmapData = item.ProductPic
 //        var bitmap = ImageBitmapString.StringToBitMap(bitmapData);
