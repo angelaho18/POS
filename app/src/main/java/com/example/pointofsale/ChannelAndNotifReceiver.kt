@@ -154,7 +154,7 @@ class ChannelAndNotifReceiver : BroadcastReceiver() {
                     NotificationCompat.InboxStyle()
                         .setSummaryText("${notifs.count()} new notifications")
                 )
-                .setColor(ContextCompat.getColor(context!!, R.color.blue))
+                .setColor(ContextCompat.getColor(context, R.color.blue))
                 .setGroup(group_key)
                 .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_ALL)
                 .setGroupSummary(true)

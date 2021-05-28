@@ -12,13 +12,13 @@ open class MyBatteryReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
-        val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0) ?: -1
+        val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0)
         val isCharging: Boolean = status == BatteryManager.BATTERY_STATUS_CHARGING
                 || status == BatteryManager.BATTERY_STATUS_FULL
 
         val isFull: Boolean = status == BatteryManager.BATTERY_STATUS_FULL
 
-        val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) ?: -1
+        val chargePlug: Int = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
         val usbCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_USB
         val acCharge: Boolean = chargePlug == BatteryManager.BATTERY_PLUGGED_AC
 

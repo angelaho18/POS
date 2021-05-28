@@ -15,9 +15,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        intent?.apply{
+        intent.apply{
             val id = getIntExtra(EXTRA_ID, BaseNotification.NOTIFICATION_ID)
-            NotificationManagerCompat.from(context!!).cancel(id!!)
+            NotificationManagerCompat.from(context).cancel(id)
         }
 
         // alarm manager

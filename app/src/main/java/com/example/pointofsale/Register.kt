@@ -89,9 +89,9 @@ class Register : AppCompatActivity(), regisviewInterface {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        fullName.setText(savedInstanceState?.getString(EXTRA_FULLNAME))
-        emailAddress.setText(savedInstanceState?.getString(EXTRA_EMAIL))
-        password.setText(savedInstanceState?.getString(EXTRA_PASSWORD))
+        fullName.setText(savedInstanceState.getString(EXTRA_FULLNAME))
+        emailAddress.setText(savedInstanceState.getString(EXTRA_EMAIL))
+        password.setText(savedInstanceState.getString(EXTRA_PASSWORD))
     }
 
     override fun regissuccess(message: String) {

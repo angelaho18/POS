@@ -9,7 +9,7 @@ class ActionDismissReceiver : BroadcastReceiver(){
     override fun onReceive(p0: Context?, p1: Intent?) {
         p1?.apply{
             val id = getIntExtra(EXTRA_ID, BaseNotification.NOTIFICATION_ID)
-            NotificationManagerCompat.from(p0!!).cancel(id!!);
+            NotificationManagerCompat.from(p0!!).cancel(id);
             count--
         }
 

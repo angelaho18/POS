@@ -91,9 +91,9 @@ class Login : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        logMail.setText(savedInstanceState?.getString(EXTRA_FULLNAME, "FULL_NAME"))
-        logPass.setText(savedInstanceState?.getString(EXTRA_PASSWORD, "PASSWORD"))
-        stayLogged.isChecked = savedInstanceState?.getBoolean(EXTRA_STATUS, false)
+        logMail.setText(savedInstanceState.getString(EXTRA_FULLNAME, "FULL_NAME"))
+        logPass.setText(savedInstanceState.getString(EXTRA_PASSWORD, "PASSWORD"))
+        stayLogged.isChecked = savedInstanceState.getBoolean(EXTRA_STATUS, false)
     }
 
     override fun onStart() {

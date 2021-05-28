@@ -1,5 +1,6 @@
 package com.example.pointofsale.fragments
 
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
@@ -7,35 +8,32 @@ import android.content.ComponentName
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.loader.app.LoaderManager
-import androidx.loader.content.Loader
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.androidnetworking.AndroidNetworking
-import com.androidnetworking.error.ANError
-import com.androidnetworking.interfaces.ParsedRequestListener
+import androidx.room.Room.databaseBuilder
 import com.example.pointofsale.*
-import com.example.pointofsale.model.Reqres
-import com.example.pointofsale.model.ReqresItem
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_register.*
-import kotlinx.android.synthetic.main.alert_dialog_stock.view.*
-import kotlinx.android.synthetic.main.fragment_list.*
-import okhttp3.Response
-import kotlin.collections.ArrayList
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
+import kotlin.random.Random
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,11 +45,16 @@ private const val ARG_PARAM2 = "param2"
  * Use the [fragment_list.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<ReqresItem>> {
+class fragment_list : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var ShimmerView: ShimmerFrameLayout
+    private lateinit var db: ProductDBHelper
+    private val SELECT_PICTURE = 1
+    private var selectedImagePath: String? = null
+    private lateinit var imageSource: String
+    private var inputData: ByteArray? = null
 
 //    private var Stock: ArrayList<Product> = arrayListOf(
 //        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
@@ -62,7 +65,7 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //        Product("Cheetos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 7000)
 //    )
 
-    private var Data: MutableList<ReqresItem> = mutableListOf()
+    private var Data: MutableList<Product> = mutableListOf()
 
     private lateinit var notificationManager: NotificationManagerCompat
 
@@ -104,9 +107,9 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //            schedule = false
 //        }
 //
-        LoaderManager.getInstance(this).initLoader(1, null, this).forceLoad()
-
-        Data = LoadData.Data
+//        LoaderManager.getInstance(this).initLoader(1, null, this).forceLoad()
+//
+//        Data = LoadData.Data
 //        Log.d("HASIL", "onCreateView: $Data")
 
 //        val recyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
@@ -173,39 +176,165 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
 //            }
 //        }, 5000L)
 
+        db = databaseBuilder(view.context, ProductDBHelper::class.java, "productdbex.db").build()
+
+        val productRecyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
+
+        productAdapter = ProductAdapter(Data, query)
+        productRecyclerView.adapter = productAdapter
+        productRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        doAsync {
+            var data = db.productDao().getAllData()
+            Log.d(TAG, "onCreateView: $data")
+            uiThread {
+                productAdapter.setData(data)
+            }
+        }
+
+
         val addbutton = view.findViewById<Button>(R.id.bt_addStock)
 
         Log.i("kiiiiadd", addbutton.toString())
 
         addbutton.setOnClickListener {
+            val addView = View.inflate(context, R.layout.layout_pop_up, null)
 
-//
-//            val window = PopupWindow(view)
-//            val vWind = layoutInflater.inflate(R.layout.layout_pop_up,null)
-//            window.contentView = vWind
-//            Toast.makeText(context,"success", Toast.LENGTH_LONG).show()
-//
-
-            val views1 = View.inflate(context, R.layout.layout_pop_up, null)
             val builder = AlertDialog.Builder(context)
-            builder.setView(views1)
+            builder.setView(addView)
             dialog = builder.create()
-            val butconfirm = views1.findViewById<Button>(R.id.bt_add_to_conf)
-            val butcancel = views1.findViewById<Button>(R.id.bt_cancel)
+
+            val browseBtn = addView.findViewById<Button>(R.id.browse_btn)
+            browseBtn.setOnClickListener {
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_GET_CONTENT
+                startActivityForResult(Intent.createChooser(intent,
+                    "Select Picture"), SELECT_PICTURE)
+            }
+
+            val confirmBtn = addView.findViewById<Button>(R.id.bt_add_to_conf)
+            val cancelBtn = addView.findViewById<Button>(R.id.bt_cancel)
+            val name = addView.findViewById<EditText>(R.id.inputName)
+            val qty = addView.findViewById<EditText>(R.id.inputQty)
+            val price = addView.findViewById<EditText>(R.id.inputPrice)
             dialog.show()
-            butconfirm.setOnClickListener {
+            var hasil = ""
+            confirmBtn.setOnClickListener {
+                doAsync {
+                    try {
+                        var productTmp = Product(Random.nextInt())
+                        productTmp.ProductName = name.text.toString()
+                        productTmp.Quantity = qty.text.toString().toInt()
+                        productTmp.Price = price.text.toString().toInt()
+//                        productTmp.ProductPic = inputData
+                        db.productDao().insertAll(productTmp)
+
+                        var data = db.productDao().getAllData()
+
+                        for (allData in db.productDao().getAllData()) {
+                            hasil += "${allData.ProductPic}"
+                        }
+                        uiThread {
+                            productAdapter.setData(data)
+//                            getData(db)
+                            Log.d("hasilDB", "onCreateView: $hasil")
+                            Toast.makeText(view.context, "$hasil", Toast.LENGTH_SHORT).show()
+                        }
+                    } catch (e: Exception) {
+                        uiThread {
+                            Log.e("ERROR DB", "$e")
+                            Toast.makeText(view.context, "$e", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
                 dialog.dismiss()
             }
-            butcancel.setOnClickListener {
+            cancelBtn.setOnClickListener {
                 dialog.dismiss()
             }
 
         }
 
-
-
-
         return view
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode === RESULT_OK) {
+            if (requestCode === SELECT_PICTURE) {
+                val selectedImageUri: Uri? = data!!.data
+                selectedImagePath = getPath(selectedImageUri)
+                Log.d(TAG, "onActivityResult: $selectedImagePath")
+                val filename: String? = selectedImagePath?.substring(selectedImagePath?.lastIndexOf(
+                    "/")!! + 1)
+                val view = View.inflate(context, R.layout.layout_pop_up, null)
+//                val vi = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+//                val v = vi.inflate(R.layout.layout_pop_up, null)
+                val imgFileName = view.findViewById<TextView>(R.id.image_file_name)
+                imgFileName.text = filename
+
+                Log.d(TAG, "onActivityResult: view ${imgFileName.text}")
+                if(data != null){
+                    var inputStream = context?.contentResolver?.openInputStream(selectedImageUri!!)
+//                    inputData = getBytes(inputStream!!)
+                    var bitmap = BitmapFactory.decodeStream(inputStream)
+                    imageSource = ImageBitmapString.BitMapToString(bitmap).toString()
+                }
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    fun getBytes(inputStream: InputStream): ByteArray? {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
+    }
+
+    fun getPath(uri: Uri?): String? {
+        if (uri == null) {
+            return null
+        }
+        var filePath: String? = null
+        val fileId: String = DocumentsContract.getDocumentId(uri)
+        val id = fileId.split(":".toRegex()).toTypedArray()[1]
+        val column = arrayOf(MediaStore.Images.Media.DATA)
+        val selector = MediaStore.Images.Media._ID + "=?"
+        val cursor = context!!.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            column, selector, arrayOf(id), null)
+        if (cursor != null){
+            val columnIndex = cursor?.getColumnIndex(column[0])
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(columnIndex)
+            }
+            cursor.close()
+            return filePath
+        }
+        Log.d(TAG, "getPath: Uri.Path ${uri.path}")
+        return uri.path
+    }
+
+//    override fun onStart() {
+//        super.onStart()
+////        getData(db)
+//    }
+
+    private fun resizeImg(img: ByteArray?): ByteArray? {
+        var img = img
+        while (img?.size!! > 500000) {
+            val bitmap: Bitmap = BitmapFactory.decodeByteArray(img, 0, img!!.size)
+            val resized = Bitmap.createScaledBitmap(bitmap,
+                (bitmap.width * 0.8).toInt(), (bitmap.height * 0.8).toInt(), true)
+            val stream = ByteArrayOutputStream()
+            resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            img = stream.toByteArray()
+        }
+        return img
     }
 
     private fun startMyJob() {
@@ -256,29 +385,29 @@ class fragment_list : Fragment(), LoaderManager.LoaderCallbacks<MutableList<Reqr
             }
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<MutableList<ReqresItem>> {
-        Log.d("LOADER", "CREATE LOADER")
-        return LoadData(context)
-    }
-
-    override fun onLoadFinished(
-        loader: Loader<MutableList<ReqresItem>>,
-        data: MutableList<ReqresItem>?
-    ) {
-//        Data.clear()
-        Log.d("LOADER", "onLoadFinished: YEEAAHHH")
-        if (data != null) {
-//            Log.d("HEI", "onLoadFinished: $data")
-//            Data.addAll(data)
-            productAdapter = ProductAdapter(data, query)
-            productRecyclerView.adapter = fragment_list.productAdapter
-            productRecyclerView.layoutManager = LinearLayoutManager(context)
-        }
-    }
-
-    override fun onLoaderReset(loader: Loader<MutableList<ReqresItem>>) {
-        var recyclerView = view?.findViewById<RecyclerView>(R.id.productRecyclerView)
-        recyclerView?.adapter?.notifyDataSetChanged()
-    }
+//    override fun onCreateLoader(id: Int, args: Bundle?): Loader<MutableList<ReqresItem>> {
+//        Log.d("LOADER", "CREATE LOADER")
+//        return LoadData(context)
+//    }
+//
+//    override fun onLoadFinished(
+//        loader: Loader<MutableList<ReqresItem>>,
+//        data: MutableList<ReqresItem>?
+//    ) {
+////        Data.clear()
+//        Log.d("LOADER", "onLoadFinished: YEEAAHHH")
+//        if (data != null) {
+////            Log.d("HEI", "onLoadFinished: $data")
+////            Data.addAll(data)
+//            productAdapter = ProductAdapter(data, query)
+//            productRecyclerView.adapter = fragment_list.productAdapter
+//            productRecyclerView.layoutManager = LinearLayoutManager(context)
+//        }
+//    }
+//
+//    override fun onLoaderReset(loader: Loader<MutableList<ReqresItem>>) {
+//        var recyclerView = view?.findViewById<RecyclerView>(R.id.productRecyclerView)
+//        recyclerView?.adapter?.notifyDataSetChanged()
+//    }
 }
 

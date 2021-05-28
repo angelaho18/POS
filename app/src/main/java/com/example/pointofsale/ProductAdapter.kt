@@ -1,28 +1,21 @@
 package com.example.pointofsale
 
 import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.icu.text.NumberFormat
-import android.icu.text.Transliterator
-import android.provider.ContactsContract
-import android.util.Log
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pointofsale.model.ReqresItem
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_product.view.*
-import java.io.Console
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.log
 
-class ProductAdapter(private val items: MutableList<ReqresItem>, private val query: String?) :
+
+class ProductAdapter(private val items: MutableList<Product>, private val query: String?) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
     private var found = false
 //    var arrayStock = ArrayList<String>()
@@ -32,10 +25,11 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
         val Quantity = view.findViewById<TextView>(R.id.quantity)
         val Price = view.findViewById<TextView>(R.id.price)
         val row = view.findViewById<LinearLayout>(R.id.row)
+        val ProductImg = view.findViewById<ImageView>(R.id.GambarProduk)
 
-        fun changeColor(item: ReqresItem, term: String?): Boolean {
+        fun changeColor(item: Product, term: String?): Boolean {
             if (term != null) {
-                if (item.title.contains(term.toString())) {
+                if (item.ProductName.contains(term.toString())) {
                     Toast.makeText(itemView.context, "hey, you find me", Toast.LENGTH_LONG).show()
                     row.backgroundTintList = ColorStateList.valueOf(Color.GREEN)
                     return true
@@ -49,13 +43,6 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
             }
             return false
         }
-//
-//        fun quantity(item: ReqresItem, arrayStock: ArrayList<String>): ArrayList<String> {
-//            if (item.storeID.toInt() <= 3) {
-//                arrayStock.add(item.title)
-//            }
-//            return arrayStock
-//        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -66,32 +53,32 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+        var item = items[position]
+        holder.ProductName.text = item.ProductName
+        holder.Quantity.text = item.Quantity.toString()
+        if (!found) found = holder.changeColor(item, query)
+        
+        holder.Price.text = rupiah(item.Price)
 
-//        var item = items.get(position)
-//        holder.ProductName.text = item.ProductName
-//        holder.Quantity.text = item.Quantity.toString()
-//        if (!found) found = holder.changeColor(item, query)
-
-//////        arrayStock = holder.quantity(item, arrayStock)
-
-//        holder.Price.text = rupiah(item.Price)
+//        var bitmapData = item.ProductPic
+//        var bitmap = ImageBitmapString.StringToBitMap(bitmapData);
 //
-//        Picasso.get().load(item.ProductPic).into(holder.view.GambarProduk)
+//        holder.ProductImg.setImageBitmap(bitmap)
 
-        val data = items.get(position)
+//        Picasso.get().load(item.ProductPic).into(holder.ProductImg)
 
-        val angka = data.salePrice
-        val getfloat = "f"
-        val gabung = angka + getfloat
-
-        holder.ProductName.text = "${data.title}"
-        holder.Quantity.text = data.storeID
-//        Log.d("WOW", data.salePrice.toInt().toString())
-        holder.Price.text = rupiah(gabung.toFloat().toInt() * 14500)
-//        holder.Price.text = rupiah(1000)
-        Picasso.get().load(data.thumb).into(holder.view.GambarProduk)
-
-
+//        val data = items.get(position)
+//
+//        val angka = data.salePrice
+//        val getfloat = "f"
+//        val gabung = angka + getfloat
+//
+//        holder.ProductName.text = "${data.title}"
+//        holder.Quantity.text = data.storeID
+////        Log.d("WOW", data.salePrice.toInt().toString())
+//        holder.Price.text = rupiah(gabung.toFloat().toInt() * 14500)
+////        holder.Price.text = rupiah(1000)
+//        Picasso.get().load(data.thumb).into(holder.view.GambarProduk)
     }
 
     override fun getItemCount(): Int = items.size
@@ -102,5 +89,10 @@ class ProductAdapter(private val items: MutableList<ReqresItem>, private val que
         return numberFormat.format(Price).toString()
     }
 
+    fun setData(list: List<Product>){
+        items.clear()
+        items.addAll(list)
+        notifyDataSetChanged()
+    }
 }
 
