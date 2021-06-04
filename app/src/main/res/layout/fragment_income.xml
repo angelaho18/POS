@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.fragment_income"
     android:orientation="vertical">
 
@@ -25,83 +26,108 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <SearchView
+            android:id="@+id/searchView2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Januari"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_gravity="center"
-            android:textColor="@color/black"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.005" />
+        <ListView
+            android:id="@+id/listview1"
+            android:layout_width="0dp"
+            android:layout_height="553dp"
+            android:layout_marginTop="49dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#f1f1f1">
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tanggal"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nama Barang"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Harga(Rp)"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center"/>
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:background="#ffffff"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginHorizontal="1dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="kopiko"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:background="#ffffff"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginHorizontal="1dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25.000"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:background="#ffffff"
-                    android:layout_marginBottom="1dp"
-                    android:layout_marginHorizontal="1dp"/>
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Januari"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="20sp"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:textColor="@color/black"/>-->
+
+<!--        <TableLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="#f1f1f1">-->
+
+<!--            <TableRow>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Tanggal"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"/>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Nama Barang"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"/>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Harga(Rp)"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"/>-->
+<!--            </TableRow>-->
+<!--            <TableRow>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="1"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:background="#ffffff"-->
+<!--                    android:layout_marginBottom="1dp"-->
+<!--                    android:layout_marginHorizontal="1dp"/>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="kopiko"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:background="#ffffff"-->
+<!--                    android:layout_marginBottom="1dp"-->
+<!--                    android:layout_marginHorizontal="1dp"/>-->
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="25.000"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:background="#ffffff"-->
+<!--                    android:layout_marginBottom="1dp"-->
+<!--                    android:layout_marginHorizontal="1dp"/>-->
+<!--            </TableRow>-->
+<!--        </TableLayout>-->
+<!--    </LinearLayout>-->
 
 </LinearLayout>
