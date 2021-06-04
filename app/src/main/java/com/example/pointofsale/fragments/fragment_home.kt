@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import com.example.pointofsale.Product
 import com.example.pointofsale.R
 
 // TODO: Rename parameter arguments, choose names that match

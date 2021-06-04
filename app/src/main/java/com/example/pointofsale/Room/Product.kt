@@ -1,16 +1,17 @@
-package com.example.pointofsale
+package com.example.pointofsale.Room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Query
 
 @Entity
 data class Product(
-    @PrimaryKey(autoGenerate = true) var id: Int,
-    @ColumnInfo(name = "PRODUCT_IMG") var ProductPic: String = "",
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
     @ColumnInfo(name = "PRODUCT_NAME") var ProductName: String = "",
     @ColumnInfo(name = "PRODUCT_QTY") var Quantity: Int = 0,
-    @ColumnInfo(name = "PRODUCT_PRICE") var Price: Int = 0
+    @ColumnInfo(name = "PRODUCT_PRICE") var Price: Int = 0,
+    @ColumnInfo(name = "PRODUCT_IMG") var ProductPic: String = ""
 )
 
 //data class Product(var ProductName: String, var ProductPic: String, var Quantity: Int = 0, var Price: Int = 0): Parcelable {

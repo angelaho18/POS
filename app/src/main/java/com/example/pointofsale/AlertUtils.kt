@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.example.pointofsale.Room.Product
+import com.example.pointofsale.Room.ProductDBHelper
 import com.example.pointofsale.fragments.fragment_list
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -34,7 +36,7 @@ object AlertUtils {
                 item.Price = price.text.toString().toInt()
                 db.productDao().updateData(item)
                 uiThread {
-                    fragment_list.refreshData(db)
+                    fragment_list.getData(db)
                 }
             }
             dialog.dismiss()

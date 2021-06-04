@@ -1,14 +1,11 @@
 package com.example.pointofsale
 
-import android.app.AlertDialog
-import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.icu.text.NumberFormat
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -16,7 +13,10 @@ import android.widget.TextView
 import android.widget.Toast
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pointofsale.Room.Product
+import com.example.pointofsale.Room.ProductDBHelper
 import com.example.pointofsale.fragments.fragment_list
+import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
@@ -52,9 +52,9 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
                     R.id.deleteData->{
                         doAsync{
 //                            db.productDao().deleteData(item)
-                            db.productDao().deleteByName(item.ProductName)
+                            db.productDao().deleteById(item.id)
                             uiThread {
-                                fragment_list.refreshData(db)
+                                fragment_list.getData(db)
                             }
                         }
 //                        Toast.makeText(itemView.context, "Delete Button", Toast.LENGTH_LONG).show()
@@ -105,21 +105,16 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
         holder.Price.text = rupiah(item.Price)
         holder.mMenu.setOnClickListener {
             holder.popupMenus(it, item, db)
-//            notifyDataSetChanged()
-//            doAsync {
-//                db.productDao().getAllData()
-//                uiThread {
-//                    setData(items)
-//                }
-//            }
         }
+
+        var imageUri = Uri.parse(item.ProductPic)
+//        Glide.with(holder.view).load(imageUri).into(holder.ProductImg)
+        Picasso.get().load(imageUri).into(holder.ProductImg)
 
 //        var bitmapData = item.ProductPic
 //        var bitmap = ImageBitmapString.StringToBitMap(bitmapData);
-//
+////content://com.android.providers.media.documents/document/image%3A35652
 //        holder.ProductImg.setImageBitmap(bitmap)
-
-//        Picasso.get().load(item.ProductPic).into(holder.ProductImg)
 
 //        val data = items.get(position)
 //

@@ -23,17 +23,22 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room.databaseBuilder
 import com.example.pointofsale.*
+import com.example.pointofsale.Room.Product
+import com.example.pointofsale.Room.ProductDBHelper
+import com.example.pointofsale.Room.ProductViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
-import kotlin.random.Random
+import java.util.Map.of
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,16 +50,18 @@ private const val ARG_PARAM2 = "param2"
  * Use the [fragment_list.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_list : Fragment() {
+class fragment_list : Fragment(){
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var ShimmerView: ShimmerFrameLayout
     private lateinit var db: ProductDBHelper
+    private lateinit var vm: ProductViewModel
     private val SELECT_PICTURE = 1
     private var selectedImagePath: String? = null
     private lateinit var imageSource: String
     private var inputData: ByteArray? = null
+    var filename: String? = ""
 
 //    private var Stock: ArrayList<Product> = arrayListOf(
 //        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
@@ -175,8 +182,14 @@ class fragment_list : Fragment() {
 //                }
 //            }
 //        }, 5000L)
+//        LoaderManager.getInstance(this).initLoader(1, null, mLoaderCallbacks);
+
 
         db = databaseBuilder(view.context, ProductDBHelper::class.java, "productdbex.db").build()
+
+        db = ProductDBHelper.getInstance(view.context)!!
+
+//        vm = ViewModelProvider(this, this)[ProductViewModel::class.java]
 
         val productRecyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
 
@@ -184,11 +197,9 @@ class fragment_list : Fragment() {
         productRecyclerView.adapter = productAdapter
         productRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        refreshData(db)
+        getData(db)
 
         val addbutton = view.findViewById<Button>(R.id.bt_addStock)
-
-        Log.i("kiiiiadd", addbutton.toString())
 
         addbutton.setOnClickListener {
             val addView = View.inflate(context, R.layout.layout_pop_up, null)
@@ -201,9 +212,11 @@ class fragment_list : Fragment() {
             browseBtn.setOnClickListener {
                 val intent = Intent()
                 intent.type = "image/*"
-                intent.action = Intent.ACTION_GET_CONTENT
+                intent.action = Intent.ACTION_OPEN_DOCUMENT
                 startActivityForResult(Intent.createChooser(intent,
                     "Select Picture"), SELECT_PICTURE)
+                val imgFileName = addView.findViewById<TextView>(R.id.image_file_name)
+                imgFileName.text = filename
             }
 
             val confirmBtn = addView.findViewById<Button>(R.id.bt_add_to_conf)
@@ -216,11 +229,11 @@ class fragment_list : Fragment() {
             confirmBtn.setOnClickListener {
                 doAsync {
                     try {
-                        var productTmp = Product(Random.nextInt())
+                        var productTmp = Product()
                         productTmp.ProductName = name.text.toString()
                         productTmp.Quantity = qty.text.toString().toInt()
                         productTmp.Price = price.text.toString().toInt()
-//                        productTmp.ProductPic = inputData
+                        productTmp.ProductPic = imageSource
                         db.productDao().insertAll(productTmp)
 
                         var data = db.productDao().getAllData()
@@ -232,7 +245,6 @@ class fragment_list : Fragment() {
                             productAdapter.setData(data)
 //                            getData(db)
                             Log.d("hasilDB", "onCreateView: $hasil")
-                            Toast.makeText(view.context, "$hasil", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         uiThread {
@@ -246,7 +258,6 @@ class fragment_list : Fragment() {
             cancelBtn.setOnClickListener {
                 dialog.dismiss()
             }
-
         }
 
         return view
@@ -258,20 +269,23 @@ class fragment_list : Fragment() {
                 val selectedImageUri: Uri? = data!!.data
                 selectedImagePath = getPath(selectedImageUri)
                 Log.d(TAG, "onActivityResult: $selectedImagePath")
-                val filename: String? = selectedImagePath?.substring(selectedImagePath?.lastIndexOf(
+                filename = selectedImagePath?.substring(selectedImagePath?.lastIndexOf(
                     "/")!! + 1)
-                val view = View.inflate(context, R.layout.layout_pop_up, null)
+                val view = layoutInflater.inflate(R.layout.layout_pop_up, null, true)
 //                val vi = context?.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 //                val v = vi.inflate(R.layout.layout_pop_up, null)
                 val imgFileName = view.findViewById<TextView>(R.id.image_file_name)
                 imgFileName.text = filename
 
-                Log.d(TAG, "onActivityResult: view ${imgFileName.text}")
+
+//                Log.d(TAG, "onActivityResult: view ${imgFileName.text}")
                 if(data != null){
+                    imageSource = selectedImageUri.toString()
                     var inputStream = context?.contentResolver?.openInputStream(selectedImageUri!!)
 //                    inputData = getBytes(inputStream!!)
-                    var bitmap = BitmapFactory.decodeStream(inputStream)
-                    imageSource = ImageBitmapString.BitMapToString(bitmap).toString()
+//                    var bitmap = BitmapFactory.decodeStream(inputStream)
+//                    imageSource = ImageBitmapString.BitMapToString(bitmap).toString()
+                    Log.d(TAG, "onActivityResult: imagesource $imageSource")
                 }
             }
 
@@ -313,9 +327,10 @@ class fragment_list : Fragment() {
         return uri.path
     }
 
-//    override fun onStart() {
-//        super.onStart()
-////        getData(db)
+//    private fun compressBitmap(img: Bitmap): Bitmap{
+//        var options = BitmapFactory.Options()
+//        options.inJustDecodeBounds = true
+//
 //    }
 
     private fun resizeImg(img: ByteArray?): ByteArray? {
@@ -359,7 +374,7 @@ class fragment_list : Fragment() {
             dataPasser.onDataPass(data)
         }
 
-        fun refreshData(db: ProductDBHelper){
+        fun getData(db: ProductDBHelper){
             doAsync {
                 var data = db.productDao().getAllData()
                 Log.d(TAG, "onCreateView: $data")
