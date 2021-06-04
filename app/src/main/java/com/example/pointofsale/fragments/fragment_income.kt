@@ -1,11 +1,15 @@
 package com.example.pointofsale.fragments
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import android.widget.SimpleCursorAdapter
 import com.example.pointofsale.R
+import kotlinx.android.synthetic.main.fragment_income.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,14 +34,45 @@ class fragment_income : Fragment() {
         }
     }
 
+    var cols = listOf<String>(
+        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+        ContactsContract.CommonDataKinds.Phone.NUMBER,
+        ContactsContract.CommonDataKinds.Phone._ID
+    ).toTypedArray()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_income, container, false)
+        readContacts()
     }
 
+    fun readContacts(){
+        var fromlst = listOf<String>(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+        ).toTypedArray()
+
+        var tolst = intArrayOf(android.R.id.text1,android.R.id.text2)
+        var rs= activity!!.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,cols,
+            null,null,ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+        var adapter = SimpleCursorAdapter(context, android.R.layout.simple_list_item_2,rs,fromlst,tolst,0)
+        listview1.adapter = adapter
+        searchView2.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return false
+            }
+            override fun onQueryTextChange(p0: String?): Boolean {
+                var rs= activity!!.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,cols,
+                    "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?",
+                    Array(1){"%$p0%"},ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                adapter.changeCursor(rs)
+                return false
+            }
+        })
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
