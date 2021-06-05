@@ -1,14 +1,19 @@
 package com.example.pointofsale.Room
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import com.example.pointofsale.Room.Product
 import com.example.pointofsale.Room.ProductDAO
 
 class ProductRepository (application: Application){
-    private val productDao: ProductDAO? = null
+    private var productDao: ProductDAO? = null
+    private val db = ProductDBHelper.getInstance(application)
+    private var readAllData: LiveData<List<Product>>? = null
 
-    val readAllData: List<Product> = productDao!!.getAllData()
-    val db = ProductDBHelper.getInstance(application)
+    init{
+        productDao = db?.productDao()
+        readAllData = productDao?.getAllData()
+    }
 
     fun insert(product: Product) {
         db?.runInTransaction {
@@ -28,8 +33,8 @@ class ProductRepository (application: Application){
         }
     }
 
-    fun getData(): List<Product>{
-        return readAllData
+    fun getData(): LiveData<List<Product>>{
+        return readAllData!!
     }
 
 

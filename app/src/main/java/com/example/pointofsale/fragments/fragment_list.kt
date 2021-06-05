@@ -23,6 +23,8 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +40,6 @@ import org.jetbrains.anko.uiThread
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.Map.of
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,8 +56,8 @@ class fragment_list : Fragment(){
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var ShimmerView: ShimmerFrameLayout
-    private lateinit var db: ProductDBHelper
-    private lateinit var vm: ProductViewModel
+//    private lateinit var db: ProductDBHelper
+    private val vm: ProductViewModel by viewModels()
     private val SELECT_PICTURE = 1
     private var selectedImagePath: String? = null
     private lateinit var imageSource: String
@@ -72,7 +73,7 @@ class fragment_list : Fragment(){
 //        Product("Cheetos", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 7000)
 //    )
 
-    private var Data: MutableList<Product> = mutableListOf()
+//    private var Data: MutableList<Product> = mutableListOf()
 
     private lateinit var notificationManager: NotificationManagerCompat
 
@@ -185,19 +186,22 @@ class fragment_list : Fragment(){
 //        LoaderManager.getInstance(this).initLoader(1, null, mLoaderCallbacks);
 
 
-        db = databaseBuilder(view.context, ProductDBHelper::class.java, "productdbex.db").build()
+//        db = databaseBuilder(view.context, ProductDBHelper::class.java, "productdbex.db").build()
+//
+//        db = ProductDBHelper.getInstance(view.context)!!
 
-        db = ProductDBHelper.getInstance(view.context)!!
-
-//        vm = ViewModelProvider(this, this)[ProductViewModel::class.java]
+//        vm = ViewModelProvider(this)[ProductViewModel::class.java]
 
         val productRecyclerView = view.findViewById<RecyclerView>(R.id.productRecyclerView)
 
-        productAdapter = ProductAdapter(Data, query, db)
+        productAdapter = ProductAdapter(query, vm)
         productRecyclerView.adapter = productAdapter
         productRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        getData(db)
+        vm.getAllData().observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "onCreateView: observe $it")
+            productAdapter.setData(it)
+        })
 
         val addbutton = view.findViewById<Button>(R.id.bt_addStock)
 
@@ -234,17 +238,19 @@ class fragment_list : Fragment(){
                         productTmp.Quantity = qty.text.toString().toInt()
                         productTmp.Price = price.text.toString().toInt()
                         productTmp.ProductPic = imageSource
-                        db.productDao().insertAll(productTmp)
+//                        db.productDao().insertAll(productTmp)
+                        vm.insert(productTmp)
 
-                        var data = db.productDao().getAllData()
+//                        var data = db.productDao().getAllData()
+                        var data = vm.getAllData()
 
-                        for (allData in db.productDao().getAllData()) {
-                            hasil += "${allData.ProductPic}"
-                        }
+//                        for (allData in data) {
+//                            hasil += "${allData.ProductPic}"
+//                        }
                         uiThread {
-                            productAdapter.setData(data)
+//                            productAdapter.setData()
 //                            getData(db)
-                            Log.d("hasilDB", "onCreateView: $hasil")
+                            Log.d("hasilDB", "onCreateView: $data")
                         }
                     } catch (e: Exception) {
                         uiThread {
@@ -313,7 +319,7 @@ class fragment_list : Fragment(){
         val id = fileId.split(":".toRegex()).toTypedArray()[1]
         val column = arrayOf(MediaStore.Images.Media.DATA)
         val selector = MediaStore.Images.Media._ID + "=?"
-        val cursor = context!!.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+        val cursor = context?.contentResolver?.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             column, selector, arrayOf(id), null)
         if (cursor != null){
             val columnIndex = cursor?.getColumnIndex(column[0])
@@ -374,15 +380,15 @@ class fragment_list : Fragment(){
             dataPasser.onDataPass(data)
         }
 
-        fun getData(db: ProductDBHelper){
-            doAsync {
-                var data = db.productDao().getAllData()
-                Log.d(TAG, "onCreateView: $data")
-                uiThread {
-                    productAdapter.setData(data)
-                }
-            }
-        }
+//        fun getData(db: ProductViewModel){
+//            doAsync {
+//                var data = db.getAllData()
+//                Log.d(TAG, "onCreateView: $data")
+//                uiThread {
+//                    productAdapter.setData(data)
+//                }
+//            }
+//        }
 
         /**
          * Use this factory method to create a new instance of

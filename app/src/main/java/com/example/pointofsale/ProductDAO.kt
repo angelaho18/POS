@@ -1,6 +1,7 @@
 package com.example.pointofsale
 
 import androidx.room.*
+import com.example.pointofsale.Room.Product
 
 @Dao
 interface ProductDAO {

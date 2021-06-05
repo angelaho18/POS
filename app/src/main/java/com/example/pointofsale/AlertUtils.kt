@@ -6,12 +6,13 @@ import android.widget.Button
 import android.widget.EditText
 import com.example.pointofsale.Room.Product
 import com.example.pointofsale.Room.ProductDBHelper
+import com.example.pointofsale.Room.ProductViewModel
 import com.example.pointofsale.fragments.fragment_list
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
 object AlertUtils {
-    fun updataDialog(view: View, item: Product, db: ProductDBHelper){
+    fun updataDialog(view: View, item: Product, db: ProductViewModel){
         val views = View.inflate(view.context, R.layout.layout_pop_up, null)
         val builder = AlertDialog.Builder(view.context)
         builder.setView(views)
@@ -34,10 +35,10 @@ object AlertUtils {
                 item.ProductName = name.text.toString()
                 item.Quantity = qty.text.toString().toInt()
                 item.Price = price.text.toString().toInt()
-                db.productDao().updateData(item)
-                uiThread {
-                    fragment_list.getData(db)
-                }
+                db.update(item)
+//                uiThread {
+//                    fragment_list.getData(db)
+//                }
             }
             dialog.dismiss()
         }

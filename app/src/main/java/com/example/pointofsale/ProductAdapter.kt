@@ -12,19 +12,23 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.*
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pointofsale.Room.Product
 import com.example.pointofsale.Room.ProductDBHelper
+import com.example.pointofsale.Room.ProductViewModel
 import com.example.pointofsale.fragments.fragment_list
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.*
+import kotlin.collections.ArrayList
 
-class ProductAdapter(private val items: MutableList<Product>, private val query: String?, private val db: ProductDBHelper) :
+class ProductAdapter(private val query: String?, private val db: ProductViewModel) :
     RecyclerView.Adapter<ProductAdapter.ItemHolder>() {
     private var found = false
-//    var arrayStock = ArrayList<String>()
+    private var items = emptyList<Product>()
 
     class ItemHolder(val view: View) : RecyclerView.ViewHolder(view){
         val ProductName = view.findViewById<TextView>(R.id.product_name)
@@ -39,7 +43,7 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
 //                popupMenus(it)
 //            }
 //        }
-        fun popupMenus(view: View, item: Product, db: ProductDBHelper) {
+        fun popupMenus(view: View, item: Product, db: ProductViewModel) {
             val popupMenus = PopupMenu(itemView.context,view)
             popupMenus.inflate(R.menu.floating_context_menu_list)
             popupMenus.setOnMenuItemClickListener {
@@ -52,10 +56,10 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
                     R.id.deleteData->{
                         doAsync{
 //                            db.productDao().deleteData(item)
-                            db.productDao().deleteById(item.id)
-                            uiThread {
-                                fragment_list.getData(db)
-                            }
+                            db.delete(item.id)
+//                            uiThread {
+//                                fragment_list.getData(db)
+//                            }
                         }
 //                        Toast.makeText(itemView.context, "Delete Button", Toast.LENGTH_LONG).show()
                         true
@@ -139,8 +143,7 @@ class ProductAdapter(private val items: MutableList<Product>, private val query:
     }
 
     fun setData(list: List<Product>){
-        items.clear()
-        items.addAll(list)
+        this.items = list
         notifyDataSetChanged()
     }
 }

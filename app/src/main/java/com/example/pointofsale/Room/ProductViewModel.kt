@@ -2,11 +2,12 @@ package com.example.pointofsale.Room
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 
 class ProductViewModel (application: Application): AndroidViewModel(application){
     private val repository = ProductRepository(application)
-    private val products = repository.getData()
-
+    val products = repository.getData()
+    
     fun insert(product: Product){
         repository.insert(product)
     }
@@ -16,7 +17,7 @@ class ProductViewModel (application: Application): AndroidViewModel(application)
     fun delete(id: Int){
         repository.delete(id)
     }
-    fun getAllData(): List<Product>{
+    fun getAllData(): LiveData<List<Product>>{
         return products
     }
 }

@@ -1,5 +1,6 @@
 package com.example.pointofsale.Room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.pointofsale.Room.Product
 
@@ -9,7 +10,7 @@ interface ProductDAO {
     fun count(): Int
 
     @Query("Select * from Product order by PRODUCT_NAME asc")
-    fun getAllData(): List<Product>
+    fun getAllData(): LiveData<List<Product>>
 
     @Insert
     fun insertAll(vararg product: Product)
