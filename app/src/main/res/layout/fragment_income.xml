@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.fragment_income"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".fragments.fragment_income">
 
     <LinearLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/blue">
+        android:background="@color/blue"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="Income"
-            android:textSize="30sp"
-            android:textColor="@color/white"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:textStyle="bold"/>
+            android:layout_weight="3"
+            android:text="Income"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
     </LinearLayout>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBar">
 
         <SearchView
             android:id="@+id/searchView2"
@@ -39,10 +42,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.005" />
+
         <ListView
             android:id="@+id/listview1"
             android:layout_width="0dp"
-            android:layout_height="553dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="49dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,83 +54,94 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="vertical">-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="end|bottom"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="60dp"
+        android:src="@android:drawable/ic_input_add" />
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Januari"-->
-<!--            android:textStyle="bold"-->
-<!--            android:textSize="20sp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:textColor="@color/black"/>-->
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="vertical">-->
 
-<!--        <TableLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:background="#f1f1f1">-->
+    <!--        <TextView-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Januari"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:textSize="20sp"-->
+    <!--            android:layout_marginBottom="10dp"-->
+    <!--            android:layout_marginTop="10dp"-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:textColor="@color/black"/>-->
 
-<!--            <TableRow>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Tanggal"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="center"/>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Nama Barang"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="center"/>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Harga(Rp)"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="center"/>-->
-<!--            </TableRow>-->
-<!--            <TableRow>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="1"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="center"-->
-<!--                    android:background="#ffffff"-->
-<!--                    android:layout_marginBottom="1dp"-->
-<!--                    android:layout_marginHorizontal="1dp"/>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="kopiko"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="center"-->
-<!--                    android:background="#ffffff"-->
-<!--                    android:layout_marginBottom="1dp"-->
-<!--                    android:layout_marginHorizontal="1dp"/>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="25.000"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:gravity="center"-->
-<!--                    android:background="#ffffff"-->
-<!--                    android:layout_marginBottom="1dp"-->
-<!--                    android:layout_marginHorizontal="1dp"/>-->
-<!--            </TableRow>-->
-<!--        </TableLayout>-->
-<!--    </LinearLayout>-->
+    <!--        <TableLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:background="#f1f1f1">-->
 
-</LinearLayout>
+    <!--            <TableRow>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="Tanggal"-->
+    <!--                    android:textStyle="bold"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:gravity="center"/>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="Nama Barang"-->
+    <!--                    android:textStyle="bold"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:gravity="center"/>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="Harga(Rp)"-->
+    <!--                    android:textStyle="bold"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:gravity="center"/>-->
+    <!--            </TableRow>-->
+    <!--            <TableRow>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="1"-->
+    <!--                    android:textStyle="bold"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:background="#ffffff"-->
+    <!--                    android:layout_marginBottom="1dp"-->
+    <!--                    android:layout_marginHorizontal="1dp"/>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="kopiko"-->
+    <!--                    android:textStyle="bold"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:background="#ffffff"-->
+    <!--                    android:layout_marginBottom="1dp"-->
+    <!--                    android:layout_marginHorizontal="1dp"/>-->
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:text="25.000"-->
+    <!--                    android:textStyle="bold"-->
+    <!--                    android:layout_weight="1"-->
+    <!--                    android:gravity="center"-->
+    <!--                    android:background="#ffffff"-->
+    <!--                    android:layout_marginBottom="1dp"-->
+    <!--                    android:layout_marginHorizontal="1dp"/>-->
+    <!--            </TableRow>-->
+    <!--        </TableLayout>-->
+    <!--    </LinearLayout>-->
+
+</RelativeLayout>
