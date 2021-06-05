@@ -2,6 +2,8 @@ package com.example.pointofsale.fragments
 
 import android.content.ContentProviderOperation
 import android.content.ContentValues.TAG
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
@@ -9,10 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.SearchView
-import android.widget.SimpleCursorAdapter
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.pointofsale.R
@@ -60,6 +59,13 @@ class fragment_income : Fragment() {
             readContacts()
         }, 10L)
 
+        val lv = view.findViewById<ListView>(R.id.listview1)
+        lv.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            var txt = getContactName(position)
+            var phone = getContactNum(position)
+            Log.d(TAG, "onCreateView: listview $txt num $phone")
+
+        }
         val fab = view.findViewById<FloatingActionButton>(R.id.fabContact)
         fab.setOnClickListener {
             val views = layoutInflater.inflate(R.layout.form_contact, null, false)
@@ -86,6 +92,22 @@ class fragment_income : Fragment() {
         return view
     }
 
+    private fun getContactName(pos: Int): String {
+        var contactsCursor = getContacts()
+        contactsCursor?.moveToPosition(pos)
+        val name: String = contactsCursor!!.getString(
+            contactsCursor?.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+        return name
+    }
+
+    private fun getContactNum(pos: Int): String {
+        var contactsCursor = getContacts()
+        contactsCursor?.moveToPosition(pos)
+        val num: String = contactsCursor!!.getString(
+            contactsCursor?.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+        return num
+    }
+
     fun readContacts(){
         var fromlst = listOf<String>(
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -96,7 +118,7 @@ class fragment_income : Fragment() {
             cols,
             "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?",
             Array(1) { "%Supplier%" },
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC")
         var adapter = SimpleCursorAdapter(context,
             android.R.layout.simple_list_item_2,
             rs,
@@ -122,6 +144,23 @@ class fragment_income : Fragment() {
         })
     }
 
+    private fun getContacts(): Cursor? {
+        val uri: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        val projection = arrayOf(
+            ContactsContract.CommonDataKinds.Phone._ID,
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+        )
+        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
+        val selectionArgs: Array<String>? = Array(1) { "%Supplier%" }
+        val sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
+        return requireActivity().contentResolver.query(uri,
+            projection,
+            selection,
+            selectionArgs,
+            sortOrder)
+    }
+
     private fun removeContacts() {
 //        val whereClause =
 //            ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY + " = '" + editTextContactName.getText()
@@ -139,22 +178,27 @@ class fragment_income : Fragment() {
 
         cops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+            .withValue(ContactsContract.Data.MIMETYPE,
+                ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
             .withValue(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, "Supplier $name")
             .build());
 
         cops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-            .withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+            .withValue(ContactsContract.Data.MIMETYPE,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
             .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, "$phone")
-            .withValue(ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+            .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
             .build());
 
         cops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
             .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-            .withValue(ContactsContract.Data.MIMETYPE,ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+            .withValue(ContactsContract.Data.MIMETYPE,
+                ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
             .withValue(ContactsContract.CommonDataKinds.Email.DATA, "$email")
-            .withValue(ContactsContract.CommonDataKinds.Email.TYPE, ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+            .withValue(ContactsContract.CommonDataKinds.Email.TYPE,
+                ContactsContract.CommonDataKinds.Email.TYPE_WORK)
             .build());
 
         try {
