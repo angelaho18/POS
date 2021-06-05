@@ -1,5 +1,6 @@
 package com.example.pointofsale.fragments
 
+import android.R.attr.name
 import android.content.ContentProviderOperation
 import android.content.ContentValues.TAG
 import android.database.Cursor
@@ -7,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
+import android.provider.ContactsContract.PhoneLookup
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -64,8 +66,28 @@ class fragment_income : Fragment() {
             var txt = getContactName(position)
             var phone = getContactNum(position)
             Log.d(TAG, "onCreateView: listview $txt num $phone")
-
         }
+        lv.onItemLongClickListener = AdapterView.OnItemLongClickListener { parent, view, position, id ->
+            context?.let {
+                AlertDialog.Builder(it)
+                    .setTitle("Delete")
+                    .setMessage("Anda Yakin mau HAPUS?")
+                    .setPositiveButton("Ya") { dialogInterface, i ->
+                        var name = getContactName(position)
+                        var phone = getContactNum(position)
+                        Toast.makeText(context, "Yakin 100%", Toast.LENGTH_LONG).show()
+                        removeContacts(name, phone)
+                        readContacts()
+                    }
+                    .setNegativeButton("Tidak") { dialogInterface, i ->
+                        Toast.makeText(context, "Uups Salah Pencet", Toast.LENGTH_LONG).show()
+                    }
+                    .show()
+            }
+           
+            true
+        }
+
         val fab = view.findViewById<FloatingActionButton>(R.id.fabContact)
         fab.setOnClickListener {
             val views = layoutInflater.inflate(R.layout.form_contact, null, false)
@@ -161,11 +183,34 @@ class fragment_income : Fragment() {
             sortOrder)
     }
 
-    private fun removeContacts() {
+    private fun removeContacts(name: String, num: String) {
 //        val whereClause =
-//            ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY + " = '" + editTextContactName.getText()
-//                .toString() + "'"
-//        requireActivity().contentResolver.delete(ContactsContract.RawContacts.CONTENT_URI, whereClause, null)
+//            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY}  =  ? AND ${ContactsContract.CommonDataKinds.Phone.NUMBER} = ?"
+//        var selectionArgs = arrayOf(nama, num)
+//        requireActivity().contentResolver.delete(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//            whereClause,
+//            selectionArgs)
+        val contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(num))
+        val cursor = requireActivity().contentResolver.query(contactUri, null, null, null, null)
+        try {
+            if (cursor!!.moveToFirst()) {
+                do {
+                    if (cursor?.getString(cursor?.getColumnIndex(PhoneLookup.DISPLAY_NAME))
+                            .equals(name, ignoreCase = true)
+                    ) {
+                        val lookupKey =
+                            cursor?.getString(cursor?.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+                        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI,
+                            lookupKey)
+                        requireActivity().contentResolver.delete(uri, null, null)
+                    }
+                } while (cursor?.moveToNext())
+            }
+        } catch (e: java.lang.Exception) {
+            println(e.stackTrace)
+        } finally {
+            cursor?.close()
+        }
     }
 
     fun addContact(name: String, phone: String, email: String){
