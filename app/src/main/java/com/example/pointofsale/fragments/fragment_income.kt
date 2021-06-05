@@ -82,7 +82,6 @@ class fragment_income : Fragment() {
                 readContacts()
                 dialog.dismiss()
             }
-
         }
         return view
     }
@@ -95,8 +94,8 @@ class fragment_income : Fragment() {
         var tolst = intArrayOf(android.R.id.text1, android.R.id.text2)
         var rs= requireActivity().contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             cols,
-            null,
-            null,
+            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?",
+            Array(1) { "%Supplier%" },
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
         var adapter = SimpleCursorAdapter(context,
             android.R.layout.simple_list_item_2,
@@ -115,7 +114,7 @@ class fragment_income : Fragment() {
                     requireActivity().contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         cols,
                         "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?",
-                        Array(1) { "%$p0%" },
+                        Array(1) { "%Supplier% %$p0%" },
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
                 adapter.changeCursor(rs)
                 return false
