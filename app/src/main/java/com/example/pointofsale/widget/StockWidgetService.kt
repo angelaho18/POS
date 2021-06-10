@@ -29,7 +29,6 @@ internal class StockRemoteViewsFactory(private val context: Context, intent: Int
     private lateinit var db: ProductDBHelper
     private var list = ArrayList<Product>()
 
-
     override fun onCreate() {
         db = ProductDBHelper.getInstance(context)!!
         Log.d(TAG, "onCreate: ")

@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="?attr/appWidgetBackgroundColor"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/appwidget_text"
@@ -30,8 +31,8 @@
             style="?attr/borderlessButtonStyle"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_baseline_sync_24" />
+            android:src="@drawable/ic_baseline_sync_24"
+            android:background="@color/transparent" />
     </LinearLayout>
 
     <ListView
@@ -39,5 +40,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/widget_toolbar" />
-
 </RelativeLayout>

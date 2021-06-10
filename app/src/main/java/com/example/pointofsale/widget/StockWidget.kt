@@ -55,7 +55,7 @@ class StockWidget : AppWidgetProvider() {
 
             val intent = Intent(context, StockWidgetService::class.java)
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)))
+            intent.data = Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME))
 
             views.setRemoteAdapter(R.id.widget_list, intent)
 //            views.setEmptyView(R.id.widget_list, )
