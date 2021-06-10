@@ -72,15 +72,15 @@ class fragment_income : Fragment() {
                 AlertDialog.Builder(it)
                     .setTitle("Delete")
                     .setMessage("Anda Yakin mau HAPUS?")
-                    .setPositiveButton("Ya") { dialogInterface, i ->
+                    .setPositiveButton("Ya, Sangat") { dialogInterface, i ->
                         var name = getContactName(position)
                         var phone = getContactNum(position)
-                        Toast.makeText(context, "Yakin 100%", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, "Yakin 100%", Toast.LENGTH_LONG).show()
                         removeContacts(name, phone)
                         readContacts()
                     }
                     .setNegativeButton("Tidak") { dialogInterface, i ->
-                        Toast.makeText(context, "Uups Salah Pencet", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, "Uups Salah Pencet", Toast.LENGTH_LONG).show()
                     }
                     .show()
             }

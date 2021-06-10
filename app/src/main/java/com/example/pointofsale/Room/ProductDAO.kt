@@ -24,6 +24,8 @@ interface ProductDAO {
     @Query("Delete from Product where id=:id")
     fun deleteById(id: Int)
 
+    @Query("Select * from Product where PRODUCT_QTY >= 3 order by PRODUCT_NAME asc")
+    fun getDataForWidget(): List<Product>
 }
 //abstract class ProductDAO {
 ////    @Transaction
