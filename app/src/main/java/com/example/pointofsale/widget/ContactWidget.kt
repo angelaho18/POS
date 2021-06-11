@@ -3,6 +3,8 @@ package com.example.pointofsale.widget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.widget.RemoteViews
 import com.example.pointofsale.R
 
@@ -39,6 +41,12 @@ internal fun updateAppWidget(
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.contact_widget)
     views.setTextViewText(R.id.appwidget_text, widgetText)
+
+    val intent = Intent(context, StockWidgetService::class.java)
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+    intent.data = Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME))
+
+    views.setRemoteAdapter(R.id.gridview, intent)
 
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
