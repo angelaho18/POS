@@ -69,7 +69,7 @@ internal class StockRemoteViewsFactory(private val context: Context, intent: Int
         val fillInIntent = Intent()
         fillInIntent.putExtras(bundle)
 
-        remoteViews.setOnClickFillInIntent(R.id.activity_chooser_view_content, fillInIntent)
+        remoteViews.setOnClickFillInIntent(R.layout.widget_item, fillInIntent)
 
         Log.d(TAG, "getViewAt: ")
         return remoteViews

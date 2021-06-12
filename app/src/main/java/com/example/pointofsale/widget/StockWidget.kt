@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import android.widget.Toast
 import com.example.pointofsale.ActivityFragment
+import com.example.pointofsale.EXTRA_ITEM
 import com.example.pointofsale.EXTRA_NOTIF
 import com.example.pointofsale.R
 
@@ -58,10 +59,14 @@ class StockWidget : AppWidgetProvider() {
 //            appWidgetManager.updateAppWidget(intent?.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS), views)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list)
             onUpdate(context, appWidgetManager, appWidgetIds)
+        }else if (action == ACTION_CLICK){
+            val clickedPosition = intent.getIntExtra(EXTRA_ITEM, 0)
+            Toast.makeText(context, "Clicked position: $clickedPosition", Toast.LENGTH_SHORT).show()
         }
     }
 
     companion object {
+        private const val ACTION_CLICK = "actionClick"
         private const val ACTION_REFRESH = "actionRefresh"
 
         internal fun updateAppWidget(
@@ -98,8 +103,16 @@ class StockWidget : AppWidgetProvider() {
                 refreshIntent,
                 0)
 
+            val provider = Intent(context, StockWidget::class.java)
+            provider.setAction(ACTION_CLICK)
+            val listIntent = PendingIntent.getBroadcast(context,
+                0,
+                provider,
+                0)
+
             views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
             views.setOnClickPendingIntent(R.id.refresh_btn, refreshPendingIntent)
+            views.setPendingIntentTemplate(R.id.widget_list, listIntent)
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
             // Instruct the widget manager to update the widget

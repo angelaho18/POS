@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.pointofsale.R
+import com.example.pointofsale.widget.ContactSharePref
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_income.*
 
@@ -35,6 +36,7 @@ class fragment_income : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var contactSharePref: ContactSharePref
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +46,14 @@ class fragment_income : Fragment() {
         }
     }
 
-    var cols = listOf<String>(
-        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-        ContactsContract.CommonDataKinds.Phone.NUMBER,
-        ContactsContract.CommonDataKinds.Phone._ID
-    ).toTypedArray()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_income, container, false)
+
+        contactSharePref = ContactSharePref(view.context)
 
         Handler().postDelayed({
             readContacts()
@@ -253,6 +251,12 @@ class fragment_income : Fragment() {
         }
     }
     companion object {
+        var cols = listOf<String>(
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone._ID
+        ).toTypedArray()
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.

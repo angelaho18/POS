@@ -37,17 +37,16 @@ internal fun updateAppWidget(
     appWidgetManager: AppWidgetManager,
     appWidgetId: Int
 ) {
-    val widgetText = context.getString(R.string.appwidget_text)
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.contact_widget)
-    views.setTextViewText(R.id.appwidget_text, widgetText)
 
-    val intent = Intent(context, StockWidgetService::class.java)
+    val intent = Intent(context, ContactWidgetService::class.java)
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
     intent.data = Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME))
 
     views.setRemoteAdapter(R.id.gridview, intent)
 
+    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.gridview);
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
