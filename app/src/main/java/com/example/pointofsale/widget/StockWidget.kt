@@ -20,6 +20,7 @@ import com.example.pointofsale.R
  * Implementation of App Widget functionality.
  */
 private const val TAG = "STOCK_WIDGET"
+
 class StockWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -48,7 +49,7 @@ class StockWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
         Log.d(TAG, "onReceive: ${intent?.action}")
         val action = intent?.action
-        if (ACTION_REFRESH == action){
+        if (ACTION_REFRESH == action) {
             Log.d(TAG, "onReceive: refresh")
             Toast.makeText(context, "Sync Product to Aplikasi Kasir Ku", Toast.LENGTH_SHORT).show()
 //            val views = RemoteViews(context?.packageName, R.layout.stock_widget)
@@ -59,9 +60,17 @@ class StockWidget : AppWidgetProvider() {
 //            appWidgetManager.updateAppWidget(intent?.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS), views)
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list)
             onUpdate(context, appWidgetManager, appWidgetIds)
-        }else if (action == ACTION_CLICK){
+        } else if (ACTION_CLICK == action) {
+            Log.d(TAG, "onReceive: $ACTION_CLICK")
+
+            var intent = Intent(context, ActivityFragment::class.java)
+            intent.apply {
+                putExtra(EXTRA_NOTIF, true)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            context?.startActivity(intent)
             val clickedPosition = intent.getIntExtra(EXTRA_ITEM, 0)
-            Toast.makeText(context, "Clicked position: $clickedPosition", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, "Clicked position: $clickedPosition", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -87,32 +96,23 @@ class StockWidget : AppWidgetProvider() {
 
             views.setRemoteAdapter(R.id.widget_list, intent)
 
-            val fragment = Intent(context, ActivityFragment::class.java)
-            fragment.apply {
-                putExtra(EXTRA_NOTIF, true)
-            }
-            val pendingIntent = PendingIntent.getActivity(context,
+            val fragment = Intent(context, StockWidget::class.java)
+            fragment.action = ACTION_CLICK
+            val pendingIntent = PendingIntent.getBroadcast(context,
                 0,
                 fragment,
-                PendingIntent.FLAG_UPDATE_CURRENT)
+                0)
 
             val refreshIntent = Intent(context, StockWidget::class.java)
             refreshIntent.action = ACTION_REFRESH
             val refreshPendingIntent = PendingIntent.getBroadcast(context,
                 0,
                 refreshIntent,
-                0)
-
-            val provider = Intent(context, StockWidget::class.java)
-            provider.setAction(ACTION_CLICK)
-            val listIntent = PendingIntent.getBroadcast(context,
-                0,
-                provider,
-                0)
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
             views.setOnClickPendingIntent(R.id.appwidget_text, pendingIntent)
             views.setOnClickPendingIntent(R.id.refresh_btn, refreshPendingIntent)
-            views.setPendingIntentTemplate(R.id.widget_list, listIntent)
+            views.setPendingIntentTemplate(R.id.widget_list, pendingIntent)
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
             // Instruct the widget manager to update the widget

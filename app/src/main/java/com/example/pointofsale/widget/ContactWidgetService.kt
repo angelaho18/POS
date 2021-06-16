@@ -3,6 +3,7 @@ package com.example.pointofsale.widget
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.media.session.PlaybackState
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
@@ -10,6 +11,8 @@ import android.widget.AdapterView
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.example.pointofsale.R
+import com.example.pointofsale.fragments.fragment_income
+import com.example.pointofsale.fragments.fragment_income.Companion.getContacts
 
 private const val TAG = "CONTACT_WIDGET"
 class ContactWidgetService: RemoteViewsService() {
@@ -18,8 +21,8 @@ class ContactWidgetService: RemoteViewsService() {
     }
 }
 
-internal class ContactRemoteViewsFactory(private val context: Context, intent: Intent?) : RemoteViewsService.RemoteViewsFactory {
-    private var list = emptyList<String>()
+internal class ContactRemoteViewsFactory(private val context: Context, intent: Intent?) :
+    RemoteViewsService.RemoteViewsFactory {
     private var cursor: Cursor? = null
 
     override fun onCreate() {
@@ -30,7 +33,7 @@ internal class ContactRemoteViewsFactory(private val context: Context, intent: I
         if (cursor != null) {
             cursor?.close();
         }
-        cursor = getContacts()
+        cursor = getContacts(context)
     }
 
     override fun onDestroy() {
@@ -46,8 +49,9 @@ internal class ContactRemoteViewsFactory(private val context: Context, intent: I
     }
 
     override fun getViewAt(position: Int): RemoteViews? {
-        if(position == AdapterView.INVALID_POSITION || cursor == null || !cursor?.moveToPosition(
-                position)!!){
+        if (position == AdapterView.INVALID_POSITION || cursor == null || !cursor?.moveToPosition(
+                position)!!
+        ) {
             return null
         }
         val remoteViews = RemoteViews(context.packageName, R.layout.contact_widget_item)
@@ -78,20 +82,35 @@ internal class ContactRemoteViewsFactory(private val context: Context, intent: I
         return true
     }
 
-    private fun getContacts(): Cursor{
-        val uri: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        val projection = arrayOf(
-            ContactsContract.CommonDataKinds.Phone._ID,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER
-        )
-        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
-        val selectionArgs: Array<String>? = Array(1) { "%Supplier%" }
-        val sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
-        return context.contentResolver.query(uri,
-            projection,
-            selection,
-            selectionArgs,
-            sortOrder)!!
-    }
+//    private fun getContacts(): Cursor{
+//        val uri: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+//        val projection = arrayOf(
+//            ContactsContract.CommonDataKinds.Phone._ID,
+//            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+//            ContactsContract.CommonDataKinds.Phone.NUMBER
+//        )
+//        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
+//        val selectionArgs: Array<String>? = Array(1) { "%Supplier%" }
+//        val sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
+//        return context.contentResolver.query(uri,
+//            projection,
+//            selection,
+//            selectionArgs,
+//            sortOrder)!!
+//    }
+//
+//    fun readContacts(): Cursor? {
+//        var fromlst = listOf<String>(
+//            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+//            ContactsContract.CommonDataKinds.Phone.NUMBER
+//        ).toTypedArray()
+//        var tolst = intArrayOf(android.R.id.text1, android.R.id.text2)
+//        var rs= context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//            fragment_income.cols,
+//            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?",
+//            Array(1) { "%Supplier%" },
+//            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC")
+//
+//        return rs
+//    }
 }

@@ -3,6 +3,7 @@ package com.example.pointofsale.fragments
 import android.R.attr.name
 import android.content.ContentProviderOperation
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -113,7 +114,7 @@ class fragment_income : Fragment() {
     }
 
     private fun getContactName(pos: Int): String {
-        var contactsCursor = getContacts()
+        var contactsCursor = getContacts(requireContext())
         contactsCursor?.moveToPosition(pos)
         val name: String = contactsCursor!!.getString(
             contactsCursor?.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
@@ -121,7 +122,7 @@ class fragment_income : Fragment() {
     }
 
     private fun getContactNum(pos: Int): String {
-        var contactsCursor = getContacts()
+        var contactsCursor = getContacts(requireContext())
         contactsCursor?.moveToPosition(pos)
         val num: String = contactsCursor!!.getString(
             contactsCursor?.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
@@ -162,23 +163,6 @@ class fragment_income : Fragment() {
                 return false
             }
         })
-    }
-
-    private fun getContacts(): Cursor? {
-        val uri: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        val projection = arrayOf(
-            ContactsContract.CommonDataKinds.Phone._ID,
-            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER
-        )
-        val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
-        val selectionArgs: Array<String>? = Array(1) { "%Supplier%" }
-        val sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
-        return requireActivity().contentResolver.query(uri,
-            projection,
-            selection,
-            selectionArgs,
-            sortOrder)
     }
 
     private fun removeContacts(name: String, num: String) {
@@ -256,6 +240,23 @@ class fragment_income : Fragment() {
             ContactsContract.CommonDataKinds.Phone.NUMBER,
             ContactsContract.CommonDataKinds.Phone._ID
         ).toTypedArray()
+
+        fun getContacts(context: Context): Cursor? {
+            val uri: Uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+            val projection = arrayOf(
+                ContactsContract.CommonDataKinds.Phone._ID,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+            )
+            val selection = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?"
+            val selectionArgs: Array<String>? = Array(1) { "%Supplier%" }
+            val sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC"
+            return context.contentResolver.query(uri,
+                projection,
+                selection,
+                selectionArgs,
+                sortOrder)
+        }
 
         /**
          * Use this factory method to create a new instance of

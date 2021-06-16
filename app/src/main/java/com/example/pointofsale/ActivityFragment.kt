@@ -44,11 +44,14 @@ class ActivityFragment : AppCompatActivity(), InterfaceFragment {
         }
 
         var openNotif = intent.getBooleanExtra(EXTRA_NOTIF, false)
+        Log.d("STOCK_WIDGET", "onCreate: $openNotif")
         if(openNotif) {
+            Log.d("STOCK_WIDGET", "onCreate: Hei")
             bottomNavigationView.menu.findItem(R.id.list1).isChecked = true
-            val transaction = this.supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fragmentContainer, fragment_list())
-                .commit()
+//            val transaction = this.supportFragmentManager.beginTransaction()
+//            transaction.add(R.id.fragmentContainer, fragment_list())
+//                .commit()
+            newTransaction(fragment_list())
         }
 
         var reload = intent.getBooleanExtra(EXTRA_RELOAD, false)
