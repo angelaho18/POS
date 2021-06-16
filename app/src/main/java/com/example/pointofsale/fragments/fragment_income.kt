@@ -18,6 +18,10 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.pointofsale.R
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 //import com.example.pointofsale.widget.ContactSharePref
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_income.*
@@ -38,6 +42,9 @@ class fragment_income : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 //    private lateinit var contactSharePref: ContactSharePref
+
+    private var mRewardedAd: RewardedAd? = null
+    private final var TAG = "Income"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -110,6 +117,40 @@ class fragment_income : Fragment() {
                 dialog.dismiss()
             }
         }
+
+        MobileAds.initialize(context) {}
+
+        var adRequest = AdRequest.Builder().build()
+
+        RewardedAd.load(context,"ca-app-pub-6092911080978850~3655446770", adRequest, object : RewardedAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Log.d("rewarded", adError?.message)
+                mRewardedAd = null
+            }
+
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                Log.d(TAG, "Ad was loaded.")
+                mRewardedAd = rewardedAd
+            }
+        })
+
+        mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                Log.d(TAG, "Ad was dismissed.")
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                Log.d(TAG, "Ad failed to show.")
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                Log.d(TAG, "Ad showed fullscreen content.")
+                // Called when ad is dismissed.
+                // Don't set the ad reference to null to avoid showing the ad a second time.
+                mRewardedAd = null
+            }
+        }
+
         return view
     }
 
