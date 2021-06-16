@@ -5,4 +5,7 @@
     <string name="battery_status"><u>Battery Status</u></string>
     <string name="appwidget_text">Out of Stock!</string>
     <string name="add_widget">Add widget</string>
+
+    //don't show my id to public
+    <string name="admob_app_id">ca-app-pub-2664736343589864~3555621844</string>
 </resources>

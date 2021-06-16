@@ -53,7 +53,6 @@ internal class StockRemoteViewsFactory(private val context: Context, intent: Int
 
     override fun getCount(): Int {
         var count = list.size
-        Log.d(TAG, "getCount: $count")
         return count
     }
 

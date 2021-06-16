@@ -1,12 +1,21 @@
 package com.example.pointofsale.fragments
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.SearchView
+import androidx.core.view.isVisible
 import com.example.pointofsale.R
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
+import kotlinx.android.synthetic.main.fragment_home.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,6 +64,23 @@ class fragment_home : Fragment() {
             }
         })
 
+        MobileAds.initialize(context)
+        val adRequest = AdRequest.Builder().build()
+        val adsview = view.findViewById<AdView>(R.id.adView)
+        val btadds = view.findViewById<Button>(R.id.bt_addBanner)
+        adsview.loadAd(adRequest)
+        btadds.visibility = View.GONE
+        adsview.adListener = object :AdListener(){
+            override fun onAdLoaded() {
+                btadds.visibility = View.VISIBLE
+            }
+        }
+        btadds.setOnClickListener {
+            if(adsview.isVisible){
+                adsview.visibility = View.GONE
+                btadds.visibility = View.GONE
+            }
+        }
         return view
     }
 
