@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.example.pointofsale.R
+import com.example.pointofsale.fragments.fragment_income
 
 private const val TAG = "CONTACT_WIDGET"
 class ContactWidgetService: RemoteViewsService() {
@@ -30,7 +31,7 @@ internal class ContactRemoteViewsFactory(private val context: Context, intent: I
         if (cursor != null) {
             cursor?.close();
         }
-        cursor = getContacts()
+        cursor = readContacts()
     }
 
     override fun onDestroy() {
@@ -58,6 +59,9 @@ internal class ContactRemoteViewsFactory(private val context: Context, intent: I
             cursor?.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)!!)
         remoteViews.setTextViewText(R.id.item_name, name)
         remoteViews.setTextViewText(R.id.item_num, num)
+        val view = RemoteViews(context.packageName,R.layout.contact_widget)
+        view.setTextViewText(R.id.contact_count,(cursor!!.count).toString())
+        Log.i(TAG, "getViewAt: ${cursor!!.count}")
         Log.d(TAG, "getViewAt: name $name num $num")
         return remoteViews
     }
@@ -93,5 +97,13 @@ internal class ContactRemoteViewsFactory(private val context: Context, intent: I
             selection,
             selectionArgs,
             sortOrder)!!
+    }
+    fun readContacts(): Cursor? {
+        var rs= context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            fragment_income.cols,
+            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME} LIKE ?",
+            Array(1) { "%Supplier%" },
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC")
+        return rs
     }
 }

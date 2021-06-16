@@ -5,12 +5,14 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.RemoteViews
 import com.example.pointofsale.R
 
 /**
  * Implementation of App Widget functionality.
  */
+private const val TAG = "blabla"
 class ContactWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -21,14 +23,17 @@ class ContactWidget : AppWidgetProvider() {
         for (appWidgetId in appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
+        Log.i(TAG, "onUpdate:")
     }
 
     override fun onEnabled(context: Context) {
         // Enter relevant functionality for when the first widget is created
+        Log.i(TAG, "onEnabled: ")
     }
 
     override fun onDisabled(context: Context) {
         // Enter relevant functionality for when the last widget is disabled
+        Log.i(TAG, "onDisabled: ")
     }
 }
 
@@ -48,5 +53,7 @@ internal fun updateAppWidget(
 
     appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.gridview);
     // Instruct the widget manager to update the widget
+    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId,R.id.gridview)
     appWidgetManager.updateAppWidget(appWidgetId, views)
+    Log.i(TAG, "updateAppWidget: ")
 }
