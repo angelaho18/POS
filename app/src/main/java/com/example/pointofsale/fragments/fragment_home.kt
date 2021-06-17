@@ -76,7 +76,6 @@ class fragment_home : Fragment() {
         Log.d("admob", "onCreateView: remove = $removeAd")
 
         if (removeAd!!){
-            container?.removeView(btadds)
             adsview.isEnabled = false;
             adsview.visibility = View.GONE;
             btadds.visibility = View.GONE

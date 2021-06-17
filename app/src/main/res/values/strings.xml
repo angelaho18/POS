@@ -8,4 +8,6 @@
 
     //don't show my id to public
     <string name="admob_app_id">ca-app-pub-2664736343589864~3555621844</string>
+    <string name="interstitial_ad_id">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="rewarded_ad_id">ca-app-pub-3940256099942544/5224354917</string>
 </resources>

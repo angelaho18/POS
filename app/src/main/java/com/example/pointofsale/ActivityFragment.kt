@@ -5,6 +5,7 @@ import android.os.BatteryManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
@@ -85,6 +86,12 @@ class ActivityFragment : AppCompatActivity(), InterfaceFragment {
         transaction.replace(R.id.fragmentContainer, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+
+
     }
 }
 

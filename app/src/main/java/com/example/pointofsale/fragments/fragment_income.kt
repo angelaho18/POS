@@ -2,6 +2,7 @@ package com.example.pointofsale.fragments
 
 import android.R.attr.name
 import android.content.ContentProviderOperation
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.database.Cursor
@@ -17,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.example.pointofsale.PREF_NAME
 import com.example.pointofsale.R
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardItem
@@ -93,37 +95,14 @@ class fragment_income : Fragment() {
            
             true
         }
+        val adSharePref = context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        var removeAd = adSharePref?.getBoolean("ad", false)
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fabContact)
         MobileAds.initialize(context)
         fab.setOnClickListener {
             //Rewarded Video Ads START
-            ads()
-            mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
-                override fun onAdDismissedFullScreenContent() {
-                    Log.d(TAG, "Ad was dismissed.")
-                }
-
-                override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                    Log.d(TAG, "Ad failed to show.")
-                }
-
-                override fun onAdShowedFullScreenContent() {
-                    Log.d(TAG, "Ad showed fullscreen content.")
-                    // Called when ad is dismissed.
-                    // Don't set the ad reference to null to avoid showing the ad a second time.
-                    mRewardedAd = null
-                }
-            }
-
-            if (mRewardedAd != null) {
-                mRewardedAd?.show(activity, OnUserEarnedRewardListener() {
-                    Log.d(TAG, "User earned the reward.")
-                })
-            } else {
-                Log.d(TAG, "The rewarded ad wasn't ready yet.")
-            }
-
+            if(!removeAd!!) showAd()
             //Rewarded Video Ads STOP
 
             val views = layoutInflater.inflate(R.layout.form_contact, null, false)
@@ -184,7 +163,7 @@ class fragment_income : Fragment() {
     private fun ads(){
         var adRequest = AdRequest.Builder().build()
 
-        RewardedAd.load(context,"ca-app-pub-3940256099942544/5224354917", adRequest, object : RewardedAdLoadCallback() {
+        RewardedAd.load(context,getString(R.string.rewarded_ad_id), adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 Log.d("rewarded", adError?.message)
                 mRewardedAd = null
@@ -318,6 +297,36 @@ class fragment_income : Fragment() {
             Log.i(TAG, "exception.message")
         }
     }
+
+    private fun showAd(){
+        ads()
+        mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                Log.d(ContentValues.TAG, "Ad was dismissed.")
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                Log.d(ContentValues.TAG, "Ad failed to show.")
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                Log.d(ContentValues.TAG, "Ad showed fullscreen content.")
+                // Called when ad is dismissed.
+                // Don't set the ad reference to null to avoid showing the ad a second time.
+                mRewardedAd = null
+            }
+        }
+
+        if (mRewardedAd != null) {
+            mRewardedAd?.show(activity, OnUserEarnedRewardListener() {
+                Log.d(ContentValues.TAG, "User earned the reward.")
+            })
+        } else {
+            Log.d(ContentValues.TAG, "The rewarded ad wasn't ready yet.")
+        }
+
+    }
+
     companion object {
         var cols = listOf<String>(
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,

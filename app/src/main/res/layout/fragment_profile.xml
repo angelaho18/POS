@@ -154,18 +154,23 @@
                         android:textSize="25sp"
                         android:layout_centerVertical="true"/>
 
-                    <ToggleButton
-                        android:layout_centerVertical="true"
-                        android:id="@+id/sliderToggleBtn"
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:checked="false"
-                        android:text=""
-                        android:textOff=""
-                        android:textOn=""
-                        android:background="@drawable/slider_toggle_button"/>
+<!--                    <ToggleButton-->
+<!--                        android:layout_centerVertical="true"-->
+<!--                        android:id="@+id/sliderToggleBtn"-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="30dp"-->
+<!--                        android:layout_alignParentRight="true"-->
+<!--                        android:text=""-->
+<!--                        android:textOff=""-->
+<!--                        android:textOn=""-->
+<!--                        android:background="@drawable/slider_toggle_button"/>-->
 
+                    <Switch
+                        android:id="@+id/switchAd"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true" />
                 </RelativeLayout>
 
             </LinearLayout>

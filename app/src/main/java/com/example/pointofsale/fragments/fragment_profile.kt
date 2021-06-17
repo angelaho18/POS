@@ -35,13 +35,14 @@ private const val REQUEST_CODE = 18
  * Use the [fragment_profile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment_profile : Fragment(){
+class fragment_profile : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private val prefFileName = "MyFilepref1"
     private var i = 0
     private lateinit var adSharePref: SharedPreferences
+    var check = false
 //    private var BatteryReceiver = object : BroadcastReceiver() {
 //
 //        override fun onReceive(context: Context, intent: Intent) {
@@ -100,20 +101,28 @@ class fragment_profile : Fragment(){
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         adSharePref = context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)!!
-        val check = adSharePref?.getBoolean("ad", false)
+        check = adSharePref?.getBoolean("ad", false)
 
-        val toggle = view.findViewById<ToggleButton>(R.id.sliderToggleBtn)
-        toggle.isChecked = check
+        val switch = view.findViewById<Switch>(R.id.switchAd)
+
+        switch.isChecked = check
         Log.d("admob", "onCreateView: check $check")
-
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        switch.setOnCheckedChangeListener { buttonView, isChecked ->
             adSharePref.edit {
                 putBoolean("ad", isChecked)
                 Log.d("admob", "onCreateView: toggle $isChecked")
                 apply()
             }
-
         }
+
+//        val toggle = view.findViewById<ToggleButton>(R.id.sliderToggleBtn)
+//        toggle.setChecked(true)
+//        Log.d("admob", "onCreateView: check $check")
+//
+//        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+
+
+//        }
 
         val btnPic = view.findViewById<Button>(R.id.buttonPic)
         btnPic.setOnClickListener {
@@ -122,7 +131,7 @@ class fragment_profile : Fragment(){
         }
 
         val outBtn = view.findViewById<Button>(R.id.LogoutBut)
-        outBtn.setOnClickListener{
+        outBtn.setOnClickListener {
             val intentIn = Intent(context, ActivityFragment::class.java)
             startActivity(intentIn)
         }
@@ -158,44 +167,46 @@ class fragment_profile : Fragment(){
 
         return view
     }
-   private fun writeFileInternal(){
+
+    private fun writeFileInternal() {
         val fullname = view?.findViewById<EditText>(R.id.full_name)
         val mail = view?.findViewById<EditText>(R.id.emailAddress)
         var output = context?.openFileOutput("dataUser.txt", Context.MODE_PRIVATE)?.apply {
             write("${fullname?.text}+${mail?.text}".toByteArray())
             close()
         }
-        var myFile  = File(context?.filesDir,"dataUser.txt")
-        Log.w("OK",myFile.absolutePath)
+        var myFile = File(context?.filesDir, "dataUser.txt")
+        Log.w("OK", myFile.absolutePath)
 //        edit_text1.text.clear()
-        Toast.makeText(context,"File Save",Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "File Save", Toast.LENGTH_SHORT).show()
     }
-    private fun readFileInternal(){
+
+    private fun readFileInternal() {
         val fullname = view?.findViewById<EditText>(R.id.full_name)
         val mail = view?.findViewById<EditText>(R.id.emailAddress)
         fullname?.text?.clear()
         mail?.text?.clear()
-        try{
+        try {
             var input = context?.openFileInput("dataUser.txt")?.apply {
                 bufferedReader().useLines {
-                    for(text in it.toList()){
+                    for (text in it.toList()) {
                         var fname = ""
                         var em = ""
                         var x = 0
-                        for( i in text){
-                            if(i == '+') x = 1
-                            if(x == 0) fname+=i
-                            else if(x == 1 && i != '+') em += i
+                        for (i in text) {
+                            if (i == '+') x = 1
+                            if (x == 0) fname += i
+                            else if (x == 1 && i != '+') em += i
                         }
                         fullname?.setText("${fname}")
                         mail?.setText("${em}")
                     }
                 }
             }
-        }catch (e : FileNotFoundException){
+        } catch (e: FileNotFoundException) {
             fullname?.setText("File Not Found")
             mail?.setText("File Not Found")
-        }catch (e : IOException){
+        } catch (e: IOException) {
             fullname?.setText("File Can't be Read")
             mail?.setText("File Not Found")
         }
@@ -206,17 +217,16 @@ class fragment_profile : Fragment(){
 
 //        val toggle = view?.findViewById<ToggleButton>(R.id.sliderToggleBtn)
 //        var removeAd = adSharePref?.getBoolean("ad", false)
-//        outState.putBoolean(EXTRA_AD, removeAd)
+        outState.putBoolean(EXTRA_AD, check)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
 
-        val toggle = view?.findViewById<ToggleButton>(R.id.sliderToggleBtn)
-        toggle?.isChecked = savedInstanceState?.getBoolean(EXTRA_AD, false) ?: false
+//        switchAd.isChecked = savedInstanceState?.getBoolean(EXTRA_AD, false) ?: false
     }
 
-//    override fun onResume() {
+    //    override fun onResume() {
 //        super.onResume()
 //        var filterBattery = IntentFilter()
 //        filterBattery.addAction(Intent.ACTION_BATTERY_CHANGED)
@@ -226,10 +236,8 @@ class fragment_profile : Fragment(){
     override fun onPause() {
         super.onPause()
         //requireActivity().unregisterReceiver(BatteryReceiver)
-        val toggle = requireActivity()?.findViewById<ToggleButton>(R.id.sliderToggleBtn)
 
-
-}
+    }
 
     companion object {
         /**

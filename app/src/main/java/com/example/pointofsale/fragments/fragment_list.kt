@@ -383,7 +383,7 @@ class fragment_list : Fragment(){
     }
 
     private fun createInterstitialAd(adRequest: AdRequest){
-        InterstitialAd.load(context,"ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
+        InterstitialAd.load(context,getString(R.string.interstitial_ad_id), adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 Log.d("admob", adError?.message)
                 interstitialAd = null
