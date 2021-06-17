@@ -118,8 +118,41 @@ class fragment_income : Fragment() {
             }
         }
 
-        MobileAds.initialize(context) {}
+        val tr = view.findViewById<Button>(R.id.triger)
+        MobileAds.initialize(context)
 
+        tr.setOnClickListener {
+            ads()
+            mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    Log.d(TAG, "Ad was dismissed.")
+                }
+
+                override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                    Log.d(TAG, "Ad failed to show.")
+                }
+
+                override fun onAdShowedFullScreenContent() {
+                    Log.d(TAG, "Ad showed fullscreen content.")
+                    // Called when ad is dismissed.
+                    // Don't set the ad reference to null to avoid showing the ad a second time.
+                    mRewardedAd = null
+                }
+            }
+
+            if (mRewardedAd != null) {
+                mRewardedAd?.show(activity, OnUserEarnedRewardListener() {
+                    Log.d(TAG, "User earned the reward.")
+                })
+            } else {
+                Log.d(TAG, "The rewarded ad wasn't ready yet.")
+            }
+        }
+
+        return view
+    }
+
+    private fun ads(){
         var adRequest = AdRequest.Builder().build()
 
         RewardedAd.load(context,"ca-app-pub-3940256099942544/5224354917", adRequest, object : RewardedAdLoadCallback() {
@@ -133,33 +166,6 @@ class fragment_income : Fragment() {
                 mRewardedAd = rewardedAd
             }
         })
-
-        mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
-            override fun onAdDismissedFullScreenContent() {
-                Log.d(TAG, "Ad was dismissed.")
-            }
-
-            override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
-                Log.d(TAG, "Ad failed to show.")
-            }
-
-            override fun onAdShowedFullScreenContent() {
-                Log.d(TAG, "Ad showed fullscreen content.")
-                // Called when ad is dismissed.
-                // Don't set the ad reference to null to avoid showing the ad a second time.
-                mRewardedAd = null
-            }
-        }
-
-        if (mRewardedAd != null) {
-            mRewardedAd?.show(activity, OnUserEarnedRewardListener() {
-                Log.d(TAG, "User earned the reward.")
-            })
-        } else {
-            Log.d(TAG, "The rewarded ad wasn't ready yet.")
-        }
-
-        return view
     }
 
     private fun getContactName(pos: Int): String {
