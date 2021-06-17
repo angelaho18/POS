@@ -104,6 +104,7 @@ class fragment_profile : Fragment(){
 
         val toggle = view.findViewById<ToggleButton>(R.id.sliderToggleBtn)
         toggle.isChecked = check
+        Log.d("admob", "onCreateView: check $check")
 
         toggle.setOnCheckedChangeListener { buttonView, isChecked ->
             adSharePref.edit {
