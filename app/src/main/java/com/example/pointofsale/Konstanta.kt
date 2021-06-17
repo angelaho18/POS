@@ -11,6 +11,9 @@ const val EXTRA_STOK = "EXTRA_STOCK"
 const val EXTRA_DATA = "EXTRA_DATA"
 const val EXTRA_RELOAD = "RELOAD"
 const val EXTRA_ITEM = "ITEM"
+const val EXTRA_AD = "AD"
+
+const val PREF_NAME = "ad-remove"
 
 var startService = true
 var count = 0

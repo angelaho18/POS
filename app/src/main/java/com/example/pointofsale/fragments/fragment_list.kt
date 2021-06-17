@@ -1,5 +1,6 @@
 package com.example.pointofsale.fragments
 
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.app.job.JobInfo
@@ -31,10 +32,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room.databaseBuilder
 import com.example.pointofsale.*
+import com.example.pointofsale.R
 import com.example.pointofsale.Room.Product
 import com.example.pointofsale.Room.ProductDBHelper
 import com.example.pointofsale.Room.ProductViewModel
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.ByteArrayOutputStream
@@ -63,6 +69,7 @@ class fragment_list : Fragment(){
     private lateinit var imageSource: String
     private var inputData: ByteArray? = null
     var filename: String? = ""
+    private var interstitialAd: InterstitialAd? = null
 
 //    private var Stock: ArrayList<Product> = arrayListOf(
 //        Product("Chitato", "https://i.ibb.co/dBCHzXQ/paris.jpg", 3, 5000),
@@ -97,6 +104,11 @@ class fragment_list : Fragment(){
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_list, container, false)
+
+        MobileAds.initialize(context) {
+            Toast.makeText(context, "Hai", Toast.LENGTH_SHORT).show()
+        }
+        createPersonalizedAd()
 
         ShimmerView = view.findViewById(R.id.shimmerFrameLayout)
 
@@ -230,6 +242,9 @@ class fragment_list : Fragment(){
             val price = addView.findViewById<EditText>(R.id.inputPrice)
             dialog.show()
             var hasil = ""
+
+            val adSharePref = context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            var removeAd = adSharePref?.getBoolean("ad", false)
             confirmBtn.setOnClickListener {
                 doAsync {
                     try {
@@ -250,6 +265,8 @@ class fragment_list : Fragment(){
                         uiThread {
 //                            productAdapter.setData()
 //                            getData(db)
+                            Log.d("admob", "onCreateView: remove = $removeAd")
+                            if (!removeAd!!) showAd()
                             Log.d("hasilDB", "onCreateView: $data")
                         }
                     } catch (e: Exception) {
@@ -263,6 +280,7 @@ class fragment_list : Fragment(){
             }
             cancelBtn.setOnClickListener {
                 dialog.dismiss()
+                if (!removeAd!!) showAd()
             }
         }
 
@@ -282,7 +300,6 @@ class fragment_list : Fragment(){
 //                val v = vi.inflate(R.layout.layout_pop_up, null)
                 val imgFileName = view.findViewById<TextView>(R.id.image_file_name)
                 imgFileName.text = filename
-
 
 //                Log.d(TAG, "onActivityResult: view ${imgFileName.text}")
                 if(data != null){
@@ -350,6 +367,47 @@ class fragment_list : Fragment(){
             img = stream.toByteArray()
         }
         return img
+    }
+
+    private fun showAd(){
+        if (interstitialAd != null) {
+            interstitialAd?.show(activity)
+        } else {
+            Log.d("admob", "The interstitial ad wasn't ready yet.")
+        }
+    }
+
+    private fun createPersonalizedAd(){
+        var adRequest = AdRequest.Builder().build()
+        createInterstitialAd(adRequest)
+    }
+
+    private fun createInterstitialAd(adRequest: AdRequest){
+        InterstitialAd.load(context,"ca-app-pub-3940256099942544/1033173712", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Log.d("admob", adError?.message)
+                interstitialAd = null
+            }
+
+            override fun onAdLoaded(interstitialAds: InterstitialAd) {
+                Log.d("admob", "Ad was loaded.")
+                interstitialAd = interstitialAds
+                interstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        Log.d("admob", "Ad was dismissed.")
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                        Log.d("admob", "Ad failed to show.")
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        Log.d("admob", "Ad showed fullscreen content.")
+                        interstitialAd = null;
+                    }
+                }
+            }
+        })
     }
 
     private fun startMyJob() {

@@ -122,7 +122,7 @@ class fragment_income : Fragment() {
 
         var adRequest = AdRequest.Builder().build()
 
-        RewardedAd.load(context,"ca-app-pub-6092911080978850~3655446770", adRequest, object : RewardedAdLoadCallback() {
+        RewardedAd.load(context,"ca-app-pub-3940256099942544/5224354917", adRequest, object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 Log.d("rewarded", adError?.message)
                 mRewardedAd = null

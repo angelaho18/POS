@@ -1,10 +1,7 @@
 package com.example.pointofsale.fragments
 
 import android.app.Activity
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Color.*
@@ -18,9 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.FileProvider
-import com.example.pointofsale.R
-import com.example.pointofsale.ActivityFragment
-import com.example.pointofsale.SharePrefHelper
+import androidx.core.content.edit
+import com.example.pointofsale.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.navigation_button.*
 import java.io.File
@@ -45,6 +41,7 @@ class fragment_profile : Fragment(){
     private var param2: String? = null
     private val prefFileName = "MyFilepref1"
     private var i = 0
+    private lateinit var adSharePref: SharedPreferences
 //    private var BatteryReceiver = object : BroadcastReceiver() {
 //
 //        override fun onReceive(context: Context, intent: Intent) {
@@ -102,6 +99,18 @@ class fragment_profile : Fragment(){
 
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
+        adSharePref = context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)!!
+
+        val toggle = view.findViewById<ToggleButton>(R.id.sliderToggleBtn)
+        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            adSharePref.edit {
+                putBoolean("ad", isChecked)
+                Log.d("admob", "onCreateView: toggle $isChecked")
+                apply()
+            }
+
+        }
+
         val btnPic = view.findViewById<Button>(R.id.buttonPic)
         btnPic.setOnClickListener {
             val takePicIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -124,19 +133,20 @@ class fragment_profile : Fragment(){
 //        Log.i("kii",edit.toString())
 //        Log.i("ki",reset.toString())
 
-        val save = view.findViewById<Button>(R.id.bt_save)
-        val read = view.findViewById<Button>(R.id.bt_edit)
-//        val reset = view.findViewById<Button>(R.id.bt_reset)
-        val name = view.findViewById<EditText>(R.id.full_name)
-        val email = view.findViewById<EditText>(R.id.emailAddress)
-        save.setOnClickListener{
-            writeFileInternal()
-            name.text = null
-            email.text = null
-        }
-        read.setOnClickListener {
-            readFileInternal()
-        }
+        //last
+//        val save = view.findViewById<Button>(R.id.bt_save)
+//        val read = view.findViewById<Button>(R.id.bt_edit)
+////        val reset = view.findViewById<Button>(R.id.bt_reset)
+//        val name = view.findViewById<EditText>(R.id.full_name)
+//        val email = view.findViewById<EditText>(R.id.emailAddress)
+//        save.setOnClickListener{
+//            writeFileInternal()
+//            name.text = null
+//            email.text = null
+//        }
+//        read.setOnClickListener {
+//            readFileInternal()
+//        }
 //        reset.setOnClickListener {
 //            name.text = null
 //            email.text = null
@@ -187,6 +197,21 @@ class fragment_profile : Fragment(){
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+//        val toggle = view?.findViewById<ToggleButton>(R.id.sliderToggleBtn)
+//        var removeAd = adSharePref?.getBoolean("ad", false)
+//        outState.putBoolean(EXTRA_AD, removeAd)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+
+        val toggle = view?.findViewById<ToggleButton>(R.id.sliderToggleBtn)
+        toggle?.isChecked = savedInstanceState?.getBoolean(EXTRA_AD, false) ?: false
+    }
+
 //    override fun onResume() {
 //        super.onResume()
 //        var filterBattery = IntentFilter()
@@ -194,10 +219,13 @@ class fragment_profile : Fragment(){
 //        requireActivity().registerReceiver(BatteryReceiver, filterBattery)
 //    }
 //
-//    override fun onPause() {
-//        super.onPause()
-//        requireActivity().unregisterReceiver(BatteryReceiver)
-//    }
+    override fun onPause() {
+        super.onPause()
+        //requireActivity().unregisterReceiver(BatteryReceiver)
+        val toggle = requireActivity()?.findViewById<ToggleButton>(R.id.sliderToggleBtn)
+
+
+}
 
     companion object {
         /**

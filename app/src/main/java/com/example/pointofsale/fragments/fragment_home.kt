@@ -1,6 +1,7 @@
 package com.example.pointofsale.fragments
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.SearchView
 import androidx.core.view.isVisible
+import com.example.pointofsale.PREF_NAME
 import com.example.pointofsale.R
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -68,17 +70,29 @@ class fragment_home : Fragment() {
         val adRequest = AdRequest.Builder().build()
         val adsview = view.findViewById<AdView>(R.id.adView)
         val btadds = view.findViewById<Button>(R.id.bt_addBanner)
-        adsview.loadAd(adRequest)
-        btadds.visibility = View.GONE
-        adsview.adListener = object :AdListener(){
-            override fun onAdLoaded() {
-                btadds.visibility = View.VISIBLE
+
+        val adSharePref = context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        var removeAd = adSharePref?.getBoolean("ad", false)
+        Log.d("admob", "onCreateView: remove = $removeAd")
+
+        if (removeAd!!){
+            container?.removeView(btadds)
+            adsview.isEnabled = false;
+            adsview.visibility = View.GONE;
+            btadds.visibility = View.GONE
+        }else{
+            adsview.loadAd(adRequest)
+            btadds.visibility = View.GONE
+            adsview.adListener = object :AdListener(){
+                override fun onAdLoaded() {
+                    btadds.visibility = View.VISIBLE
+                }
             }
-        }
-        btadds.setOnClickListener {
-            if(adsview.isVisible){
-                adsview.visibility = View.GONE
-                btadds.visibility = View.GONE
+            btadds.setOnClickListener {
+                if(adsview.isVisible){
+                    adsview.visibility = View.GONE
+                    btadds.visibility = View.GONE
+                }
             }
         }
         return view
