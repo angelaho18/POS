@@ -95,33 +95,9 @@ class fragment_income : Fragment() {
         }
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fabContact)
-        fab.setOnClickListener {
-            val views = layoutInflater.inflate(R.layout.form_contact, null, false)
-
-            var dialog = AlertDialog.Builder(view.context)
-                .setView(views)
-                .create()
-
-            dialog.show()
-
-            val bt_add =  views.findViewById<Button>(R.id.bt_add)
-            val nama_supplier =  views.findViewById<EditText>(R.id.nama_supplier)
-            val nomor_supplier =  views.findViewById<EditText>(R.id.nomor_supplier)
-            val email_supplier = views.findViewById<EditText>(R.id.email_supplier)
-
-            bt_add.setOnClickListener {
-                addContact(nama_supplier.text.toString(),
-                    "${nomor_supplier.text}",
-                    "${email_supplier.text}")
-                readContacts()
-                dialog.dismiss()
-            }
-        }
-
-        val tr = view.findViewById<Button>(R.id.triger)
         MobileAds.initialize(context)
-
-        tr.setOnClickListener {
+        fab.setOnClickListener {
+            //Rewarded Video Ads START
             ads()
             mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
@@ -147,7 +123,60 @@ class fragment_income : Fragment() {
             } else {
                 Log.d(TAG, "The rewarded ad wasn't ready yet.")
             }
+
+            //Rewarded Video Ads STOP
+
+            val views = layoutInflater.inflate(R.layout.form_contact, null, false)
+
+            var dialog = AlertDialog.Builder(view.context)
+                .setView(views)
+                .create()
+
+            dialog.show()
+
+            val bt_add =  views.findViewById<Button>(R.id.bt_add)
+            val nama_supplier =  views.findViewById<EditText>(R.id.nama_supplier)
+            val nomor_supplier =  views.findViewById<EditText>(R.id.nomor_supplier)
+            val email_supplier = views.findViewById<EditText>(R.id.email_supplier)
+
+            bt_add.setOnClickListener {
+                addContact(nama_supplier.text.toString(),
+                    "${nomor_supplier.text}",
+                    "${email_supplier.text}")
+                readContacts()
+                dialog.dismiss()
+            }
         }
+
+//        val tr = view.findViewById<Button>(R.id.triger)
+//
+//        tr.setOnClickListener {
+//            ads()
+//            mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+//                override fun onAdDismissedFullScreenContent() {
+//                    Log.d(TAG, "Ad was dismissed.")
+//                }
+//
+//                override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+//                    Log.d(TAG, "Ad failed to show.")
+//                }
+//
+//                override fun onAdShowedFullScreenContent() {
+//                    Log.d(TAG, "Ad showed fullscreen content.")
+//                    // Called when ad is dismissed.
+//                    // Don't set the ad reference to null to avoid showing the ad a second time.
+//                    mRewardedAd = null
+//                }
+//            }
+//
+//            if (mRewardedAd != null) {
+//                mRewardedAd?.show(activity, OnUserEarnedRewardListener() {
+//                    Log.d(TAG, "User earned the reward.")
+//                })
+//            } else {
+//                Log.d(TAG, "The rewarded ad wasn't ready yet.")
+//            }
+//        }
 
         return view
     }
