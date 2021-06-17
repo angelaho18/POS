@@ -100,8 +100,11 @@ class fragment_profile : Fragment(){
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         adSharePref = context?.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)!!
+        val check = adSharePref?.getBoolean("ad", false)
 
         val toggle = view.findViewById<ToggleButton>(R.id.sliderToggleBtn)
+        toggle.isChecked = check
+
         toggle.setOnCheckedChangeListener { buttonView, isChecked ->
             adSharePref.edit {
                 putBoolean("ad", isChecked)
