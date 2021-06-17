@@ -151,6 +151,14 @@ class fragment_income : Fragment() {
             }
         }
 
+        if (mRewardedAd != null) {
+            mRewardedAd?.show(activity, OnUserEarnedRewardListener() {
+                Log.d(TAG, "User earned the reward.")
+            })
+        } else {
+            Log.d(TAG, "The rewarded ad wasn't ready yet.")
+        }
+
         return view
     }
 
